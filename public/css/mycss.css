@@ -1,0 +1,512 @@
+ /* Background utama lembut */
+ body {
+    background-color: #f6f8fc;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  /* Judul halaman */
+  h4.fw-bold {
+    font-size: 1.6rem;
+    color: #2e2e48;
+  }
+
+  .text-muted {
+    color: #9ca3af !important;
+  }
+
+  /* Card Style Premium */
+  .card {
+    background: #ffffff;
+    border-radius: 20px;
+    border: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  }
+
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  }
+
+  /* Card body */
+  .card-body {
+    padding: 1.5rem 1.7rem;
+  }
+
+  /* Warna teks data besar */
+  .card-body h4,
+  .fs-4 {
+    color: #1f1f3d;
+  }
+
+  /* Warna presentase naik/turun */
+  .text-success {
+    color: #16a34a !important;
+  }
+
+  .text-danger {
+    color: #ef4444 !important;
+  }
+
+  /* Chart container */
+  canvas {
+    margin-top: 10px;
+  }
+
+
+  /* Label chart */
+  h6.fw-bold {
+    color: #2e2e48;
+  }
+
+  /* List kategori warna pada donut chart */
+  ul.list-unstyled li {
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #4b5563;
+  }
+
+  /* Animasi halus untuk tampilan masuk */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .container-fluid {
+    animation: fadeInUp 0.6s ease-out;
+  }
+
+  /* Gaya badge presentase */
+  .small.fw-semibold {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  /* Chart area */
+  .card canvas {
+    background: #fff;
+    border-radius: 12px;
+    padding: 10px;
+  }
+
+  /* Header atas */
+  .mb-4 h4 {
+    font-weight: 700;
+  }
+
+  .mb-4 p {
+    font-size: 0.9rem;
+    margin-top: -4px;
+  }
+
+  /* Warna chart lebih lembut */
+  .chartjs-render-monitor {
+    border-radius: 15px;
+  }
+
+  #pieChart {
+max-height: 200px !important;
+width: 100% !important;
+height: auto !important;
+}
+/*table top score terlambat */
+.custom-table {
+width: 100%;
+background: #fff;
+border-radius: 12px;
+box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+overflow: hidden;
+}
+
+.custom-table thead {
+background: #f8f9fc;
+color: #6c757d;
+font-size: 0.9rem;
+text-transform: capitalize;
+}
+
+.custom-table thead th {
+border: none;
+font-weight: 600;
+padding: 0.9rem 1rem;
+}
+
+.custom-table tbody tr {
+border-bottom: 1px solid #f1f1f1;
+transition: background 0.2s ease;
+}
+
+.custom-table tbody tr:hover {
+background: #f9f9ff;
+}
+
+.custom-table tbody td {
+padding: 0.9rem 1rem;
+vertical-align: middle;
+}
+
+.badge-soft {
+display: inline-block;
+padding: 0.4rem 0.7rem;
+border-radius: 8px;
+font-size: 0.8rem;
+font-weight: 600;
+}
+
+.badge-soft.purple {
+background-color: rgba(113, 90, 255, 0.1);
+color: #715AFF;
+border:none;
+}
+.badge-soft.blue {
+background-color: rgba(0, 153, 255, 0.1);
+color: #0099FF;
+}
+.badge-soft.orange {
+background-color: rgba(255, 170, 0, 0.1);
+color: #FFAA00;
+}
+.badge-soft.red {
+    background-color: rgba(255, 0, 0, 0.1);
+    color: red;
+    }
+.text-success {
+color: #1CC88A !important;
+}
+.text-danger {
+color: #E74A3B !important;
+}
+.table > :not(caption) > * > * {
+padding: 0.9rem 1rem;
+}
+.page-link {
+border: none;
+color: #6c757d;
+font-weight: 500;
+transition: all 0.2s;
+}
+.page-item.active .page-link {
+background-color: #4f46e5;
+color: #fff;
+border-radius: 50%;
+}
+.page-link:hover {
+background-color: #e9ecef;
+color: #4f46e5;
+}
+.card {
+background-color: #fff;
+}
+
+/*daerah data
+master siswa
+*/
+.search-box {
+    position: relative;
+    width: 350px;
+    transition: all 0.4s ease;
+  }
+
+  .search-box input {
+    width: 100%;
+    height: 48px;
+    border: none;
+    border-radius: 25px;
+    padding: 0 50px 0 20px;
+    background: #fff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    outline: none;
+    font-size: 16px;
+    transition: all 0.3s ease;
+  }
+
+  .search-box input:focus {
+    box-shadow: 0 0 0 3px #86b7fe;
+    background-color: #fefefe;
+  }
+
+  .search-box button {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #007bff;
+    border: none;
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    transition: background 0.3s ease, transform 0.2s;
+  }
+
+  .search-box button:hover {
+    background-color: #0056b3;
+    transform: scale(1.1);
+  }
+
+  .search-box button i {
+    font-size: 18px;
+  }
+
+  /* Efek tambahan saat hover input */
+  .search-box:hover input {
+    box-shadow: 0 4px 15px rgba(0,123,255,0.25);
+  }
+/* Tombol gradient biru elegan */
+.btn-tambah {
+    position: absolute;
+    right: 15px;          /* pojok kanan */
+    top: 15px;            /* sedikit turun */
+    background: linear-gradient(135deg, #0052D4 0%, #4364F7 50%, #6FB1FC 100%);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: all 0.25s ease-in-out;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Hover effect */
+  .btn-tambah:hover {
+    background: blue;
+    box-shadow: 0 8px 20px rgba(67, 100, 247, 0.45);
+    transform: translateY(-3px);
+    color: #fff;
+    text-decoration: none;
+    filter: brightness(1.05);
+  }
+/* Modal Styling */
+.custom-modal {
+    border: none;
+    border-radius: 18px;
+    padding: 1rem 1.5rem 1.5rem;
+    background: #fff;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    animation: modalFadeIn .25s ease;
+  }
+  @keyframes modalFadeIn {
+    from { transform: translateY(15px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  /* Form Input Style */
+  .form-control-modern {
+    border: none;
+    border-bottom: 2px solid #ddd;
+    border-radius: 0;
+    box-shadow: none;
+    padding-left: 0;
+    transition: all 0.2s ease;
+  }
+  .form-control-modern:focus {
+    border-bottom-color: #007bff;
+    box-shadow: none;
+  }
+
+  /* Button Gradient */
+  .btn-tambah {
+    background: linear-gradient(135deg, #0052D4, #4364F7, #6FB1FC);
+    color: #fff !important;
+    border: none;
+    border-radius: 10px;
+    transition: all 0.25s ease;
+  }
+  .btn-tambah:hover {
+    background: linear-gradient(135deg, #0040C1, #3A5BE0, #5BA8FF);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(67, 100, 247, 0.4);
+  }
+
+  /* Save & Upload Buttons */
+  .btn-save, .btn-upload {
+    background: linear-gradient(135deg, #4364F7, #6FB1FC);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: .45rem 1.4rem;
+    font-weight: 600;
+    transition: all 0.25s ease;
+  }
+  .btn-save:hover, .btn-upload:hover {
+    background: linear-gradient(135deg, #3A5BE0, #5BA8FF);
+    transform: translateY(-2px);
+  }
+
+  /* Custom Tab Switch */
+  .tab-switch {
+    position: relative;
+    display: flex;
+    justify-content: space-around;
+    border-bottom: 1.8px solid #ddd;
+  }
+  .tab-btn {
+    background: none;
+    border: none;
+    outline: none;
+    padding: .5rem .8rem;
+    font-weight: 600;
+    color: #666;
+    cursor: pointer;
+    transition: color .25s ease;
+    position: relative;
+  }
+  .tab-btn:hover {
+    color: #007bff;
+  }
+  .tab-btn.active {
+    color: #0052D4;
+  }
+  .tab-indicator {
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 50%;
+    height: 2px;
+    background: linear-gradient(135deg, #0052D4, #6FB1FC);
+    border-radius: 2px;
+    transition: all .25s ease;
+  }
+
+  /* Hide / Show Form */
+  .tab-content { display: none; }
+  .tab-content.active { display: block; animation: fadeIn .3s ease; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .custom-file-upload {
+    border: 2px dashed #aab2ff;
+    border-radius: 12px;
+    background: linear-gradient(145deg, #f8faff, #eef1ff);
+    color: #5b5f97;
+    text-align: center;
+    padding: 28px 16px;
+    font-weight: 500;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+
+  .custom-file-upload:hover {
+    background: linear-gradient(145deg, #eef1ff, #f8faff);
+    border-color: #6a75ff;
+    color: #4a50e0;
+    transform: scale(1.01);
+    box-shadow: 0 3px 10px rgba(102, 116, 255, 0.15);
+  }
+
+  .custom-file-upload i {
+    font-size: 18px;
+    color: #4a50e0;
+  }
+
+  #file-name {
+    font-size: 15px;
+  }
+
+  .custom-file-upload.dragover {
+    border-color: #3d5afe;
+    background: linear-gradient(145deg, #eaf0ff, #f0f4ff);
+    color: #3d5afe;
+  }
+
+  /* Tab switch */
+.tab-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    padding: 10px 0;
+    font-weight: 600;
+    color: #6c757d;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+  }
+  .tab-btn:hover {
+    color: #0d6efd;
+  }
+  .tab-btn.active {
+    color: #0d6efd;
+    border-bottom-color: #0d6efd;
+  }
+
+  /* Custom file upload (dari versi sebelumnya) */
+  .custom-file-upload {
+    border: 2px dashed #aab2ff;
+    border-radius: 12px;
+    background: linear-gradient(145deg, #f8faff, #eef1ff);
+    color: #5b5f97;
+    text-align: center;
+    padding: 28px 16px;
+    font-weight: 500;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+
+  .custom-file-upload:hover {
+    background: linear-gradient(145deg, #eef1ff, #f8faff);
+    border-color: #6a75ff;
+    color: #4a50e0;
+    transform: scale(1.01);
+    box-shadow: 0 3px 10px rgba(102, 116, 255, 0.15);
+  }
+
+  .custom-file-upload.dragover {
+    border-color: #3d5afe;
+    background: linear-gradient(145deg, #eaf0ff, #f0f4ff);
+    color: #3d5afe;
+  }
+
+  /* Input style minimalis */
+.modern-input {
+    border: none;
+    border-bottom: 2px solid #e3e7ef;
+    border-radius: 0;
+    padding: 10px 4px;
+    font-size: 15px;
+    background: transparent;
+    color: #333;
+    transition: all 0.25s ease;
+    box-shadow: none !important;
+  }
+
+  .modern-input:focus {
+    border-color: #3d5afe;
+    outline: none;
+  }
+
+  .modern-input::placeholder {
+    color: #a0a6b8;
+    font-weight: 500;
+  }
+
+  /* Gradient button biar matching sama tema modal */
+  .btn-gradient-blue {
+    background: linear-gradient(135deg, #0052D4 0%, #4364F7 50%, #6FB1FC 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    transition: all 0.25s ease;
+  }
+
+  .btn-gradient-blue:hover {
+    background: linear-gradient(135deg, #0040C1 0%, #3A5BE0 50%, #5BA8FF 100%);
+    transform: translateY(-2px);
+  }
+
+
