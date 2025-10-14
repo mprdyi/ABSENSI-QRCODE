@@ -3,10 +3,10 @@
 
   <!-- Sidebar - Brand -->
   <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-    <div class="sidebar-brand-icon rotate-n-15">
-      <i class="fas fa-laugh-wink"></i>
+    <div class="sidebar-brand-icon">
+      <img src="{{ asset('image/logo-sma.png')  }}" alt="" width="40px">
     </div>
-    <div class="sidebar-brand-text mx-3">KDMP <sup>LM</sup></div>
+    <div class="sidebar-brand-text mx-3">SMAN <sup>9 Cirebon</sup></div>
   </a>
 
   <!-- Divider -->
@@ -36,9 +36,9 @@
     <div id="collapseMaster" class="collapse" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
         <a class="collapse-item" href="{{ url('data-siswa') }}">Data Siswa</a>
-        <a class="collapse-item" href="#">Data Guru Piket</a>
-        <a class="collapse-item" href="#">Data Osis / MPK</a>
-        <a class="collapse-item" href="#">Data Kelas</a>
+        <a class="collapse-item" href="{{ url('data-guru') }}">Data Guru Piket</a>
+        <a class="collapse-item" href="{{ url('data-osis') }}">Data Osis / MPK</a>
+        <a class="collapse-item" href="{{ url('data-kelas') }}">Data Kelas</a>
       </div>
     </div>
   </li>

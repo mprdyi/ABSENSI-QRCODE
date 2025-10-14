@@ -1,5 +1,5 @@
 @extends('layout.app')
-@section('title', 'Edit Data Siswa')
+@section('title', 'Edit Data Kelas')
 
 @section('content')
 <style>
@@ -94,31 +94,51 @@
 <div class="container-fluid mt-4">
     <div class="card shadow-sm border-0 rounded-4">
         <div class="card-body">
-            <h5 class="fw-bold mb-3">Edit Data Siswa SMAN 9 Cirebon</h5>
+            <h5 class="fw-bold mb-3">Edit Data Kelas SMAN 9 Cirebon</h5>
+            @if (session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @if (session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            @endif
+
+            @if ($errors->any())
+                <div class="alert alert-warning">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
 
             <div class="form-wrapper">
                 <div class="form-card">
-                    <h3 class="form-title">Edit Data Siswa</h3>
-                    <form action="{{ route('edit-data-siswa.update', $siswa->id) }}" method="POST">
+                    <h3 class="form-title">Edit Data Kelas</h3>
+                    <form action="{{ route('data-kelas.update', $kelas->id)}}" method="POST">
                         @csrf
                         @method('PUT')
 
                         <div class="form-row">
-                            <input type="text" name="nis" placeholder="NIS" value="{{ $siswa->nis }}" readonly>
-                            <input type="text" name="nama" placeholder="Nama Lengkap" value="{{ $siswa->nama }}">
+                            <input type="text" name="kode_kelas" placeholder="NIS" value="{{ $kelas->kode_kelas }}">
+                            <input type="text" name="kelas" placeholder="Nama Lengkap" value="{{ $kelas->kelas }}">
                         </div>
 
                         <div class="form-row">
-                            <select name="jk">
-                                <option value="L" {{ $siswa->jk == 'L' ? 'selected' : '' }}>Laki-Laki</option>
-                                <option value="P" {{ $siswa->jk == 'P' ? 'selected' : '' }}>Perempuan</option>
+                            <select name="id_wali_kelas">
+                                <option value="1" {{ $kelas->id_wali_kelas == '1' ? 'selected' : '' }}>Dadan Darmanto</option>
+                                <option value="2" {{ $kelas->id_wali_kelas == '2' ? 'selected' : '' }}>Atun</option>
+                                <option value="3" {{ $kelas->id_wali_kelas == '3' ? 'selected' : '' }}>Saprudin</option>
+                                <option value="4" >Addi</option>
                             </select>
-                            <input type="text" name="kelas" placeholder="Kelas" value="{{ $siswa->kelas }}">
                         </div>
 
-                        <div class="form-row">
-                            <input type="text" name="wali_kelas" placeholder="Wali Kelas" value="{{ $siswa->wali_kelas }}" readonly>
-                        </div>
 
                         <button type="submit" class="btn-update">Update Data</button>
                     </form>

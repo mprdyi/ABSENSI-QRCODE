@@ -10,7 +10,7 @@ class SiswaController extends Controller
     //
     public function index(){
     // Ambil semua data siswa dari database
-    $siswas = Siswa::orderBy('id','desc')->get();
+    $siswas = Siswa::orderBy('id','desc')->paginate(10);
 
     // Siapkan array untuk dikirim ke view
     $view_data = [
@@ -87,17 +87,22 @@ class SiswaController extends Controller
             return redirect()->route('admin.data-master.data-siswa')->with('success', 'Data berhasil dihapus.');
         }
 
-   //CARI DATA
-   public function search(Request $request){
-    $search = $request->input('search'); // ambil input search
+   // CARI DATA
+        public function search(Request $request)
+        {
+            $search = $request->input('search'); // ambil input pencarian
 
-    if ($search) {
-        $siswas = Siswa::where('nama', 'like', "%{$search}%")->get();
-    } else {
-        $siswas = Siswa::all();
-    }
+            if ($search) {
+                // Jika ada kata kunci pencarian
+                $siswas = Siswa::where('nama', 'like', "%{$search}%")
+                    ->orderBy('id', 'desc')
+                    ->paginate(10)
+                    ->appends(['search' => $search]); // simpan keyword saat pindah halaman
+            } else {
+                // Jika tidak ada pencarian, tampilkan semua dengan paginate juga
+                $siswas = Siswa::orderBy('id', 'desc')->paginate(10);
+            }
 
-    return view('admin.data-master.cari-siswa', compact('siswas', 'search'));
-   }
-
-}
+            return view('admin.data-master.cari-siswa', compact('siswas', 'search'));
+        }
+        }

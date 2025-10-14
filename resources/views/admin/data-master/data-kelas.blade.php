@@ -1,6 +1,6 @@
 
 @extends('layout.app')
-@section('title', 'Data Siswa')
+@section('title', 'Data Kelas')
 
 @section('content')
 
@@ -11,12 +11,23 @@
 
     <div class="card shadow-sm border-0 rounded-4">
   <div class="card-body">
-    <h5 class="fw-bold mb-3">Data Siswa SMAN 9 Cirebon</h5>
-    @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
+    <h5 class="fw-bold mb-3">Data Kelas SMAN 9 Cirebon</h5>
+
+
+        @if (session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ session('success') }}
+    </div>
         @endif
+
+        @if (session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ session('error') }}
+            </div>
+        @endif
+
+
+
     <div class="table-responsive">
     <div class="container">
     <div class="row">
@@ -45,25 +56,22 @@
         <thead>
           <tr>
             <th>No</th>
-            <th>NIS</th>
-            <th>Nama</th>
-            <th>Gender</th>
+            <th>Kode Kelas</th>
             <th>Kelas</th>
             <th>Wali Kelas</th>
             <th>Aksi</th>
           </tr>
         </thead>
         <tbody>
-
-        @foreach ($siswas as $siswa)
+        @foreach ($kelas as $kelas)
         @php
-            $kelas = $siswa->kelas;
+            $warnakelas = $kelas->kelas;
 
-            if (\Illuminate\Support\Str::startsWith($kelas, 'XII')) {
+            if (\Illuminate\Support\Str::startsWith($warnakelas, 'XII')) {
                 $color = 'blue';
-            } elseif (\Illuminate\Support\Str::startsWith($kelas, 'XI')) {
+            } elseif (\Illuminate\Support\Str::startsWith($warnakelas, 'XI')) {
                 $color = 'orange';
-            } elseif (\Illuminate\Support\Str::startsWith($kelas, 'X')) {
+            } elseif (\Illuminate\Support\Str::startsWith($warnakelas, 'X')) {
                 $color = 'purple';
             } else {
                 $color = 'primary';
@@ -71,23 +79,20 @@
             @endphp
 
 
-
           <tr>
-          <td>{{ $loop->iteration + ($siswas->currentPage() - 1) * $siswas->perPage() }}</td>
+          <td>{{ $loop->iteration }}</td>
             <td>
-             <span>{{ $siswa->nis }}</span>
+             <span>{{ $kelas->kode_kelas }}</span>
             </td>
-            <td>{{ $siswa->nama }}</td>
-            <td class="fw-semibold text-dark">{{ $siswa->jk}}</td>
-            <td><span class="badge-soft {{$color}}">{{ $siswa->kelas }}</span></td>
-            <td><span class="text-muted small">{{ $siswa->wali_kelas }}</span></td>
+            <td><span class="badge-soft {{ $color }} ">{{ $kelas->kelas }}</span></td>
+            <td class="fw-semibold text-dark">{{ $kelas->id_wali_kelas}}</td>
             <td class="fw-semibold text-success">
                 <div class="row">
                     <div class="col-6">
-                    <a href="{{ route('edit-data-siswa.edit', $siswa->id) }} " class="badge-soft orange"><i class="fa fa-edit"></i></a>
+                    <a href="{{ route('data-kelas.edit', $kelas->id) }} " class="badge-soft orange"><i class="fa fa-edit"></i></a>
                     </div>
                     <div class="col-6">
-                    <form action="{{ route('data-siswa.destroy', $siswa->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
+                    <form action="{{ route('data-kelas.destroy', $kelas->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="badge-soft red" style="border:none"><i class="fa fa-trash"></i></a></button>
@@ -99,9 +104,10 @@
           </tr>
           @endforeach
         </tbody>
+        </tbody>
       </table>
       <div class="d-flex justify-content-end align-items-center mt-3">
-    {{ $siswas->links('pagination::bootstrap-5') }}
+    <!--paginatiom disini -->
 </div>
 
 
@@ -120,7 +126,7 @@
 
       <!-- Header -->
       <div class="modal-header border-0 pb-0">
-        <h5 class="modal-title fw-bold text-dark">Tambah Data Siswa</h5>
+        <h5 class="modal-title fw-bold text-dark">Tambah Kelas Siswa</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
@@ -133,27 +139,21 @@
   </div>
 
   <!-- Form Input Manual -->
-  <form id="formManual" action="{{ route('data-siswa.store') }}" method="POST">
+  <form id="formManual" action="{{ route('data-kelas.store') }}" method="POST">
   @csrf
   <div class="form-group mb-3">
-    <input type="text" class="form-control modern-input" name="nis" placeholder="NIS">
+    <input type="text" class="form-control modern-input" name="kode_kelas" placeholder="Kode Kelas">
   </div>
-  <div class="form-group mb-3">
-    <input type="text" class="form-control modern-input" name="nama" placeholder="Nama Lengkap">
-  </div>
-  <div class="form-group mb-3">
-    <select name="jk" id="jk" class="form-control modern-input">
-     <option value="L">-- Jenis Kelamin -- </option>
-        <option value="L">Laki-Laki</option>
-        <option value="P">Perempuan</option>
-    </select>
-  </div>
-
   <div class="form-group mb-3">
     <input type="text" class="form-control modern-input" name="kelas" placeholder="Kelas">
   </div>
-  <div class="form-group mb-4">
-    <input type="text" class="form-control modern-input" name="wali_kelas" placeholder="Wali Kelas">
+  <div class="form-group mb-3">
+    <select name="id_wali_kelas" id="id_wali_kelas" class="form-control modern-input">
+    <option value="">-- Wali Kelas --</option>
+        <option value="1">Dadan</option>
+        <option value="2">Atun</option>
+        <option value="3">Sapriduin</option>
+    </select>
   </div>
 
   <button type="submit" class="btn btn-primary rounded-3 px-4 py-2">Simpan</button>
@@ -171,7 +171,7 @@
       </div>
       <input type="file" id="file" name="file" accept=".csv,.xls,.xlsx" hidden>
       <small class="text-muted d-block mt-2">
-        Gunakan format kolom: <span class="fw-semibold text-dark">NIS, Nama, JK, Kelas, Wali Kelas</span>.
+        Gunakan format kolom: <span class="fw-semibold text-dark">Kode Kelas, Kelas, Wali Kelas</span>.
       </small>
       <button type="submit" class="btn btn-primary rounded-3 px-4 py-2 w-100">Simpan</button>
     </div>

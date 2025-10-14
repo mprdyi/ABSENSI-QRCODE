@@ -55,7 +55,7 @@
         <tbody>
         @foreach ($siswas as $siswa)
           <tr>
-          <td>{{ $loop->iteration }}</td>
+          <td>{{ $loop->iteration + ($siswas->currentPage() - 1) * $siswas->perPage() }}</td>
             <td>
              <span>{{ $siswa->nis }}</span>
             </td>
@@ -82,22 +82,10 @@
           @endforeach
         </tbody>
       </table>
-       <!-- Pagination -->
-    <div class="d-flex justify-content-end align-items-center mt-3">
-      <nav>
-        <ul class="pagination pagination-sm mb-0">
-          <li class="page-item disabled">
-            <a class="page-link rounded-circle" href="#" tabindex="-1">&laquo;</a>
-          </li>
-          <li class="page-item active"><a class="page-link rounded-circle" href="#">1</a></li>
-          <li class="page-item"><a class="page-link rounded-circle" href="#">2</a></li>
-          <li class="page-item"><a class="page-link rounded-circle" href="#">3</a></li>
-          <li class="page-item">
-            <a class="page-link rounded-circle" href="#">&raquo;</a>
-          </li>
-        </ul>
-      </nav>
-    </div>
+      <div class="d-flex justify-content-end align-items-center mt-3">
+    {{ $siswas->links('pagination::bootstrap-5') }}
+</div>
+
 </div>
 </div>
 </div>
