@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DataKelasController;
+use App\Http\Controllers\GuruController;
 
 
 
@@ -38,6 +39,16 @@ Route::post('/data-kelas/store', [DataKelasController::class, 'store'])->name('d
 Route::delete('/data-kelas/{id}', [DataKelasController::class, 'destroy'])->name('data-kelas.destroy');
 Route::get('/edit-data-kelas/{id}', [DataKelasController::class, 'edit'])->name('data-kelas.edit');
 Route::put('/edit-data-kelas/{id}', [DataKelasController::class, 'update'])->name('data-kelas.update');
+Route::get('/cari-kelas', [DataKelasController::class, 'search'])->name('cari-kelas');
+
+//route guru
+Route::get('/data-guru', [GuruController::class, 'index'])->name('admin.data-master.data-guru');
+Route::post('/data-guru/store', [GuruController::class, 'store'])->name('data-guru.store');
+Route::delete('/data-guru/{id}', [GuruController::class, 'destroy'])->name('data-guru.destroy');
+Route::get('/edit-data-guru/{id}', [GuruController::class, 'edit'])->name('data-guru.edit');
+Route::put('/edit-data-guru/{id}', [GuruController::class, 'update'])->name('data-guru.update');
+Route::get('/cari-guru', [GuruController::class, 'search'])->name('cari-guru');
+
 
 
 

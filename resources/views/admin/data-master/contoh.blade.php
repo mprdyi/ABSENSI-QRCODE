@@ -1,6 +1,6 @@
 
 @extends('layout.app')
-@section('title', 'Data Kelas')
+@section('title', 'Data Guru')
 
 @section('content')
 
@@ -11,7 +11,7 @@
 
     <div class="card shadow-sm border-0 rounded-4">
   <div class="card-body">
-    <h5 class="fw-bold mb-3">Data Kelas SMAN 9 Cirebon</h5>
+    <h5 class="fw-bold mb-3">Data GURU SMAN 9 Cirebon</h5>
 
 
         @if (session('success'))
@@ -56,43 +56,31 @@
         <thead>
           <tr>
             <th>No</th>
-            <th>Kode Kelas</th>
-            <th>Kelas</th>
-            <th>Wali Kelas</th>
+            <th>NIP</th>
+            <th>Nama Guru</th>
+            <th>Mapel</th>
+            <th>No Hp</th>
             <th>Aksi</th>
           </tr>
         </thead>
         <tbody>
-        @foreach ($kelas as $kelas)
-        @php
-            $warnakelas = $kelas->kelas;
 
-            if (\Illuminate\Support\Str::startsWith($warnakelas, 'XII')) {
-                $color = 'blue';
-            } elseif (\Illuminate\Support\Str::startsWith($warnakelas, 'XI')) {
-                $color = 'orange';
-            } elseif (\Illuminate\Support\Str::startsWith($warnakelas, 'X')) {
-                $color = 'purple';
-            } else {
-                $color = 'primary';
-            }
-            @endphp
 
 
           <tr>
-          <td>{{ $loop->iteration }}</td>
+          <td></td>
             <td>
-             <span>{{ $kelas->kode_kelas }}</span>
+             <span></span>
             </td>
-            <td><span class="badge-soft {{ $color }} ">{{ $kelas->kelas }}</span></td>
-            <td class="fw-semibold text-dark">{{ $kelas->id_wali_kelas}}</td>
+            <td><span class="badge-soft red "></span></td>
+            <td class="fw-semibold text-dark"></td>
             <td class="fw-semibold text-success">
                 <div class="row">
                     <div class="col-6">
-                    <a href="{{ route('data-kelas.edit', $kelas->id) }} " class="badge-soft orange"><i class="fa fa-edit"></i></a>
+                    <a href="" class="badge-soft orange"><i class="fa fa-edit"></i></a>
                     </div>
                     <div class="col-6">
-                    <form action="{{ route('data-kelas.destroy', $kelas->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
+                    <form action="" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="badge-soft red" style="border:none"><i class="fa fa-trash"></i></a></button>
@@ -102,7 +90,7 @@
 
             </td>
           </tr>
-          @endforeach
+
         </tbody>
         </tbody>
       </table>
@@ -123,7 +111,7 @@
 
       <!-- Header -->
       <div class="modal-header border-0 pb-0">
-        <h5 class="modal-title fw-bold text-dark">Tambah Data Kelas</h5>
+        <h5 class="modal-title fw-bold text-dark">Tambah Data Guru</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
@@ -136,22 +124,21 @@
   </div>
 
   <!-- Form Input Manual -->
-  <form id="formManual" action="{{ route('data-kelas.store') }}" method="POST">
+  <form id="formManual" action="{{ route('data-guru.store') }}" method="POST">
   @csrf
   <div class="form-group mb-3">
-    <input type="text" class="form-control modern-input" name="kode_kelas" placeholder="Kode Kelas">
+    <input type="text" class="form-control modern-input" name="nip" placeholder="NIP">
   </div>
   <div class="form-group mb-3">
-    <input type="text" class="form-control modern-input" name="kelas" placeholder="Kelas">
+    <input type="text" class="form-control modern-input" name="nama_guru" placeholder="Nama Guru">
   </div>
   <div class="form-group mb-3">
-    <select name="id_wali_kelas" id="id_wali_kelas" class="form-control modern-input">
-    <option value="">-- Wali Kelas --</option>
-        <option value="1">Dadan</option>
-        <option value="2">Atun</option>
-        <option value="3">Sapriduin</option>
-    </select>
+    <input type="text" class="form-control modern-input" name="mapel" placeholder="Mapel">
   </div>
+  <div class="form-group mb-3">
+    <input type="text" class="form-control modern-input" name="no_hp" placeholder="No Hp">
+  </div>
+
 
   <button type="submit" class="btn btn-primary rounded-3 px-4 py-2">Simpan</button>
 </form>
@@ -168,7 +155,7 @@
       </div>
       <input type="file" id="file" name="file" accept=".csv,.xls,.xlsx" hidden>
       <small class="text-muted d-block mt-2">
-        Gunakan format kolom: <span class="fw-semibold text-dark">Kode Kelas, Kelas, Wali Kelas</span>.
+        Gunakan format kolom: <span class="fw-semibold text-dark">nip, nama guru, mapel, no hp</span>.
       </small>
       <button type="submit" class="btn btn-primary rounded-3 px-4 py-2 w-100">Simpan</button>
     </div>

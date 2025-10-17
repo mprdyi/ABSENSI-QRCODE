@@ -59,7 +59,7 @@ class DataKelasController extends Controller
             return redirect()->back()
                 ->withErrors($e->validator)
                 ->withInput()
-                ->with('error', 'Data tidak valid, periksa kembali input Anda.');
+                ->with('error', 'Satu wali kelas untuk  satu kelas, periksa kembali input Anda.');
         } catch (\Exception $e) {
             // Kalau error lain (misal koneksi DB, atau duplikat, dsb)
             return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
@@ -127,5 +127,25 @@ class DataKelasController extends Controller
         DataKelas::where('id', $id)->delete();
         return redirect()->route('admin.data-master.data-kelas')->with('success', 'Data berhasil dihapus.');
 
+    }
+
+
+    // CARI DATA
+    public function search(Request $request)
+    {
+        $search = $request->input('search'); 
+
+        if ($search) {
+            // Jika ada kata kunci pencarian
+            $kelas = DataKelas::where('kelas', 'like', "%{$search}%")
+                ->orderBy('id', 'desc')
+                ->paginate(1)
+                ->appends(['search' => $search]);
+        } else {
+            // Jika tidak ada pencarian, tampilkan semua dengan paginate juga
+            $kelas = DataKelas::orderBy('id', 'desc')->paginate(10);
+        }
+
+        return view('admin.data-master.cari-kelas', compact('kelas', 'search'));
     }
 }

@@ -36,7 +36,7 @@
     <div id="collapseMaster" class="collapse" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
         <a class="collapse-item" href="{{ url('data-siswa') }}">Data Siswa</a>
-        <a class="collapse-item" href="{{ url('data-guru') }}">Data Guru Piket</a>
+        <a class="collapse-item" href="{{ url('data-guru') }}">Data Guru</a>
         <a class="collapse-item" href="{{ url('data-osis') }}">Data Osis / MPK</a>
         <a class="collapse-item" href="{{ url('data-kelas') }}">Data Kelas</a>
       </div>
