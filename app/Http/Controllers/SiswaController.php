@@ -37,6 +37,8 @@ class SiswaController extends Controller
 
         return redirect()->back()->with('success', 'Data siswa berhasil ditambahkan!');
     }
+
+
     //EDIT DATA
     public function edit($id)
     {
@@ -50,31 +52,34 @@ class SiswaController extends Controller
         return view('admin.data-master.edit-data-siswa', $view_data);
     }
 
+
+
+    
     public function update(Request $request, $id)
-{
-    // Validasi input
-    $request->validate([
-        'nis' => 'required|unique:siswas,nis,' . $id, // biar NIS sendiri tidak dianggap duplicate
-        'nama' => 'required',
-        'jk' => 'required',
-        'kelas' => 'required',
-        'wali_kelas' => 'required',
-        'jurusan' => 'nullable',
-    ]);
+        {
+            // Validasi input
+            $request->validate([
+                'nis' => 'required|unique:siswas,nis,' . $id, // biar NIS sendiri tidak dianggap duplicate
+                'nama' => 'required',
+                'jk' => 'required',
+                'kelas' => 'required',
+                'wali_kelas' => 'required',
+                'jurusan' => 'nullable',
+            ]);
 
-    // Update data
-    Siswa::where('id', $id)->update([
-        'nis' => $request->nis,
-        'nama' => $request->nama,
-        'jk' => $request->jk,
-        'kelas' => $request->kelas,
-        'wali_kelas' => $request->wali_kelas,
+            // Update data
+            Siswa::where('id', $id)->update([
+                'nis' => $request->nis,
+                'nama' => $request->nama,
+                'jk' => $request->jk,
+                'kelas' => $request->kelas,
+                'wali_kelas' => $request->wali_kelas,
 
-    ]);
+            ]);
 
-    // Redirect dengan pesan sukses
-    return redirect()->route('admin.data-master.data-siswa')->with('success', 'Data berhasil diupdate.');
-}
+            // Redirect dengan pesan sukses
+            return redirect()->route('admin.data-master.data-siswa')->with('success', 'Data berhasil diupdate.');
+        }
 
 
     //HAPUS DATA

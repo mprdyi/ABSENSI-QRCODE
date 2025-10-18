@@ -7,32 +7,24 @@ use Illuminate\Http\Request;
 
 class GuruController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
+    // MENAMPILKAN LIST DATA
     public function index()
     {
-        $data_guru = Guru::orderBy('id', 'desc')->get();
+        $data_guru = Guru::orderBy('id', 'desc')->paginate(10);
+        $totalGuru = Guru::count();
 
         $view_data = [
             'guru' => $data_guru,
-            'title'=> 'Data Guru'
+            'title'=> 'Data Guru',
+            'totalguru' =>  $totalGuru,
         ];
         return view('admin.data-master.data-guru', $view_data);
 
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // INSERT DATA
     public function store(Request $request)
     {
 
@@ -48,37 +40,68 @@ class GuruController extends Controller
         return redirect()->back()->with('success', 'Data Guru berhasil ditambahkan!');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Guru $guru)
+
+    // MENAMPILKAN DATA FORM EDIT
+    public function edit($id)
     {
-        //
+        $data_guru = Guru::findOrFail($id);
+
+        $view_data = [
+            'Guru' => $data_guru,
+            'title' => 'Edit Data Guru',
+        ];
+
+        return view('admin.data-master.edit-data-guru', $view_data);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Guru $guru)
+
+    // UPDATE DATA
+    public function update(Request $request,$id)
     {
-        //
+         $request->validate([
+            'nip' => 'required|unique:gurus,nip,' . $id,
+            'nama_guru' => 'required',
+            'mapel' => 'required',
+            'no_hp' => 'required',
+        ]);
+
+        Guru::where('id', $id)->update([
+            'nip' => $request->nip,
+            'nama_guru' => $request->nama_guru,
+            'mapel' => $request->mapel,
+            'no_hp' => $request->no_hp,
+        ]);
+        return redirect()->route('admin.data-master.data-guru')->with('success', 'Data berhasil diupdate.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Guru $guru)
-    {
-        //
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    // HAPUS DATA
     public function destroy($id)
     {
         Guru::where('id', $id)->delete();
         return redirect()->route('admin.data-master.data-guru')->with('success', 'Data berhasil dihapus.');
 
     }
+
+     // CARI DATA GURU
+     public function search(Request $request)
+     {
+         $search = $request->input('search'); // ambil input pencarian
+
+         if ($search) {
+             // Jika ada kata kunci pencarian
+             $guru = Guru::where('nama_guru', 'like', "%{$search}%")
+                 ->orderBy('id', 'desc')
+                 ->paginate(10)
+                 ->appends(['search' => $search]); // simpan keyword saat pindah halaman
+         } else {
+             // Jika tidak ada pencarian, tampilkan semua dengan paginate juga
+             $guru = Guru::orderBy('id', 'desc')->paginate(10);
+         }
+         return view('admin.data-master.cari-guru', compact('guru', 'search'));
+        }
+
+
+
+
 }

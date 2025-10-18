@@ -33,8 +33,8 @@
     <div class="row">
         <div class="col-md-8">
         <div class="search-box mt-3 mb-4" style="margin-left:-20px">
-        <form action="{{ route('cari-kelas') }}" method="GET">
-            <input type="text" name="search" class="form-control" placeholder="Cari data guru...">
+        <form action="{{ route('cari-guru') }}" method="GET">
+            <input type="text" name="search" class="form-control" placeholder="Tersedia {{ $totalguru }} data guru...">
             <button type="submit"><i class="fa fa-search"></i></button>
         </form>
         </div>
@@ -91,7 +91,7 @@
             <td class="fw-semibold text-success">
                 <div class="row">
                     <div class="col-6">
-                    <a href="" class="badge-soft orange"><i class="fa fa-edit"></i></a>
+                    <a href="{{ route('data-guru.edit', $data_guru->id) }}" class="badge-soft orange"><i class="fa fa-edit"></i></a>
                     </div>
                     <div class="col-6">
                     <form action="{{ route('data-guru.destroy', $data_guru->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
@@ -109,8 +109,9 @@
         </tbody>
       </table>
       <div class="d-flex justify-content-end align-items-center mt-3">
-    <!--paginatiom disini -->
+    {{ $guru->links('pagination::bootstrap-5') }}
 </div>
+
 
 
 </div>

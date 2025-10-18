@@ -22,7 +22,7 @@
         <div class="col-md-8">
         <div class="search-box mt-3 mb-4" style="margin-left:-20px">
         <form action="" method="GET">
-            <input type="text" name="search" class="form-control" placeholder="Cari data siswa...">
+            <input type="text" name="search" class="form-control" placeholder="Cari data kelas...">
             <button type="submit"><i class="fa fa-search"></i></button>
         </form>
         </div>

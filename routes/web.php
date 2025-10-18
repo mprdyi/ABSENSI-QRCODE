@@ -45,9 +45,11 @@ Route::get('/cari-kelas', [DataKelasController::class, 'search'])->name('cari-ke
 Route::get('/data-guru', [GuruController::class, 'index'])->name('admin.data-master.data-guru');
 Route::post('/data-guru/store', [GuruController::class, 'store'])->name('data-guru.store');
 Route::delete('/data-guru/{id}', [GuruController::class, 'destroy'])->name('data-guru.destroy');
-Route::get('/edit-data-guru/{id}', [GuruController::class, 'edit'])->name('data-guru.edit');
+Route::get('/data-guru/edit/{id}', [GuruController::class, 'edit'])->name('data-guru.edit');
 Route::put('/edit-data-guru/{id}', [GuruController::class, 'update'])->name('data-guru.update');
 Route::get('/cari-guru', [GuruController::class, 'search'])->name('cari-guru');
+Route::get('/data-guru-jumlah', [GuruController::class, 'countGuru'])->name('data-guru.jumlah');
+
 
 
 
