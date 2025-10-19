@@ -17,4 +17,10 @@ class Guru extends Model
         'no_hp',
 
     ];
+
+    public function kelas()
+{
+    return $this->hasMany(DataKelas::class, 'id_wali_kelas');
+}
+
 }

@@ -85,7 +85,7 @@
              <span>{{ $kelas->kode_kelas }}</span>
             </td>
             <td><span class="badge-soft {{ $color }} ">{{ $kelas->kelas }}</span></td>
-            <td class="fw-semibold text-dark">{{ $kelas->id_wali_kelas}}</td>
+            <td class="fw-semibold text-dark">{{ $kelas->waliKelas->nama_guru ?? '-' }}</td>
             <td class="fw-semibold text-success">
                 <div class="row">
                     <div class="col-6">
@@ -145,11 +145,11 @@
     <input type="text" class="form-control modern-input" name="kelas" placeholder="Kelas">
   </div>
   <div class="form-group mb-3">
-    <select name="id_wali_kelas" id="id_wali_kelas" class="form-control modern-input">
-    <option value="">-- Wali Kelas --</option>
-        <option value="1">Dadan</option>
-        <option value="2">Atun</option>
-        <option value="3">Sapriduin</option>
+    <select name="id_wali_kelas" id="id_wali_kelas" class="form-control modern-input mb-2">
+    <option value="" class="mb-2 p-2">-- Wali Kelas --</option>
+    @foreach($guru as $guru)
+        <option value="{{ $guru->id }}">{{ $guru->nama_guru }}</option>
+    @endforeach
     </select>
   </div>
 

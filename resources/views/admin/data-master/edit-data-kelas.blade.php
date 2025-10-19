@@ -131,12 +131,17 @@
                         </div>
 
                         <div class="form-row">
-                            <select name="id_wali_kelas">
-                                <option value="1" {{ $kelas->id_wali_kelas == '1' ? 'selected' : '' }}>Dadan Darmanto</option>
-                                <option value="2" {{ $kelas->id_wali_kelas == '2' ? 'selected' : '' }}>Atun</option>
-                                <option value="3" {{ $kelas->id_wali_kelas == '3' ? 'selected' : '' }}>Saprudin</option>
-                                <option value="4" >Addi</option>
-                            </select>
+                        <select name="id_wali_kelas">
+                            <option value="">-- Wali Kelas --</option>
+                            @foreach($guru as $g)
+                                <option value="{{ $g->id }}" {{ $kelas->id_wali_kelas == $g->id ? 'selected' : '' }}>
+                                    {{ $g->nama_guru }}
+                                </option>
+                            @endforeach
+                        </select>
+
+
+
                         </div>
 
 

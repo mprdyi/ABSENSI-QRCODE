@@ -5,6 +5,7 @@ use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DataKelasController;
 use App\Http\Controllers\GuruController;
+use App\Http\Controllers\CsvController;
 
 
 
@@ -31,6 +32,11 @@ Route::delete('/data-siswa/{id}', [SiswaController::class, 'destroy'])->name('da
 Route::get('/data-siswa/{id}/edit', [SiswaController::class, 'edit'])->name('edit-data-siswa.edit');
 Route::put('/data-siswa/{id}', [SiswaController::class, 'update'])->name('edit-data-siswa.update');
 Route::get('/cari-siswa', [SiswaController::class, 'search'])->name('cari-siswa');
+Route::get('/get-wali-kelas/{id}', [SiswaController::class, 'getWaliKelas']);
+
+Route::post('/import-csv', [CsvController::class, 'import'])->name('import.csv');
+
+
 
 
 //route kelas

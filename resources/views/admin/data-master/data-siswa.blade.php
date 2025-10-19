@@ -1,10 +1,7 @@
-
 @extends('layout.app')
 @section('title', 'Data Siswa')
 
 @section('content')
-
-
 <div class="container-fluid">
 <div class="row mt-4">
     <div class="col-12">
@@ -16,7 +13,7 @@
         <div class="alert alert-success">
             {{ session('success') }}
         </div>
-        @endif
+    @endif
     <div class="table-responsive">
     <div class="container">
     <div class="row">
@@ -54,135 +51,181 @@
           </tr>
         </thead>
         <tbody>
+@foreach ($siswas as $siswa)
+    @php
+        $kelasObj = $siswa->kelas;
+        $kelasNama = $kelasObj->kelas ?? '-';
+        $waliNama = $kelasObj->waliKelas->nama_guru ?? '-';
 
-        @foreach ($siswas as $siswa)
-        @php
-            $kelas = $siswa->kelas;
+        if (Str::startsWith($kelasNama, 'XII')) {
+            $color = 'blue';
+        } elseif (Str::startsWith($kelasNama, 'XI')) {
+            $color = 'orange';
+        } elseif (Str::startsWith($kelasNama, 'X')) {
+            $color = 'purple';
+        } else {
+            $color = 'primary';
+        }
+    @endphp
 
-            if (\Illuminate\Support\Str::startsWith($kelas, 'XII')) {
-                $color = 'blue';
-            } elseif (\Illuminate\Support\Str::startsWith($kelas, 'XI')) {
-                $color = 'orange';
-            } elseif (\Illuminate\Support\Str::startsWith($kelas, 'X')) {
-                $color = 'purple';
-            } else {
-                $color = 'primary';
-            }
-            @endphp
-
-
-
-          <tr>
-          <td>{{ $loop->iteration + ($siswas->currentPage() - 1) * $siswas->perPage() }}</td>
-            <td>
-             <span>{{ $siswa->nis }}</span>
-            </td>
-            <td>{{ $siswa->nama }}</td>
-            <td class="fw-semibold text-dark">{{ $siswa->jk}}</td>
-            <td><span class="badge-soft {{$color}}">{{ $siswa->kelas }}</span></td>
-            <td><span class="text-muted small">{{ $siswa->wali_kelas }}</span></td>
-            <td class="fw-semibold text-success">
-                <div class="row">
-                    <div class="col-6">
-                    <a href="{{ route('edit-data-siswa.edit', $siswa->id) }} " class="badge-soft orange"><i class="fa fa-edit"></i></a>
-                    </div>
-                    <div class="col-6">
-                    <form action="{{ route('data-siswa.destroy', $siswa->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="badge-soft red" style="border:none"><i class="fa fa-trash"></i></a></button>
-                    </form>
-                    </div>
+    <tr>
+        <td>{{ $loop->iteration + ($siswas->currentPage() - 1) * $siswas->perPage() }}</td>
+        <td><span>{{ $siswa->nis }}</span></td>
+        <td>{{ $siswa->nama }}</td>
+        <td class="fw-semibold text-dark">{{ $siswa->jk }}</td>
+        <td><span class="badge-soft {{ $color }}">{{ $kelasNama }}</span></td>
+        <td><span>{{ $waliNama }}</span></td>
+        <td class="fw-semibold text-success">
+            <div class="row">
+                <div class="col-6">
+                    <a href="{{ route('edit-data-siswa.edit', $siswa->id) }}" class="badge-soft orange">
+                        <i class="fa fa-edit"></i>
+                    </a>
                 </div>
-
-            </td>
-          </tr>
-          @endforeach
-        </tbody>
+                <div class="col-6">
+                    <form action="{{ route('data-siswa.destroy', $siswa->id) }}" method="POST"
+                          onsubmit="return confirm('Yakin ingin menghapus data ini?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="badge-soft red" style="border:none">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </td>
+    </tr>
+@endforeach
+</tbody>
       </table>
       <div class="d-flex justify-content-end align-items-center mt-3">
-    {{ $siswas->links('pagination::bootstrap-5') }}
-</div>
-
-
+        {{ $siswas->links('pagination::bootstrap-5') }}
+      </div>
 </div>
 </div>
 </div>
 
- <!-- Modal -->
+<!-- Modal Tambah Siswa -->
 <div class="modal fade" id="modalTambah" tabindex="-1" aria-labelledby="modalTambahLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content custom-modal shadow-lg">
-
-      <!-- Header -->
       <div class="modal-header border-0 pb-0">
         <h5 class="modal-title fw-bold text-dark">Tambah Data Siswa</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
       <div class="modal-body">
+        <!-- Nav switch -->
+        <div class="d-flex border-bottom mb-3">
+          <button class="tab-btn active" id="tabManual">Input Manual</button>
+          <button class="tab-btn" id="tabCSV">Upload CSV</button>
+        </div>
 
-  <!-- Nav switch -->
-  <div class="d-flex border-bottom mb-3">
-    <button class="tab-btn active" id="tabManual">Input Manual</button>
-    <button class="tab-btn" id="tabCSV">Upload CSV</button>
-  </div>
+        <!-- Form Input Manual -->
+        <form id="formManual" action="{{ route('data-siswa.store') }}" method="POST">
+          @csrf
+          <div class="form-group mb-3">
+            <input type="text" class="form-control modern-input" name="nis" placeholder="NIS">
+          </div>
+          <div class="form-group mb-3">
+            <input type="text" class="form-control modern-input" name="nama" placeholder="Nama Lengkap">
+          </div>
+          <div class="form-group mb-3">
+            <select name="jk" id="jk" class="form-control modern-input">
+              <option value="L">-- Jenis Kelamin -- </option>
+              <option value="L">Laki-Laki</option>
+              <option value="P">Perempuan</option>
+            </select>
+          </div>
+          <div class="form-group mb-3">
+            <select name="id_kelas" class="form-control modern-input">
+              <option value="">-- kelas --</option>
+              @foreach ($data_kelas as $k)
+                  <option value="{{ $k->id }}">{{ $k->kelas }}</option>
+              @endforeach
+            </select>
+          </div>
+          <div class="form-group mb-3 mt-2">
+            <input type="text" name="wali_kelas" class="form-control modern-input" placeholder="Wali Kelas" readonly>
+          </div>
+          <button type="submit" class="btn btn-primary rounded-3 px-4 py-2">Simpan</button>
+        </form>
 
-  <!-- Form Input Manual -->
-  <form id="formManual" action="{{ route('data-siswa.store') }}" method="POST">
-  @csrf
-  <div class="form-group mb-3">
-    <input type="text" class="form-control modern-input" name="nis" placeholder="NIS">
-  </div>
-  <div class="form-group mb-3">
-    <input type="text" class="form-control modern-input" name="nama" placeholder="Nama Lengkap">
-  </div>
-  <div class="form-group mb-3">
-    <select name="jk" id="jk" class="form-control modern-input">
-     <option value="L">-- Jenis Kelamin -- </option>
-        <option value="L">Laki-Laki</option>
-        <option value="P">Perempuan</option>
-    </select>
-  </div>
-
-  <div class="form-group mb-3">
-    <input type="text" class="form-control modern-input" name="kelas" placeholder="Kelas">
-  </div>
-  <div class="form-group mb-4">
-    <input type="text" class="form-control modern-input" name="wali_kelas" placeholder="Wali Kelas">
-  </div>
-
-  <button type="submit" class="btn btn-primary rounded-3 px-4 py-2">Simpan</button>
-</form>
-
-
-
-  <!-- Form Upload CSV -->
-  <form id="formCSV" class="d-none">
-    <div class="form-group mt-3">
-      <label for="file" class="form-label fw-semibold text-secondary mb-2">File CSV / Excel</label>
-      <div class="custom-file-upload" onclick="document.getElementById('file').click()">
-        <i class="fa fa-cloud-upload-alt me-2"></i>
-        <span id="file-name">Pilih file atau seret ke sini</span>
+        <!-- Form Upload CSV -->
+        <form id="formCSV" class="d-none" action="{{ route('import.csv') }}" method="POST" enctype="multipart/form-data">
+          @csrf
+          <div class="form-group mt-3">
+            <label for="file" class="form-label fw-semibold text-secondary mb-2">File CSV / Excel</label>
+            <div class="custom-file-upload" onclick="document.getElementById('file').click()">
+              <i class="fa fa-cloud-upload-alt me-2"></i>
+              <span id="file-name">Pilih file atau seret ke sini</span>
+            </div>
+            <input type="file" id="file" name="csv_file" accept=".csv,.xls,.xlsx" hidden>
+            <small class="text-muted d-block mt-2">
+              Gunakan format kolom: <span class="fw-semibold text-dark">NIS, Nama, JK, Kelas, Wali Kelas</span>.
+            </small>
+            <button type="submit" class="btn btn-primary rounded-3 px-4 py-2 w-100 mt-2">Simpan</button>
+          </div>
+        </form>
       </div>
-      <input type="file" id="file" name="file" accept=".csv,.xls,.xlsx" hidden>
-      <small class="text-muted d-block mt-2">
-        Gunakan format kolom: <span class="fw-semibold text-dark">NIS, Nama, JK, Kelas, Wali Kelas</span>.
-      </small>
-      <button type="submit" class="btn btn-primary rounded-3 px-4 py-2 w-100">Simpan</button>
     </div>
-  </form>
-
+  </div>
 </div>
-
-
-
-
-
-      </div>
-    </div>
-  </div>
-
 
 @endsection
 
+@section('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const modalTambah = document.getElementById('modalTambah');
+
+    modalTambah.addEventListener('shown.bs.modal', () => {
+        const tabManual = document.getElementById('tabManual');
+        const tabCSV = document.getElementById('tabCSV');
+        const formManual = document.getElementById('formManual');
+        const formCSV = document.getElementById('formCSV');
+        const fileInput = document.getElementById('file');
+        const fileName = document.getElementById('file-name');
+        const dropZone = document.querySelector('.custom-file-upload');
+
+        // inisialisasi tab default
+        formManual.classList.remove('d-none');
+        formCSV.classList.add('d-none');
+        tabManual.classList.add('active');
+        tabCSV.classList.remove('active');
+
+        tabManual.addEventListener('click', () => {
+            tabManual.classList.add('active');
+            tabCSV.classList.remove('active');
+            formManual.classList.remove('d-none');
+            formCSV.classList.add('d-none');
+        });
+
+        tabCSV.addEventListener('click', () => {
+            tabCSV.classList.add('active');
+            tabManual.classList.remove('active');
+            formCSV.classList.remove('d-none');
+            formManual.classList.add('d-none');
+        });
+
+        // file input
+        fileInput.addEventListener('change', () => {
+            fileName.textContent = fileInput.files[0]?.name || 'Pilih file atau seret ke sini';
+        });
+
+        // drag & drop
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            fileInput.files = e.dataTransfer.files;
+            fileName.textContent = e.dataTransfer.files[0]?.name || 'Pilih file atau seret ke sini';
+        });
+    });
+});
+</script>
+@endsection

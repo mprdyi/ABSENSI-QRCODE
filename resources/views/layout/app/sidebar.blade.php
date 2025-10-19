@@ -37,8 +37,8 @@
       <div class="bg-white py-2 collapse-inner rounded">
         <a class="collapse-item" href="{{ url('data-siswa') }}">Data Siswa</a>
         <a class="collapse-item" href="{{ url('data-guru') }}">Data Guru</a>
-        <a class="collapse-item" href="{{ url('data-osis') }}">Data Osis / MPK</a>
         <a class="collapse-item" href="{{ url('data-kelas') }}">Data Kelas</a>
+        <a class="collapse-item" href="{{ url('data-osis') }}">Data User</a>
       </div>
     </div>
   </li>

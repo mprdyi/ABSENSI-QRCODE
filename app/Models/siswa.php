@@ -11,9 +11,13 @@ class siswa extends Model
 
     protected $fillable = [
         'nis',
-        'wali_kelas',
+        'id_kelas',
         'nama',
-        'kelas',
         'jk',
     ];
+
+    public function kelas()
+    {
+        return $this->belongsTo(DataKelas::class, 'id_kelas');
+    }
 }

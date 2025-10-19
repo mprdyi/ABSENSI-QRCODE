@@ -98,26 +98,44 @@
 
             <div class="form-wrapper">
                 <div class="form-card">
-                    <h3 class="form-title">Edit Data Siswa</h3>
+                    <h3 class="form-title">{{ $title }}</h3>
+
                     <form action="{{ route('edit-data-siswa.update', $siswa->id) }}" method="POST">
                         @csrf
                         @method('PUT')
 
+                        {{-- Baris 1: NIS dan Nama --}}
                         <div class="form-row">
-                            <input type="text" name="nis" placeholder="NIS" value="{{ $siswa->nis }}" readonly>
-                            <input type="text" name="nama" placeholder="Nama Lengkap" value="{{ $siswa->nama }}">
+                            <input type="text" name="nis" placeholder="NIS"
+                                   value="{{ $siswa->nis }}" readonly>
+                            <input type="text" name="nama" placeholder="Nama Lengkap"
+                                   value="{{ $siswa->nama }}">
                         </div>
 
+                        {{-- Baris 2: Gender dan Kelas --}}
                         <div class="form-row">
                             <select name="jk">
                                 <option value="L" {{ $siswa->jk == 'L' ? 'selected' : '' }}>Laki-Laki</option>
                                 <option value="P" {{ $siswa->jk == 'P' ? 'selected' : '' }}>Perempuan</option>
                             </select>
-                            <input type="text" name="kelas" placeholder="Kelas" value="{{ $siswa->kelas }}">
+
+                            <select name="id_kelas" class="form-control" id="kelasSelect">
+                                <option value="">-- Pilih Kelas --</option>
+                                @foreach ($data_kelas as $kelas)
+                                    <option value="{{ $kelas->id }}"
+                                        {{ $siswa->id_kelas == $kelas->id ? 'selected' : '' }}>
+                                        {{ $kelas->kelas }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
 
+                        {{-- Baris 3: Wali Kelas otomatis (readonly) --}}
                         <div class="form-row">
-                            <input type="text" name="wali_kelas" placeholder="Wali Kelas" value="{{ $siswa->wali_kelas }}" readonly>
+                            <input type="text" name="wali_kelas" id="waliKelasInput"
+                                   placeholder="Wali Kelas"
+                                   value="{{ $siswa->kelas && $siswa->kelas->waliKelas ? $siswa->kelas->waliKelas->nama : '' }}"
+                                   readonly>
                         </div>
 
                         <button type="submit" class="btn-update">Update Data</button>

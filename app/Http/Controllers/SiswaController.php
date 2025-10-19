@@ -4,23 +4,36 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Siswa;
+use App\Models\DataKelas;
+
 
 class SiswaController extends Controller
 {
     //
-    public function index(){
-    // Ambil semua data siswa dari database
-    $siswas = Siswa::orderBy('id','desc')->paginate(10);
+    public function index()
+        {
+            $siswas = Siswa::with('kelas')
+                            ->orderBy('id', 'desc')
+                            ->paginate(10);
 
-    // Siapkan array untuk dikirim ke view
-    $view_data = [
-        'siswas' => $siswas,
-        'title' => 'Data Siswa',
-    ];
+            $data_kelas = DataKelas::orderByRaw("
+                CASE
+                    WHEN kelas LIKE 'X %' THEN 1
+                    WHEN kelas LIKE 'XI %' THEN 2
+                    WHEN kelas LIKE 'XII %' THEN 3
+                    ELSE 4
+                END, kelas ASC
+            ")->get();
 
-    // Kirim ke view
-    return view('admin.data-master.data-siswa', $view_data);
-    }
+
+            $view_data = [
+                'siswas' => $siswas,
+                'data_kelas' => $data_kelas,
+                'title' => 'Data Siswa',
+            ];
+
+            return view('admin.data-master.data-siswa', $view_data);
+        }
 
     //INPUT DATA
     public function store(Request $request)
@@ -28,9 +41,8 @@ class SiswaController extends Controller
         $request->validate([
             'nis' => 'required|unique:siswas',
             'nama' => 'required',
-            'kelas' => 'required',
             'jk' => 'required',
-            'wali_kelas' => 'required',
+            'id_kelas' => 'required',
         ]);
 
         Siswa::create($request->all());
@@ -39,45 +51,67 @@ class SiswaController extends Controller
     }
 
 
-    //EDIT DATA
-    public function edit($id)
-    {
-        $siswa = Siswa::findOrFail($id);
+      //GET WALI KELAS
+      public function getWaliKelas($id)
+      {
+          $kelas = DataKelas::with('waliKelas')->find($id);
 
-        $view_data = [
-            'siswa' => $siswa,
-            'title' => 'Edit Data Siswa',
-        ];
+          if ($kelas && $kelas->waliKelas) {
+              return response()->json([
+                  'wali' => [
+                      'id' => $kelas->waliKelas->id,
+                      'nama' => $kelas->waliKelas->nama_guru
+                  ]
+              ]);
+          } else {
+              return response()->json(['wali' => null]);
+          }
+      }
 
-        return view('admin.data-master.edit-data-siswa', $view_data);
-    }
 
 
-
-    
-    public function update(Request $request, $id)
+    // EDIT DATA
+        public function edit($id)
         {
-            // Validasi input
+            // Ambil data siswa berdasarkan id
+            $siswa = Siswa::findOrFail($id);
+
+            // Ambil semua data kelas untuk dropdown (urut berdasarkan X, XI, XII)
+            $data_kelas = DataKelas::orderByRaw("
+                CASE
+                    WHEN kelas LIKE 'X %' THEN 1
+                    WHEN kelas LIKE 'XI %' THEN 2
+                    WHEN kelas LIKE 'XII %' THEN 3
+                    ELSE 4
+                END, kelas ASC
+            ")->get();
+
+            $view_data = [
+                'siswa' => $siswa,
+                'data_kelas' => $data_kelas,
+                'title' => 'Edit Data Siswa',
+            ];
+
+            return view('admin.data-master.edit-data-siswa', $view_data);
+        }
+
+
+
+
+        //UPDATE DATA
+        public function update(Request $request, $id)
+        {
             $request->validate([
-                'nis' => 'required|unique:siswas,nis,' . $id, // biar NIS sendiri tidak dianggap duplicate
+                'nis' => 'required|unique:siswas,nis,' . $id,
                 'nama' => 'required',
                 'jk' => 'required',
-                'kelas' => 'required',
-                'wali_kelas' => 'required',
-                'jurusan' => 'nullable',
+                'id_kelas' => 'required|exists:data_kelas,id',
             ]);
 
-            // Update data
-            Siswa::where('id', $id)->update([
-                'nis' => $request->nis,
-                'nama' => $request->nama,
-                'jk' => $request->jk,
-                'kelas' => $request->kelas,
-                'wali_kelas' => $request->wali_kelas,
+            $siswa = Siswa::findOrFail($id);
+            $siswa->update($request->all());
 
-            ]);
 
-            // Redirect dengan pesan sukses
             return redirect()->route('admin.data-master.data-siswa')->with('success', 'Data berhasil diupdate.');
         }
 
@@ -85,29 +119,34 @@ class SiswaController extends Controller
     //HAPUS DATA
     public function destroy($id)
         {
-           // Hapus data siswa langsung pakai where
-            Siswa::where('id', $id)->delete();
 
-            // Redirect kembali ke halaman data siswa dengan pesan sukses
+            Siswa::where('id', $id)->delete();
             return redirect()->route('admin.data-master.data-siswa')->with('success', 'Data berhasil dihapus.');
         }
 
-   // CARI DATA
-        public function search(Request $request)
-        {
-            $search = $request->input('search'); // ambil input pencarian
+    // CARI DATA DENGAN RELASI
+    public function search(Request $request)
+    {
+        $search = $request->input('search');
 
-            if ($search) {
-                // Jika ada kata kunci pencarian
-                $siswas = Siswa::where('nama', 'like', "%{$search}%")
-                    ->orderBy('id', 'desc')
-                    ->paginate(10)
-                    ->appends(['search' => $search]); // simpan keyword saat pindah halaman
-            } else {
-                // Jika tidak ada pencarian, tampilkan semua dengan paginate juga
-                $siswas = Siswa::orderBy('id', 'desc')->paginate(10);
-            }
+        if ($search) {
+            $siswas = Siswa::with(['kelas.waliKelas']) // relasi biar efisien (hindari N+1)
+                ->where('nama', 'like', "%{$search}%")
+                ->orWhereHas('kelas', function ($query) use ($search) {
+                    $query->where('kelas', 'like', "%{$search}%");
+                })
+                ->orWhereHas('kelas.waliKelas', function ($query) use ($search) {
+                    $query->where('nama', 'like', "%{$search}%"); 
+                })
+                ->orderBy('id', 'desc')
+                ->paginate(10)
+                ->appends(['search' => $search]);
+        } else {
+            $siswas = Siswa::with(['kelas.waliKelas'])
+                ->orderBy('id', 'desc')
+                ->paginate(10);
+        }
 
-            return view('admin.data-master.cari-siswa', compact('siswas', 'search'));
-        }
-        }
+        return view('admin.data-master.cari-siswa', compact('siswas', 'search'));
+    }
+}

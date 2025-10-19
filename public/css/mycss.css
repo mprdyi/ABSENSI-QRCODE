@@ -627,3 +627,50 @@ master siswa
         flex-direction: column;
     }
 }
+
+/* Samakan tinggi semua input dan select */
+.form-card input,
+.form-card select {
+    height: 45px; /* samain tinggi */
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    padding: 0 12px;
+    font-size: 14px;
+    width: 100%;
+}
+
+/* Biar select juga punya tampilan modern kayak input */
+.form-card select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: #fff;
+    background-image: url("data:image/svg+xml;charset=UTF-8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='5'><path fill='%23999' d='M0 0l5 5 5-5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 10px;
+}
+/* Hilangkan gaya bawaan browser dari select */
+select.modern-input {
+    appearance: none;           /* Hilangkan panah bawaan browser */
+    -webkit-appearance: none;   /* Untuk Safari/Chrome */
+    -moz-appearance: none;      /* Untuk Firefox */
+    background: none;           /* Hilangkan background bawaan */
+    border: none;               /* Hilangkan border default */
+    border-bottom: 1px solid #ccc; /* Tambah garis bawah biar tetap kelihatan input */
+    padding: 6px 0;
+    font-size: 14px;
+    width: 100%;
+    outline: none;
+    color: #333;
+  }
+
+  /* Saat focus */
+  select.modern-input:focus {
+    border-bottom: 1px solid #007bff; /* garis biru saat aktif */
+  }
+
+  /* Hilangkan tanda panah default (khusus Firefox) */
+  select.modern-input::-ms-expand {
+    display: none;
+  }

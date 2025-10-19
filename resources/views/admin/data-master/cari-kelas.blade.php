@@ -52,13 +52,25 @@
         </thead>
         <tbody>
         @foreach ($kelas as $data_kelas)
+        @php
+        $warnakelas = $data_kelas->kelas;
+            if (\Illuminate\Support\Str::startsWith($warnakelas, 'XII')) {
+                $color = 'blue';
+            } elseif (\Illuminate\Support\Str::startsWith($warnakelas, 'XI')) {
+                $color = 'orange';
+            } elseif (\Illuminate\Support\Str::startsWith($warnakelas, 'X')) {
+                $color = 'purple';
+            } else {
+                $color = 'primary';
+            }
+        @endphp
           <tr>
           <td>{{ $loop->iteration + ($kelas->currentPage() - 1) * $kelas->perPage() }}</td>
             <td>
              <span>{{ $data_kelas->kode_kelas }}</span>
             </td>
-            <td>{{ $data_kelas->kelas }}</td>
-            <td><span class="badge-soft purple">{{ $data_kelas->id_wali_kelas }}</span></td>
+            <td><span  class="badge-soft {{ $color }}">{{ $data_kelas->kelas }}</span></td>
+            <td><span class="badge-soft purple">{{ $data_kelas->waliKelas->nama_guru ?? '-' }}</span></td>
             <td class="fw-semibold text-success">
                 <div class="row">
                     <div class="col-6">

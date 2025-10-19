@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\DataKelas;
+use App\Models\Guru;
 
 class DataKelasController extends Controller
 {
@@ -13,19 +14,20 @@ class DataKelasController extends Controller
     public function index()
     {
 
-    // Ambil semua data siswa dari database
-    $kelas = DataKelas::orderBy('id','desc')->paginate(10);
+        $data_guru = Guru::orderBy('nama_guru', 'asc')->get();
 
-    // Siapkan array untuk dikirim ke view
-    $view_data = [
-        'kelas' => $kelas,
-        'title' => 'Data Kelas',
-    ];
+        // Ambil data kelas + relasi wali kelas-nya
+        $kelas = DataKelas::with('waliKelas')->orderBy('id', 'desc')->paginate(10);
 
-    // Kirim ke view
-    return view('admin.data-master.data-kelas', $view_data);
+        $view_data = [
+            'kelas' => $kelas,
+            'title' => 'Data Kelas',
+            'guru' => $data_guru,
+        ];
 
+        return view('admin.data-master.data-kelas', $view_data);
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -77,9 +79,11 @@ class DataKelasController extends Controller
     public function edit(string $id)
     {
         $kelas = DataKelas::findOrFail($id);
+        $guru = Guru::orderBy('nama_guru', 'asc')->get();
 
         $view_data = [
             'kelas' => $kelas,
+            'guru' => $guru,
             'title' => 'Edit Data Kelas',
         ];
 
@@ -133,18 +137,21 @@ class DataKelasController extends Controller
     // CARI DATA
     public function search(Request $request)
     {
-        $search = $request->input('search'); 
+        $search = $request->input('search');
 
         if ($search) {
-            // Jika ada kata kunci pencarian
-            $kelas = DataKelas::where('kelas', 'like', "%{$search}%")
+            $kelas = DataKelas::with('waliKelas')
+                ->where('kelas', 'like', "%{$search}%")
                 ->orderBy('id', 'desc')
-                ->paginate(1)
+                ->paginate(10)
                 ->appends(['search' => $search]);
         } else {
-            // Jika tidak ada pencarian, tampilkan semua dengan paginate juga
-            $kelas = DataKelas::orderBy('id', 'desc')->paginate(10);
+            // Jika tidak ada pencarian, tampilkan semua dengan relasi juga
+            $kelas = DataKelas::with('waliKelas')
+                ->orderBy('id', 'desc')
+                ->paginate(10);
         }
+
 
         return view('admin.data-master.cari-kelas', compact('kelas', 'search'));
     }

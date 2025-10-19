@@ -40,48 +40,68 @@
 
     </div>
     </div>
-      <table class="table table-borderless align-middle custom-table">
-        <thead>
-          <tr>
-            <th>No</th>
-            <th>NIS</th>
-            <th>Nama</th>
-            <th>Gender</th>
-            <th>Kelas</th>
-            <th>Wali Kelas</th>
-            <th>Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-        @foreach ($siswas as $siswa)
-          <tr>
-          <td>{{ $loop->iteration + ($siswas->currentPage() - 1) * $siswas->perPage() }}</td>
-            <td>
-             <span>{{ $siswa->nis }}</span>
-            </td>
-            <td>{{ $siswa->nama }}</td>
-            <td class="fw-semibold text-dark">{{ $siswa->jk}}</td>
-            <td><span class="badge-soft purple">{{ $siswa->kelas }}</span></td>
-            <td><span class="text-muted small">{{ $siswa->wali_kelas }}</span></td>
-            <td class="fw-semibold text-success">
-                <div class="row">
-                    <div class="col-6">
-                    <a href="{{ route('edit-data-siswa.edit', $siswa->id) }} " class="badge-soft orange"><i class="fa fa-edit"></i></a>
-                    </div>
-                    <div class="col-6">
-                    <form action="{{ route('data-siswa.destroy', $siswa->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="badge-soft red" style="border:none"><i class="fa fa-trash"></i></a></button>
-                    </form>
-                    </div>
-                </div>
+    <table class="table table-borderless align-middle custom-table">
+  <thead>
+    <tr>
+      <th>No</th>
+      <th>NIS</th>
+      <th>Nama</th>
+      <th>Gender</th>
+      <th>Kelas</th>
+      <th>Wali Kelas</th>
+      <th>Aksi</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach ($siswas as $siswa)
+      <tr>
+        <td>{{ $loop->iteration + ($siswas->currentPage() - 1) * $siswas->perPage() }}</td>
+        <td><span>{{ $siswa->nis }}</span></td>
+        <td>{{ $siswa->nama }}</td>
+        <td class="fw-semibold text-dark">{{ $siswa->jk }}</td>
 
-            </td>
-          </tr>
-          @endforeach
-        </tbody>
-      </table>
+        {{-- KELAS --}}
+        <td>
+          @if($siswa->kelas)
+            <span class="badge-soft purple">{{ $siswa->kelas->kelas }}</span>
+          @else
+            <span class="text-muted small">-</span>
+          @endif
+        </td>
+
+        {{-- WALI KELAS --}}
+        <td>
+          @if($siswa->kelas && $siswa->kelas->waliKelas)
+            <span>{{ $siswa->kelas->waliKelas->nama_guru }}</span>
+          @else
+            <span class="text-muted small">-</span>
+          @endif
+        </td>
+
+        <td class="fw-semibold text-success">
+          <div class="row">
+            <div class="col-6">
+              <a href="{{ route('edit-data-siswa.edit', $siswa->id) }}" class="badge-soft orange">
+                <i class="fa fa-edit"></i>
+              </a>
+            </div>
+            <div class="col-6">
+              <form action="{{ route('data-siswa.destroy', $siswa->id) }}" method="POST"
+                    onsubmit="return confirm('Yakin ingin menghapus data ini?');">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="badge-soft red" style="border:none">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+        </td>
+      </tr>
+    @endforeach
+  </tbody>
+</table>
+
       <div class="d-flex justify-content-end align-items-center mt-3">
     {{ $siswas->links('pagination::bootstrap-5') }}
 </div>
