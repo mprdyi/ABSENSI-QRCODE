@@ -56,7 +56,7 @@
         <thead>
           <tr>
             <th>No</th>
-            <th>NIP</th>
+            <th>Kode</th>
             <th>Nama Guru</th>
             <th>Mapel</th>
             <th>No Hp</th>

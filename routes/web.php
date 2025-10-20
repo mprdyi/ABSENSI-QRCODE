@@ -34,7 +34,7 @@ Route::put('/data-siswa/{id}', [SiswaController::class, 'update'])->name('edit-d
 Route::get('/cari-siswa', [SiswaController::class, 'search'])->name('cari-siswa');
 Route::get('/get-wali-kelas/{id}', [SiswaController::class, 'getWaliKelas']);
 
-Route::post('/import-csv', [CsvController::class, 'import'])->name('import.csv');
+Route::post('/import-siswa', [CsvController::class, 'importSiswa'])->name('import.siswa');
 
 
 
@@ -46,6 +46,9 @@ Route::delete('/data-kelas/{id}', [DataKelasController::class, 'destroy'])->name
 Route::get('/edit-data-kelas/{id}', [DataKelasController::class, 'edit'])->name('data-kelas.edit');
 Route::put('/edit-data-kelas/{id}', [DataKelasController::class, 'update'])->name('data-kelas.update');
 Route::get('/cari-kelas', [DataKelasController::class, 'search'])->name('cari-kelas');
+Route::post('/import-kelas', [CsvController::class, 'importKelas'])->name('import.kelas');
+
+
 
 //route guru
 Route::get('/data-guru', [GuruController::class, 'index'])->name('admin.data-master.data-guru');
@@ -55,6 +58,7 @@ Route::get('/data-guru/edit/{id}', [GuruController::class, 'edit'])->name('data-
 Route::put('/edit-data-guru/{id}', [GuruController::class, 'update'])->name('data-guru.update');
 Route::get('/cari-guru', [GuruController::class, 'search'])->name('cari-guru');
 Route::get('/data-guru-jumlah', [GuruController::class, 'countGuru'])->name('data-guru.jumlah');
+Route::post('/import-guru', [CsvController::class, 'importGuru'])->name('import.guru');
 
 
 

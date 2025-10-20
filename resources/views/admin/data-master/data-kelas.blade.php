@@ -159,14 +159,15 @@
 
 
   <!-- Form Upload CSV -->
-  <form id="formCSV" class="d-none">
+  <form id="formCSV" class="d-none" action="{{ route('import.kelas') }}" method="POST">
     <div class="form-group mt-3">
+    @csrf
       <label for="file" class="form-label fw-semibold text-secondary mb-2">File CSV / Excel</label>
       <div class="custom-file-upload" onclick="document.getElementById('file').click()">
         <i class="fa fa-cloud-upload-alt me-2"></i>
         <span id="file-name">Pilih file atau seret ke sini</span>
       </div>
-      <input type="file" id="file" name="file" accept=".csv,.xls,.xlsx" hidden>
+      <input type="file" id="file" name="file_data_kelas" accept=".csv,.xls,.xlsx" hidden>
       <small class="text-muted d-block mt-2">
         Gunakan format kolom: <span class="fw-semibold text-dark">Kode Kelas, Kelas, Wali Kelas</span>.
       </small>

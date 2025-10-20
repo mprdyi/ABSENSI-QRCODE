@@ -56,7 +56,7 @@
         <thead>
           <tr>
             <th>No</th>
-            <th>NIP</th>
+            <th>Kode</th>
             <th>Nama Guru</th>
             <th>Mapel</th>
             <th>No Hp</th>
@@ -74,7 +74,7 @@
                 case 'I': $color = 'orange'; break;
                 case 'M': $color = 'green'; break;
                 case 'P': $color = 'purple'; break;
-                case 'S': $color = 'red'; break;
+                case 'S': $color = 'pink'; break;
                 case 'K': $color = 'cyan'; break;
                 case 'T': $color = 'teal'; break;
                 case 'E': $color = 'yellow'; break;
@@ -161,14 +161,15 @@
 
 
   <!-- Form Upload CSV -->
-  <form id="formCSV" class="d-none">
+  <form id="formCSV" class="d-none" action="{{ route('import.guru') }}" method="POST" enctype="multipart/form-data">
+  @csrf
     <div class="form-group mt-3">
       <label for="file" class="form-label fw-semibold text-secondary mb-2">File CSV / Excel</label>
       <div class="custom-file-upload" onclick="document.getElementById('file').click()">
         <i class="fa fa-cloud-upload-alt me-2"></i>
         <span id="file-name">Pilih file atau seret ke sini</span>
       </div>
-      <input type="file" id="file" name="file" accept=".csv,.xls,.xlsx" hidden>
+      <input type="file" id="file" name="file_guru" accept=".csv,.xls,.xlsx" hidden>
       <small class="text-muted d-block mt-2">
         Gunakan format kolom: <span class="fw-semibold text-dark">nip, nama guru, mapel, no hp</span>.
       </small>

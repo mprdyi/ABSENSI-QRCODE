@@ -152,7 +152,7 @@
         </form>
 
         <!-- Form Upload CSV -->
-        <form id="formCSV" class="d-none" action="{{ route('import.csv') }}" method="POST" enctype="multipart/form-data">
+        <form id="formCSV" class="d-none" action="{{ route('import.siswa') }}" method="POST" enctype="multipart/form-data">
           @csrf
           <div class="form-group mt-3">
             <label for="file" class="form-label fw-semibold text-secondary mb-2">File CSV / Excel</label>
@@ -160,7 +160,7 @@
               <i class="fa fa-cloud-upload-alt me-2"></i>
               <span id="file-name">Pilih file atau seret ke sini</span>
             </div>
-            <input type="file" id="file" name="csv_file" accept=".csv,.xls,.xlsx" hidden>
+            <input type="file" id="file" name="csv_file_siswa" accept=".csv,.xls,.xlsx" hidden>
             <small class="text-muted d-block mt-2">
               Gunakan format kolom: <span class="fw-semibold text-dark">NIS, Nama, JK, Kelas, Wali Kelas</span>.
             </small>
