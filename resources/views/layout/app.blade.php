@@ -18,7 +18,19 @@
     <link href="{{ asset('Asset/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/mycss.css') }}" rel="stylesheet">
-
+<style>
+    footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #111;
+    text-align: center;
+    padding: 10px;
+    z-index:-1;
+    padding:10px;
+}
+</style>
 
 </head>
 <body id="page-top">

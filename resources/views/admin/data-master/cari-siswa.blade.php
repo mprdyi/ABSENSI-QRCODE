@@ -29,12 +29,10 @@
         </div>
 
         <div class="col-md-4 position-relative">
-        <a href="#"
-            class="btn-tambah shadow-sm fw-semibold px-3 py-2 mt-3"
-            title="Tambah Data"
-            role="button"
-            aria-label="Tambah data" data-bs-toggle="modal" data-bs-target="#modalTambah">
-            <i class="fa fa-plus"></i> Tambah Data
+        <a href="{{ route('admin.data-master.data-siswa') }}"
+            class="badge-soft blue shadow-sm fw-semibold px-3 py-2 mt-3 position-absolute"
+            title="Tambah Data" style="right:0">
+            <i class="fa fa-arrow-left"></i> Kembali
         </a>
         </div>
 
@@ -80,12 +78,12 @@
 
         <td class="fw-semibold text-success">
           <div class="row">
-            <div class="col-6">
+            <div class="col-4">
               <a href="{{ route('edit-data-siswa.edit', $siswa->id) }}" class="badge-soft orange">
                 <i class="fa fa-edit"></i>
               </a>
             </div>
-            <div class="col-6">
+            <div class="col-4">
               <form action="{{ route('data-siswa.destroy', $siswa->id) }}" method="POST"
                     onsubmit="return confirm('Yakin ingin menghapus data ini?');">
                 @csrf
@@ -95,6 +93,11 @@
                 </button>
               </form>
             </div>
+            <div class="col-4">
+            <a href="{{ route('qrcode.show', $siswa->nis) }}" class="badge-soft green" title="Lihat QR">
+                <i class="fa fa-qrcode"></i>
+            </a>
+        </div>
           </div>
         </td>
       </tr>

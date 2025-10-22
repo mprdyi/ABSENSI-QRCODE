@@ -1,10 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use App\Models\Siswa;
 use App\Models\DataKelas;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 
 class SiswaController extends Controller
@@ -136,7 +137,7 @@ class SiswaController extends Controller
                     $query->where('kelas', 'like', "%{$search}%");
                 })
                 ->orWhereHas('kelas.waliKelas', function ($query) use ($search) {
-                    $query->where('nama', 'like', "%{$search}%"); 
+                    $query->where('nama', 'like', "%{$search}%");
                 })
                 ->orderBy('id', 'desc')
                 ->paginate(10)
@@ -148,5 +149,23 @@ class SiswaController extends Controller
         }
 
         return view('admin.data-master.cari-siswa', compact('siswas', 'search'));
+    }
+
+
+
+    //PRINT PDF
+    public function printPdf($id)
+    {
+        $siswa = Siswa::with('kelas')->findOrFail($id);
+
+        $qrcode = \SimpleSoftwareIO\QrCode\Facades\QrCode::size(150)->generate($siswa->nis);
+
+        $pdf = Pdf::loadView('pdf.qr-code', compact('siswa', 'qrcode'))
+                ->setPaper('A4', 'portrait');
+
+        return $pdf->stream('QRCode-'.$siswa->nama.'.pdf');
+
+        //  langsung download:
+        // return $pdf->download('QRCode-'.$siswa->nama.'.pdf');
     }
 }

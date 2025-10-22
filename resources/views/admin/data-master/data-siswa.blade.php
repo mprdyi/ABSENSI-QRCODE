@@ -27,13 +27,26 @@
         </div>
 
         <div class="col-md-4 position-relative">
-        <a href="#"
-            class="btn-tambah shadow-sm fw-semibold px-3 py-2 mt-3"
-            title="Tambah Data"
-            role="button"
-            aria-label="Tambah data" data-bs-toggle="modal" data-bs-target="#modalTambah">
-            <i class="fa fa-plus"></i> Tambah Data
-        </a>
+            <div class="row">
+                <div class="col-6">
+                <a href="{{ route('qrcode.pdf.all') }}"
+                        class="badge-soft blue  py-2 mt-5 position-absolute"
+                        title="Print Semua QrCode"
+                        role="button"
+                        aria-label="download semua data"  style="right: 0; top:-12px;">
+                        <i class="fa fa-qrcode"></i> Print
+                    </a>
+                </div>
+                <div class="col-6">
+                    <a href="#"
+                        class="btn-tambah shadow-sm fw-semibold px-3 py-2 mt-3"
+                        title="Tambah Data"
+                        role="button"
+                        aria-label="Tambah data" data-bs-toggle="modal" data-bs-target="#modalTambah">
+                        <i class="fa fa-plus"></i> Tambah Data
+                    </a>
+                </div>
+            </div>
         </div>
 
     </div>
@@ -77,12 +90,12 @@
         <td><span>{{ $waliNama }}</span></td>
         <td class="fw-semibold text-success">
             <div class="row">
-                <div class="col-6">
+                <div class="col-4">
                     <a href="{{ route('edit-data-siswa.edit', $siswa->id) }}" class="badge-soft orange">
                         <i class="fa fa-edit"></i>
                     </a>
                 </div>
-                <div class="col-6">
+                <div class="col-4">
                     <form action="{{ route('data-siswa.destroy', $siswa->id) }}" method="POST"
                           onsubmit="return confirm('Yakin ingin menghapus data ini?');">
                         @csrf
@@ -92,6 +105,11 @@
                         </button>
                     </form>
                 </div>
+                <div class="col-4">
+            <a href="{{ route('qrcode.show', $siswa->nis) }}" class="badge-soft green" title="Lihat QR">
+                <i class="fa fa-qrcode"></i>
+            </a>
+        </div>
             </div>
         </td>
     </tr>

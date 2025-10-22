@@ -11,7 +11,7 @@ class GuruController extends Controller
     // MENAMPILKAN LIST DATA
     public function index()
     {
-        $data_guru = Guru::orderBy('id', 'desc')->paginate(10);
+        $data_guru = Guru::orderBy('id', 'asc')->paginate(10);
         $totalGuru = Guru::count();
 
         $view_data = [
