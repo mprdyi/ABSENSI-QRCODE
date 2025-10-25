@@ -27,7 +27,7 @@ return new class extends Migration
             // kolom absensi
             $table->date('tanggal');
             $table->time('jam_masuk')->nullable();
-            $table->enum('status', ['hadir', 'izin', 'sakit', 'alpha']);
+            $table->enum('status', ['Hadir', 'Izin', 'Sakit', 'Alpha', 'Terlambat']);
             $table->string('keterangan')->nullable();
 
             $table->timestamps();

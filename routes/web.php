@@ -69,6 +69,8 @@ Route::post('/import-guru', [CsvController::class, 'importGuru'])->name('import.
 
 //Absensi Qr
 Route::get('/data-absen-siswa', [QrAbsensiController::class, 'index'])->name('data-absensi-siswa.Qr');
+Route::post('/absensi/store', [QrAbsensiController::class, 'store'])->name('absensi.store');
+
 
 
 

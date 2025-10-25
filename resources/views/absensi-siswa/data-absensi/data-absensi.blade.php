@@ -9,69 +9,47 @@
         <div class="card-body">
           <h5 class="fw-bold mb-3">Absensi Siswa</h5>
 
-          <!-- Body -->
-          <div class="modal-body">
-
-            <!-- Tab Switch -->
-            <div class="d-flex border-bottom mb-3">
-              <button class="tab-btn active" id="tabManual">Input Manual</button>
-              <button class="tab-btn" id="tabQR">QR Code</button>
-            </div>
-
-            <!-- Form Input Manual -->
-            <form id="formManual" action="" method="POST">
-              @csrf
-              <div class="form-group mb-3" style="position:relative">
-                <input type="text" class="form-control modern-input" name="nis" placeholder="Masukan Nis...">
-              </div>
-              <div class="button-submit" style="position:absolute; right:15px; z-index:1; transform: translateY(-64px);">
-                <button type="submit" class="btn btn-primary rounded-3 px-4 py-2">Simpan</button>
-              </div>
-            </form>
-
-            <!-- Form QR CODE SCANNER -->
-            <form id="formQR" class="d-none" method="POST">
-              @csrf
-              <div class="form-group mt-3 text-center">
-                <div id="qr-reader" style="width:100%; max-width:350px; margin:auto; border-radius:10px; overflow:hidden;"></div>
-                <p id="qr-result" class="mt-3 fw-bold text-success" style="display:none;"></p>
-                <p class="mt-2 text-muted small">Arahkan QR ke kamera</p>
-              </div>
-            </form>
-
+          <!-- Tab Switch -->
+          <div class="d-flex border-bottom mb-3">
+            <button class="tab-btn active" id="tabManual">Input Manual</button>
+            <button class="tab-btn" id="tabQR">QR Code</button>
           </div>
-          <!-- End Body -->
 
-          <div class="table-responsive">
-            <div class="container">
-              <div class="row">
-                <div class="col-md-12">
-                  <div class="search-box mt-3 mb-4" style="margin-left:-20px">
-                    <form action="{{ route('cari-kelas') }}" method="GET">
-                      <input type="text" name="search" class="form-control" placeholder="Cari data kelas...">
-                      <button type="submit"><i class="fa fa-search"></i></button>
-                    </form>
-                  </div>
-                </div>
-              </div>
+          <!-- Form Input Manual -->
+          <form id="formManual">
+            @csrf
+            <div class="form-group mb-3" style="position:relative">
+              <input type="text" class="form-control modern-input" name="nis" placeholder="Masukan NIS...">
             </div>
+            <div class="button-submit" style="position:absolute; right:15px; z-index:1; transform: translateY(-64px);">
+              <button type="submit" class="btn btn-primary rounded-3 px-4 py-2">Simpan</button>
+            </div>
+          </form>
 
+          <!-- Form QR CODE SCANNER -->
+          <div id="formQR" class="d-none mt-3 text-center">
+            <div id="qr-reader" style="width:100%; max-width:350px; margin:auto; border-radius:10px; overflow:hidden;"></div>
+            <p id="qr-result" class="mt-3 fw-bold text-success" style="display:none;"></p>
+            <p class="mt-2 text-muted small">Arahkan QR ke kamera</p>
+          </div>
+
+          <!-- Table -->
+          <div class="table-responsive mt-5">
             <table class="table table-borderless align-middle custom-table">
               <thead>
                 <tr>
                   <th>No</th>
-                  <th>Kode Kelas</th>
-                  <th>Kelas</th>
-                  <th>Wali Kelas</th>
-                  <th>Aksi</th>
+                  <th>NIS</th>
+                  <th>ID Kelas</th>
+                  <th>ID Wali Kelas</th>
+                  <th>Status</th>
                 </tr>
               </thead>
-              <tbody>
-                <!-- isi data -->
-              </tbody>
+            
+              <tbody id="absensi-body">
+           
+        </tbody>
             </table>
-
-            <div class="d-flex justify-content-end align-items-center mt-3"></div>
           </div>
 
         </div>
@@ -82,76 +60,135 @@
 
 @endsection
 
-
 {{-- === SCRIPT === --}}
-<script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+<script src="{{ asset('js/scanner.js') }}"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {
 
-      let html5QrCode = null;
-      let isScanning = false;
-      const tabManual = document.getElementById('tabManual');
-      const tabQR = document.getElementById('tabQR');
-      const formManual = document.getElementById('formManual');
-      const formQR = document.getElementById('formQR');
-      const qrResult = document.getElementById('qr-result');
+    let html5QrCode = null;
+    let isScanning = false;
+    let scannedNIS = {}; // track NIS yang sudah di-scan hari ini
+    const tabManual = document.getElementById('tabManual');
+    const tabQR = document.getElementById('tabQR');
+    const formManual = document.getElementById('formManual');
+    const formQR = document.getElementById('formQR');
+    const qrResult = document.getElementById('qr-result');
 
-      // --- Mulai Scanner ---
-      function startQRScanner() {
-          if (isScanning) return;
+    // --- QR SCANNER ---
+    function startQRScanner() {
+        if (isScanning) return;
+        if (typeof Html5Qrcode === 'undefined') { alert("Library HTML5 QR Code belum termuat!"); return; }
 
-          if (typeof Html5Qrcode === 'undefined') {
-              alert("Library HTML5 QR Code belum termuat!");
-              return;
-          }
+        html5QrCode = new Html5Qrcode("qr-reader");
+        isScanning = true;
 
-          html5QrCode = new Html5Qrcode("qr-reader");
-          isScanning = true;
+        html5QrCode.start(
+    { facingMode: "user" },
+    { fps: 10, qrbox: 250 },
+    qrCodeMessage => {
+        //  mencegah scan double dalam 3 detik
+        if(scannedNIS[qrCodeMessage]) return;
+        scannedNIS[qrCodeMessage] = true;
+        setTimeout(() => { scannedNIS[qrCodeMessage] = false; }, 3000);
 
-          html5QrCode.start(
-              { facingMode: "environment" },
-              { fps: 10, qrbox: 250 },
-              qrCodeMessage => {
-                  qrResult.style.display = "block";
-                  qrResult.textContent = "✅ QR Code berhasil di-scan: " + qrCodeMessage;
-              },
-              errorMessage => console.log("QR scan error:", errorMessage)
-          ).catch(err => {
-              console.error("Tidak bisa mengakses kamera:", err);
-              alert("Gagal mengakses kamera! Pastikan sudah klik Allow pada izin kamera browser.");
-          });
-      }
+        $.ajax({
+            url: "{{ route('absensi.store') }}",
+            type: "POST",
+            data: {_token: "{{ csrf_token() }}", nis: qrCodeMessage},
+            success: function(res){
+                qrResult.style.display = "block";
+                
+                if(res.success){
+                    qrResult.textContent = "✅ Absensi berhasil: " + qrCodeMessage;
+                } else if(res.status === 409 || res.message.includes("sudah absen")){
+                    qrResult.textContent = "⚠ Siswa sudah absen hari ini!";
+                } else {
+                    qrResult.textContent = "⚠ " + res.message;
+                }
 
-      // --- Hentikan Scanner ---
-      function stopQRScanner() {
-          if (html5QrCode && isScanning) {
-              html5QrCode.stop()
-                  .then(() => {
-                      html5QrCode.clear();
-                      isScanning = false;
-                      qrResult.style.display = "none";
-                  })
-                  .catch(err => console.warn("Gagal menghentikan kamera:", err));
-          }
-      }
+                refreshTable();
+            },
+            error: function(xhr){
+                if(xhr.status === 409){
+                    qrResult.style.display = "block";
+                    qrResult.textContent = "⚠ Siswa sudah absen hari ini!";
+                } else {
+                    qrResult.style.display = "block";
+                    qrResult.textContent = "❌ Gagal menyimpan data.";
+                }
+            }
+        });
+    },
+    errorMessage => console.log("QR scan error:", errorMessage)
+).catch(err => {
+    console.error("Tidak bisa mengakses kamera:", err);
+    alert("Gagal mengakses kamera! Pastikan sudah klik Allow pada browser.");
+});
 
-      // --- Tab Manual ---
-      tabManual.addEventListener('click', function() {
-          tabManual.classList.add('active');
-          tabQR.classList.remove('active');
-          formManual.classList.remove('d-none');
-          formQR.classList.add('d-none');
-          stopQRScanner();
-      });
+    }
 
-      // --- Tab QR ---
-      tabQR.addEventListener('click', function() {
-          tabQR.classList.add('active');
-          tabManual.classList.remove('active');
-          formQR.classList.remove('d-none');
-          formManual.classList.add('d-none');
-          startQRScanner();
-      });
-  });
+    function stopQRScanner() {
+        if (html5QrCode && isScanning) {
+            html5QrCode.stop().then(() => {
+                html5QrCode.clear();
+                isScanning = false;
+                qrResult.style.display = "none";
+            }).catch(err => console.warn("Gagal menghentikan kamera:", err));
+        }
+    }
+
+    // --- TAB HANDLER ---
+    tabManual.addEventListener('click', function() {
+        tabManual.classList.add('active');
+        tabQR.classList.remove('active');
+        formManual.classList.remove('d-none');
+        formQR.classList.add('d-none');
+        stopQRScanner();
+    });
+
+    tabQR.addEventListener('click', function() {
+        tabQR.classList.add('active');
+        tabManual.classList.remove('active');
+        formQR.classList.remove('d-none');
+        formManual.classList.add('d-none');
+        startQRScanner();
+    });
+
+    // --- FORM MANUAL AJAX ---
+    formManual.addEventListener('submit', function(e){
+        e.preventDefault();
+        $.ajax({
+            url: "{{ route('absensi.store') }}",
+            type: "POST",
+            data: $(this).serialize(),
+            beforeSend: function(){ $('.btn-primary').attr('disabled', true).text('Menyimpan...'); },
+            success: function(response){
+                alert(response.success ? "✅ "+response.message : "⚠ "+response.message);
+                formManual.reset();
+                refreshTable();
+            },
+            error: function(xhr){
+                if(xhr.status===409) alert('⚠ Siswa sudah absen hari ini!');
+                else alert('❌ Gagal menyimpan data.');
+            },
+            complete: function(){ $('.btn-primary').attr('disabled', false).text('Simpan'); }
+        });
+    });
+
+    // --- AJAX REFRESH TABLE ---
+    function refreshTable() {
+        $.ajax({
+            url: "{{ route('data-absensi-siswa.Qr') }}",
+            type: "GET",
+            dataType: "json",
+            success: function(res){ $('#absensi-body').html(res.html); },
+            error: function(){ console.warn('Gagal memuat data absensi.'); }
+        });
+    }
+
+    // Load pertama kali
+    refreshTable();
+
+});
 </script>

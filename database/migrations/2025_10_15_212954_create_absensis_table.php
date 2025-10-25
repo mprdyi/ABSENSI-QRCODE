@@ -11,8 +11,24 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('absensis', function (Blueprint $table) {
+        Schema::create('data_absensi', function (Blueprint $table) {
             $table->id();
+            // relasi ke siswa (pakai NIS, bukan ID)
+            $table->unsignedBigInteger('nis'); //  tipe integer tanpa minus
+            $table->foreign('nis')->references('nis')->on('siswas')->onDelete('cascade');
+
+            // relasi ke kelas
+            $table->foreignId('id_kelas')->constrained('data_kelas')->onDelete('cascade');
+
+            // relasi ke guru (wali kelas)
+            $table->foreignId('id_wali_kelas')->constrained('gurus')->onDelete('cascade');
+
+            // kolom absensi
+            $table->date('tanggal');
+            $table->time('jam_masuk')->nullable();
+            $table->enum('status', ['hadir', 'izin', 'sakit', 'alpha']);
+            $table->string('keterangan')->nullable();
+
             $table->timestamps();
         });
     }

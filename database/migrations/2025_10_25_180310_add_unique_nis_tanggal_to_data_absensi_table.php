@@ -11,13 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('siswas', function (Blueprint $table) {
-            $table->id();
-            $table->string('nis')->unique();
-            $table->unsignedBigInteger('id_kelas')->nullable();
-            $table->string('nama');
-            $table->string('jurusan')->nullable();
-            $table->timestamps();
+        Schema::table('data_absensi', function (Blueprint $table) {
+            $table->unique(['nis', 'tanggal']);
         });
     }
 
@@ -26,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('siswas');
+        Schema::table('data_absensi', function (Blueprint $table) {
+        
+        });
     }
 };

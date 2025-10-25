@@ -63,7 +63,7 @@
             <th>Aksi</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody style="font-size:14px">
 @foreach ($siswas as $siswa)
     @php
         $kelasObj = $siswa->kelas;

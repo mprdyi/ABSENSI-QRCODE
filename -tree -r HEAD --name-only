@@ -1,0 +1,21 @@
+[33mcommit d9efef8e2aa8e7f8ad7fcac184e374d9d5007e25[m
+Author: Addy Muhamad <mprdyi@gmail.com>
+Date:   Wed Oct 22 21:25:24 2025 +0700
+
+    qr code
+
+app/Http/Controllers/GuruController.php
+app/Http/Controllers/QrController.php
+app/Http/Controllers/SiswaController.php
+composer.json
+composer.lock
+config/dompdf.php
+resources/views/admin/data-master/cari-siswa.blade.php
+resources/views/admin/data-master/data-siswa.blade.php
+resources/views/admin/data-master/print-qr-siswa.blade.php
+resources/views/admin/data-master/qrcode-siswa.blade.php
+resources/views/layout/app.blade.php
+resources/views/pdf/qr-code-all.blade.php
+resources/views/pdf/qr-code.blade.php
+resources/views/qrcode.blade.php
+routes/web.php
