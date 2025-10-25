@@ -134,7 +134,7 @@
                         <select name="id_wali_kelas">
                             <option value="">-- Wali Kelas --</option>
                             @foreach($guru as $g)
-                                <option value="{{ $g->id }}" {{ $kelas->id_wali_kelas == $g->id ? 'selected' : '' }}>
+                                <option value="{{ $g->nip }}" {{ $kelas->id_wali_kelas == $g->nip ? 'selected' : '' }}>
                                     {{ $g->nama_guru }}
                                 </option>
                             @endforeach

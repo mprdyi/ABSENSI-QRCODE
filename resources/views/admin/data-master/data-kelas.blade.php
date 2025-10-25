@@ -63,9 +63,9 @@
           </tr>
         </thead>
         <tbody>
-        @foreach ($kelas as $kelas)
+        @foreach ($kelas as $item)
         @php
-            $warnakelas = $kelas->kelas;
+            $warnakelas = $item->kelas;
 
             if (\Illuminate\Support\Str::startsWith($warnakelas, 'XII')) {
                 $color = 'blue';
@@ -82,17 +82,17 @@
           <tr>
           <td>{{ $loop->iteration }}</td>
             <td>
-             <span>{{ $kelas->kode_kelas }}</span>
+             <span>{{ $item->kode_kelas }}</span>
             </td>
-            <td><span class="badge-soft {{ $color }} ">{{ $kelas->kelas }}</span></td>
-            <td class="fw-semibold text-dark">{{ $kelas->waliKelas->nama_guru ?? '-' }}</td>
+            <td><span class="badge-soft {{ $color }} ">{{ $item->kelas }}</span></td>
+            <td class="fw-semibold text-dark">{{ $item->waliKelas->nama_guru ?? '-' }}</td>
             <td class="fw-semibold text-success">
                 <div class="row">
                     <div class="col-6">
-                    <a href="{{ route('data-kelas.edit', $kelas->id) }} " class="badge-soft orange"><i class="fa fa-edit"></i></a>
+                    <a href="{{ route('data-kelas.edit', $item->id) }} " class="badge-soft orange"><i class="fa fa-edit"></i></a>
                     </div>
                     <div class="col-6">
-                    <form action="{{ route('data-kelas.destroy', $kelas->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
+                    <form action="{{ route('data-kelas.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="badge-soft red" style="border:none"><i class="fa fa-trash"></i></a></button>
@@ -107,8 +107,8 @@
         </tbody>
       </table>
       <div class="d-flex justify-content-end align-items-center mt-3">
-    <!--paginatiom disini -->
-</div>
+        {{ $kelas->links('pagination::bootstrap-5') }}
+      </div>
 
 
 </div>
@@ -148,7 +148,7 @@
     <select name="id_wali_kelas" id="id_wali_kelas" class="form-control modern-input mb-2">
     <option value="" class="mb-2 p-2">-- Wali Kelas --</option>
     @foreach($guru as $guru)
-        <option value="{{ $guru->id }}">{{ $guru->nama_guru }}</option>
+        <option value="{{ $guru->nip }}">{{ $guru->nama_guru }}</option>
     @endforeach
     </select>
   </div>

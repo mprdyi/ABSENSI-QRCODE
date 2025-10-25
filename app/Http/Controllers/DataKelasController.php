@@ -19,11 +19,13 @@ class DataKelasController extends Controller
         // Ambil data kelas + relasi wali kelas-nya
         $kelas = DataKelas::with('waliKelas')->orderBy('id', 'desc')->paginate(10);
 
+
         $view_data = [
             'kelas' => $kelas,
             'title' => 'Data Kelas',
             'guru' => $data_guru,
         ];
+        
 
         return view('admin.data-master.data-kelas', $view_data);
     }

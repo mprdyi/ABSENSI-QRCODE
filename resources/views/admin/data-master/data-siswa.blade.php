@@ -29,11 +29,11 @@
         <div class="col-md-4 position-relative">
             <div class="row">
                 <div class="col-6">
-                <a href="{{ route('qrcode.pdf.all') }}"
+                <a href="#"
                         class="badge-soft blue  py-2 mt-5 position-absolute"
-                        title="Print Semua QrCode"
+                        title="Print QrCode"
                         role="button"
-                        aria-label="download semua data"  style="right: 0; top:-12px;">
+                        aria-label="download semua data"  data-bs-toggle="modal" data-bs-target="#modalPrintQr" style="right: 0; top:-12px;">
                         <i class="fa fa-qrcode"></i> Print
                     </a>
                 </div>
@@ -189,6 +189,42 @@
     </div>
   </div>
 </div>
+
+
+
+<!-- Modal QR CODE PRINT -->
+<div class="modal fade" id="modalPrintQr" tabindex="-1" aria-labelledby="modalTambahLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content custom-modal shadow-lg">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold text-dark">Print Qr Code </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <form id="formManual" action="{{ route('download.qrcode.kelas') }}" method="POST">
+          @csrf
+
+          <div class="form-group mb-3">
+            <select name="id_kelas" class="form-control modern-input">
+              <option value="">-- kelas --</option>
+              @foreach ($data_kelas as $k)
+                  <option value="{{ $k->id }}">{{ $k->kelas }}</option>
+              @endforeach
+            </select>
+          </div>
+          <div class="form-group mb-3 mt-2">
+            <input type="text" name="wali_kelas" class="form-control modern-input" placeholder="Wali Kelas" readonly>
+          </div>
+          <button type="submit" class="btn btn-primary rounded-3 px-4 py-2">Print</button>
+        </form>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+
 
 @endsection
 

@@ -7,6 +7,7 @@ use App\Http\Controllers\DataKelasController;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\CsvController;
 use App\Http\Controllers\QrController;
+use App\Http\Controllers\QrAbsensiController;
 
 
 
@@ -38,7 +39,8 @@ Route::get('/get-wali-kelas/{id}', [SiswaController::class, 'getWaliKelas']);
 Route::post('/import-siswa', [CsvController::class, 'importSiswa'])->name('import.siswa');
 Route::get('/qrcode/{nis}', [QrController::class, 'show'])->name('qrcode.show');
 Route::get('/qrcode/{nis}/pdf', [QrController::class, 'downloadPdf'])->name('qrcode.pdf');
-Route::get('/qrcode/pdf/all', [QrController::class, 'downloadAllPdf'])->name('qrcode.pdf.all');
+Route::post('/download-qrcode-kelas', [QrController::class, 'downloadByKelas'])->name('download.qrcode.kelas');
+
 
 
 
@@ -65,8 +67,8 @@ Route::get('/cari-guru', [GuruController::class, 'search'])->name('cari-guru');
 Route::get('/data-guru-jumlah', [GuruController::class, 'countGuru'])->name('data-guru.jumlah');
 Route::post('/import-guru', [CsvController::class, 'importGuru'])->name('import.guru');
 
-//QR
-Route::get('/qrcode', [QrController::class, 'index']);
+//Absensi Qr
+Route::get('/data-absen-siswa', [QrAbsensiController::class, 'index'])->name('data-absensi-siswa.Qr');
 
 
 

@@ -61,9 +61,9 @@
 
   <!-- Nav Item - Cetak QR -->
   <li class="nav-item">
-    <a class="nav-link" href="#">
+    <a class="nav-link" href="{{ route('data-absensi-siswa.Qr') }}">
       <i class="fa fa-qrcode"></i>
-      <span>Cetak QR</span>
+      <span>Absensi QR</span>
     </a>
   </li>
 

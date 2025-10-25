@@ -20,7 +20,8 @@ class Guru extends Model
 
     public function kelas()
 {
-    return $this->hasMany(DataKelas::class, 'id_wali_kelas');
+ // hasMany(Model tujuan, foreignKey di tabel tujuan, localKey di tabel ini)
+ return $this->hasMany(DataKelas::class, 'id_wali_kelas', 'nip');
 }
 
 }

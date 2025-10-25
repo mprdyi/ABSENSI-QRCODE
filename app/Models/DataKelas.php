@@ -19,7 +19,8 @@ class DataKelas extends Model
 
     public function waliKelas()
     {
-        return $this->belongsTo(Guru::class, 'id_wali_kelas');
+         // belongsTo(Model tujuan, foreignKey di tabel ini, ownerKey di tabel tujuan)
+         return $this->belongsTo(Guru::class, 'id_wali_kelas', 'nip');
     }
 
     public function siswas()

@@ -45,7 +45,7 @@ class QrController extends Controller
     {
         $siswa = Siswa::where('nis', $nis)->firstOrFail();
 
-        // ✅ QR-nya pakai format SVG biar gak butuh Imagick atau GD
+        //  QR-nya pakai format SVG biar gak butuh Imagick atau GD
         $qrcode = base64_encode(QrCode::format('svg')->size(200)->generate($siswa->nis));
 
         $pdf = Pdf::loadView('pdf.qr-code', [
@@ -58,19 +58,33 @@ class QrController extends Controller
     }
 
 
-    public function downloadAllPdf()
+    
+    public function downloadByKelas(Request $request)
     {
-        // Ambil semua data siswa
-        $siswas = Siswa::orderBy('nama', 'asc')->get();
+        $request->validate([
+            'id_kelas' => 'required'
+        ]);
 
-        // Kirim data ke view pdf.qr-code-all
+        $kelas_id = $request->id_kelas;
+
+        // Ambil data siswa sesuai kelas yang dipilih
+        $siswas = Siswa::where('id_kelas', $kelas_id)
+            ->orderBy('nama', 'asc')
+            ->get();
+
+        if ($siswas->isEmpty()) {
+            return back()->with('error', 'Tidak ada siswa di kelas ini.');
+        }
+
+        // Kirim ke view PDF
         $pdf = Pdf::loadView('pdf.qr-code-all', [
             'siswas' => $siswas,
-        ])->setPaper('a4', 'portrait'); // bisa ubah ke landscape kalau mau muat lebih banyak
+        ])->setPaper('a4', 'portrait');
 
-        return $pdf->download('QR-Semua-Siswa.pdf');
+        // Nama file otomatis sesuai kelas
+        $namaKelas = $siswas->first()->kelas->kelas ?? 'Kelas';
+        return $pdf->download('QR-' . $namaKelas . '.pdf');
     }
-
 
 
 
