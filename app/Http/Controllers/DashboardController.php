@@ -16,6 +16,6 @@ class DashboardController extends Controller
         return view('dashboard', compact('totalSiswa'));
     }
 
-    
+
 
 }

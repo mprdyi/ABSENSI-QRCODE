@@ -35,6 +35,8 @@
 
           <!-- Table -->
           <div class="table-responsive mt-5">
+          <div id="alertContainer" class="mt-2"></div>
+          <p class="text-muted">Total : {{$total_Absensi_Hari_ini}} dari  {{$total_siswa}} Siswa</p>
             <table class="table table-borderless align-middle custom-table">
               <thead>
                 <tr>
@@ -156,25 +158,45 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // --- FORM MANUAL AJAX ---
-    formManual.addEventListener('submit', function(e){
-        e.preventDefault();
-        $.ajax({
-            url: "{{ route('absensi.store') }}",
-            type: "POST",
-            data: $(this).serialize(),
-            beforeSend: function(){ $('.btn-primary').attr('disabled', true).text('Menyimpan...'); },
-            success: function(response){
-                alert(response.success ? "✅ "+response.message : "⚠ "+response.message);
-                formManual.reset();
-                refreshTable();
-            },
-            error: function(xhr){
-                if(xhr.status===409) alert('⚠ Siswa sudah absen hari ini!');
-                else alert('❌ Gagal menyimpan data.');
-            },
-            complete: function(){ $('.btn-primary').attr('disabled', false).text('Simpan'); }
-        });
+formManual.addEventListener('submit', function(e){
+    e.preventDefault();
+    $.ajax({
+        url: "{{ route('absensi.store') }}",
+        type: "POST",
+        data: $(this).serialize(),
+        beforeSend: function(){
+            $('.btn-primary').attr('disabled', true).text('Menyimpan...');
+        },
+        success: function(response){
+            showAlert(response.success ? 'success' : 'warning', response.message);
+            formManual.reset();
+            refreshTable();
+        },
+        error: function(xhr){
+            if(xhr.status === 409) showAlert('warning', '⚠ Siswa sudah absen hari ini!');
+            else showAlert('danger', '❌ Gagal menyimpan data.');
+        },
+        complete: function(){
+            $('.btn-primary').attr('disabled', false).text('Simpan');
+        }
     });
+});
+
+// --- Fungsi untuk menampilkan alert Bootstrap ---
+function showAlert(type, message) {
+    const alertBox = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${message}
+        </div>
+    `;
+    $('#alertContainer').html(alertBox);
+
+    // Auto-hide dalam 4 detik
+    setTimeout(() => {
+        $('.alert').alert('close');
+    }, 4000);
+}
+
 
     // --- AJAX REFRESH TABLE ---
     function refreshTable() {
@@ -189,6 +211,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Load pertama kali
     refreshTable();
+    // refresh setiap 5 detik
+    setInterval(refreshTable, 5000); 
+
 
 });
 </script>

@@ -68,8 +68,10 @@ Route::get('/data-guru-jumlah', [GuruController::class, 'countGuru'])->name('dat
 Route::post('/import-guru', [CsvController::class, 'importGuru'])->name('import.guru');
 
 //Absensi Qr
-Route::get('/data-absen-siswa', [QrAbsensiController::class, 'index'])->name('data-absensi-siswa.Qr');
+Route::get('/data-absen-siswa', [QrAbsensiController::class, 'index'])->name('data-absensi-siswa.data');
 Route::post('/absensi/store', [QrAbsensiController::class, 'store'])->name('absensi.store');
+Route::get('/data-absensi-qr', [QrAbsensiController::class, 'dataAbsensiQr'])->name('data-absensi-siswa.Qr');
+
 
 
 
