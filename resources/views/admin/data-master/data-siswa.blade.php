@@ -117,7 +117,7 @@
 </tbody>
       </table>
       <div class="d-flex justify-content-end align-items-center mt-3">
-        {{ $siswas->links('pagination::bootstrap-5') }}
+      {{ $siswas->onEachSide(1)->links('pagination::bootstrap-5') }}
       </div>
 </div>
 </div>
@@ -159,7 +159,7 @@
             <select name="id_kelas" class="form-control modern-input">
               <option value="">-- kelas --</option>
               @foreach ($data_kelas as $k)
-                  <option value="{{ $k->id }}">{{ $k->kelas }}</option>
+                  <option value="{{ $k->kode_kelas }}">{{ $k->kelas }}</option>
               @endforeach
             </select>
           </div>

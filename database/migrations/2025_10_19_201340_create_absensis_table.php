@@ -18,12 +18,6 @@ return new class extends Migration
             $table->unsignedBigInteger('nis'); //  tipe integer tanpa minus
             $table->foreign('nis')->references('nis')->on('siswas')->onDelete('cascade');
 
-            // relasi ke kelas
-            $table->foreignId('id_kelas')->constrained('data_kelas')->onDelete('cascade');
-
-            // relasi ke guru (wali kelas)
-            $table->foreignId('id_wali_kelas')->constrained('gurus')->onDelete('cascade');
-
             // kolom absensi
             $table->date('tanggal');
             $table->time('jam_masuk')->nullable();

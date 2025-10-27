@@ -13,9 +13,10 @@ class QrAbsensiController extends Controller
 
     public function index()
     {
-        
+
         $totalSiswa = Siswa::count();
-        $totalAbsensiHariIni = Absensi::count();
+        $totalAbsensiHariIni = Absensi::whereDate('tanggal', Carbon::today())->count();;
+
 
         $V_data = [
           'total_siswa' => $totalSiswa,
@@ -23,8 +24,8 @@ class QrAbsensiController extends Controller
         ];
         return view('absensi-siswa.data-absensi.data-absensi', $V_data);
     }
-    
-         
+
+
 
     //INSERT DATA
     public function store(Request $request)
@@ -56,18 +57,24 @@ class QrAbsensiController extends Controller
         }
 
         $jamSekarang = Carbon::now();
-        $batasTerlambat = Carbon::createFromTime(6, 35, 0); // jam 06:35:00
-        $status = $jamSekarang->greaterThan($batasTerlambat) ? 'Terlambat' : 'Hadir';
+            $batasTerlambat = Carbon::createFromTime(6, 35, 0); // jam 06:35:00
+
+            if ($jamSekarang->greaterThan($batasTerlambat)) {
+                $status = 'Terlambat';
+                $menitTerlambat = $jamSekarang->diffInMinutes($batasTerlambat);
+                $keterangan = "{$menitTerlambat} menit";
+            } else {
+                $status = 'Hadir';
+                $keterangan = '-';
+            }
 
         // Kalau belum, simpan data absensi
         $absen = \App\Models\Absensi::create([
             'nis' => $request->nis,
-            'id_kelas' => 1,
-            'id_wali_kelas' => 1,
             'tanggal' => now()->format('Y-m-d'),
             'jam_masuk' => now()->format('H:i:s'),
             'status' => $status,
-            'keterangan' => '-',
+            'keterangan' => $keterangan,
         ]);
 
         return response()->json([
@@ -79,65 +86,62 @@ class QrAbsensiController extends Controller
 
     public function dataAbsensiQr()
     {
-        $absensi = \App\Models\Absensi::orderBy('tanggal', 'desc')
-            ->orderBy('jam_masuk', 'desc')
-            ->limit(5)
-            ->get();
+
+        $absensi = Absensi::with('siswa.kelas.waliKelas')
+        ->whereDate('tanggal', Carbon::today())
+        ->orderBy('jam_masuk', 'desc')
+        ->limit(5)
+        ->get();
 
         $html = '';
         $no = 1;
 
         foreach ($absensi as $a) {
-
-            $badgeClass = '';
-        switch (strtolower($a->status)) {
-            case 'hadir':
-                $badgeClass = 'badge-soft green';
-                break;
-            case 'terlambat':
-                $badgeClass = 'badge-soft orange';
-                break;
-            case 'alpha':
-                $badgeClass = 'badge-soft red';
-                break;
-            default:
-                $badgeClass = 'badge-soft blue'; 
-                break;
-              }
+            // badge warna sesuai status
+            $badgeClass = match ($a->status) {
+                'Hadir' => 'badge-soft blue',
+                'Izin' => 'badge-soft green',
+                'Terlambat' => 'badge-soft orange',
+                'Sakit' => 'badge-soft purple',
+                'Alpa' => 'badge-soft red',
+                default => 'badge-soft secondary',
+            };
 
             $html .= '<tr>
-                <td>'.$no++.'</td>
-                <td>'.$a->nis.'</td>
-                <td>'.$a->id_kelas.'</td>
-                <td>'.$a->id_wali_kelas.'</td>
-                <td><span class="'.$badgeClass.'">'.$a->status.'</span></td>
-            </tr>';
-        }
-
-        return response()->json(['html' => $html]);
+            <td>'.$no++.'</td>
+            <td>'.($a->jam_masuk ?? '-').'</td>
+            <td>'.($a->nis ?? '-').'</td>
+            <td>'.(optional($a->siswa)->nama ?? '-').'</td>
+            <td>'.(optional(optional($a->siswa)->kelas)->kelas ?? '-').'</td>
+            <td>'.(optional(optional($a->siswa)->kelas)->waliKelas->nama_guru ?? '-').'</td>
+            <td><span class="'.$badgeClass.'">'.($a->status ?? '-').'</span></td>
+        </tr>';
     }
 
+        return response()->json(['html' => $html]);
+}
 
 
-    
+
+
         public function show(string $id)
         {
             //
         }
 
-    
+
         public function edit(string $id)
         {
             //
         }
 
-        
+
         public function update(Request $request, string $id)
         {
             //
         }
 
-    
+
         public function destroy(string $id)
         {
             //

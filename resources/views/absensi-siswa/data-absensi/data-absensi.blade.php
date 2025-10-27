@@ -41,15 +41,17 @@
               <thead>
                 <tr>
                   <th>No</th>
+                  <th>Waktu</th>
                   <th>NIS</th>
-                  <th>ID Kelas</th>
-                  <th>ID Wali Kelas</th>
+                  <th>Nama</th>
+                  <th>Kelas</th>
+                  <th>Wali Kelas</th>
                   <th>Status</th>
                 </tr>
               </thead>
-            
+
               <tbody id="absensi-body">
-           
+
         </tbody>
             </table>
           </div>
@@ -100,7 +102,7 @@ document.addEventListener("DOMContentLoaded", function () {
             data: {_token: "{{ csrf_token() }}", nis: qrCodeMessage},
             success: function(res){
                 qrResult.style.display = "block";
-                
+
                 if(res.success){
                     qrResult.textContent = "✅ Absensi berhasil: " + qrCodeMessage;
                 } else if(res.status === 409 || res.message.includes("sudah absen")){
@@ -117,7 +119,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     qrResult.textContent = "⚠ Siswa sudah absen hari ini!";
                 } else {
                     qrResult.style.display = "block";
-                    qrResult.textContent = "❌ Gagal menyimpan data.";
+                    qrResult.textContent = "❌ NIS Tidak Terdaftar, Gagal menyimpan data.";
                 }
             }
         });
@@ -174,7 +176,7 @@ formManual.addEventListener('submit', function(e){
         },
         error: function(xhr){
             if(xhr.status === 409) showAlert('warning', '⚠ Siswa sudah absen hari ini!');
-            else showAlert('danger', '❌ Gagal menyimpan data.');
+            else showAlert('danger', '❌ NIS Tidak Terdaftar,, Gagal menyimpan data.');
         },
         complete: function(){
             $('.btn-primary').attr('disabled', false).text('Simpan');
@@ -212,7 +214,7 @@ function showAlert(type, message) {
     // Load pertama kali
     refreshTable();
     // refresh setiap 5 detik
-    setInterval(refreshTable, 5000); 
+    setInterval(refreshTable, 5000);
 
 
 });

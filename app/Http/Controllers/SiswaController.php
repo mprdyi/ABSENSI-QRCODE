@@ -55,7 +55,10 @@ class SiswaController extends Controller
       //GET WALI KELAS
       public function getWaliKelas($id)
       {
-          $kelas = DataKelas::with('waliKelas')->find($id);
+        $kelas = DataKelas::with('waliKelas')
+        ->where('kode_kelas', $id)
+        ->first();
+
 
           if ($kelas && $kelas->waliKelas) {
               return response()->json([
@@ -106,9 +109,8 @@ class SiswaController extends Controller
                 'nis' => 'required|unique:siswas,nis,' . $id,
                 'nama' => 'required',
                 'jk' => 'required',
-                'id_kelas' => 'required|exists:data_kelas,id',
+                'id_kelas' => 'required|exists:data_kelas,kode_kelas',
             ]);
-
             $siswa = Siswa::findOrFail($id);
             $siswa->update($request->all());
 

@@ -25,7 +25,7 @@ class DataKelasController extends Controller
             'title' => 'Data Kelas',
             'guru' => $data_guru,
         ];
-        
+
 
         return view('admin.data-master.data-kelas', $view_data);
     }
@@ -136,25 +136,23 @@ class DataKelasController extends Controller
     }
 
 
-    // CARI DATA
-    public function search(Request $request)
-    {
-        $search = $request->input('search');
+   // CARI DATA
+public function search(Request $request)
+{
+    $search = $request->input('search');
 
-        if ($search) {
-            $kelas = DataKelas::with('waliKelas')
-                ->where('kelas', 'like', "%{$search}%")
-                ->orderBy('id', 'desc')
-                ->paginate(10)
-                ->appends(['search' => $search]);
-        } else {
-            // Jika tidak ada pencarian, tampilkan semua dengan relasi juga
-            $kelas = DataKelas::with('waliKelas')
-                ->orderBy('id', 'desc')
-                ->paginate(10);
-        }
+    $kelas = DataKelas::with('waliKelas')
+        ->when($search, function ($query) use ($search) {
+            $query->where('kelas', 'like', "%{$search}%")
+                ->orWhereHas('waliKelas', function ($q) use ($search) {
+                    $q->where('nama_guru', 'like', "%{$search}%");
+                });
+        })
+        ->orderBy('id', 'desc')
+        ->paginate(10)
+        ->appends(['search' => $search]);
 
+    return view('admin.data-master.cari-kelas', compact('kelas', 'search'));
+}
 
-        return view('admin.data-master.cari-kelas', compact('kelas', 'search'));
-    }
 }

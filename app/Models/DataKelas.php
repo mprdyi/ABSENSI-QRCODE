@@ -23,9 +23,16 @@ class DataKelas extends Model
          return $this->belongsTo(Guru::class, 'id_wali_kelas', 'nip');
     }
 
-    public function siswas()
+    /*public function siswas()
     {
         return $this->hasMany(Siswa::class, 'id_kelas');
+    }*/
+
+
+    public function siswa()
+    {
+       // data_kelas.kode_kelas → siswa.id_kelas
+       return $this->hasMany(Siswa::class, 'id_kelas', 'kode_kelas');
     }
 
 

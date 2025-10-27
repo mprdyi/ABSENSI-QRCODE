@@ -122,8 +122,8 @@
                             <select name="id_kelas" class="form-control" id="kelasSelect">
                                 <option value="">-- Pilih Kelas --</option>
                                 @foreach ($data_kelas as $kelas)
-                                    <option value="{{ $kelas->id }}"
-                                        {{ $siswa->id_kelas == $kelas->id ? 'selected' : '' }}>
+                                    <option value="{{ $kelas->kode_kelas}}"
+                                        {{ $siswa->id_kelas == $kelas->kode_kelas ? 'selected' : '' }}>
                                         {{ $kelas->kelas }}
                                     </option>
                                 @endforeach

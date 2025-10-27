@@ -12,8 +12,6 @@ class Absensi extends Model
     protected $table = 'data_absensi';
     protected $fillable = [
         'nis',
-        'id_kelas',
-        'id_wali_kelas',
         'tanggal',
         'jam_masuk',
         'status',
@@ -22,15 +20,12 @@ class Absensi extends Model
 
     ];
 
-// Absensi.php
-public function siswa() {
-    return $this->belongsTo(Siswa::class, 'nis', 'nis');
-}
-public function kelas() {
-    return $this->belongsTo(DataKelas::class, 'id_kelas', 'id');
-}
-public function waliKelas() {
-    return $this->belongsTo(Guru::class, 'id_wali_kelas', 'id');
-}
+
+    // Absensi.php
+
+    public function siswa()
+    {
+        return $this->belongsTo(Siswa::class, 'nis', 'nis');
+    }
 
 }

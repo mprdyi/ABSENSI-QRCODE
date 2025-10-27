@@ -24,4 +24,5 @@ class Guru extends Model
  return $this->hasMany(DataKelas::class, 'id_wali_kelas', 'nip');
 }
 
+
 }
