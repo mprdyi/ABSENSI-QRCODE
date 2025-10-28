@@ -90,12 +90,12 @@
         <td><span>{{ $waliNama }}</span></td>
         <td class="fw-semibold text-success">
             <div class="row">
-                <div class="col-4">
+                <div class="col-4 mb-1">
                     <a href="{{ route('edit-data-siswa.edit', $siswa->id) }}" class="badge-soft orange">
                         <i class="fa fa-edit"></i>
                     </a>
                 </div>
-                <div class="col-4">
+                <div class="col-4 mb-1">
                     <form action="{{ route('data-siswa.destroy', $siswa->id) }}" method="POST"
                           onsubmit="return confirm('Yakin ingin menghapus data ini?');">
                         @csrf
@@ -105,7 +105,7 @@
                         </button>
                     </form>
                 </div>
-                <div class="col-4">
+                <div class="col-4 mb-1">
             <a href="{{ route('qrcode.show', $siswa->nis) }}" class="badge-soft green" title="Lihat QR">
                 <i class="fa fa-qrcode"></i>
             </a>
@@ -209,7 +209,7 @@
             <select name="id_kelas" class="form-control modern-input">
               <option value="">-- kelas --</option>
               @foreach ($data_kelas as $k)
-                  <option value="{{ $k->id }}">{{ $k->kelas }}</option>
+                  <option value="{{ $k->kode_kelas }}">{{ $k->kelas }}</option>
               @endforeach
             </select>
           </div>

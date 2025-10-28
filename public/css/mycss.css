@@ -146,12 +146,18 @@ transition: background 0.2s ease;
 }
 
 .custom-table tbody tr:hover {
-background: #f9f9ff;
+background:#f0f0ff;
+cursor:pointer;
+box-shadow:5px 12px solid blue;
+border-radius:8px;
+
+
 }
 
 .custom-table tbody td {
 padding: 0.9rem 1rem;
 vertical-align: middle;
+white-space:nowrap;
 }
 
 .badge-soft {

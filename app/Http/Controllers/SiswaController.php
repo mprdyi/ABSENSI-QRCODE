@@ -14,7 +14,7 @@ class SiswaController extends Controller
     public function index()
         {
             $siswas = Siswa::with('kelas')
-                            ->orderBy('id', 'desc')
+                            ->orderBy('nama', 'asc')
                             ->paginate(10);
 
             $data_kelas = DataKelas::orderByRaw("
