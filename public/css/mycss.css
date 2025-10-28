@@ -680,3 +680,31 @@ select.modern-input {
   select.modern-input::-ms-expand {
     display: none;
   }
+
+
+
+  /* Lebar scroll (khusus horizontal) */
+::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  /* Track (jalur scroll) */
+  ::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05); /* abu muda biar kelihatan */
+    border-radius: 10px;
+    backdrop-filter: blur(6px);
+  }
+
+  /* Thumb (batang yang digeser) */
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, rgba(120, 160, 255, 0.7), rgba(180, 200, 255, 0.6));
+    border-radius: 10px;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 0 4px rgba(100, 150, 255, 0.3);
+    transition: all 0.3s ease;
+  }
+
+  /* Efek hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, rgba(100, 140, 255, 0.9), rgba(150, 180, 255, 0.8));
+  }

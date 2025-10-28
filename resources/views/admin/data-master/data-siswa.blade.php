@@ -89,28 +89,17 @@
         <td><span class="badge-soft {{ $color }}">{{ $kelasNama }}</span></td>
         <td><span>{{ $waliNama }}</span></td>
         <td class="fw-semibold text-success">
-            <div class="row">
-                <div class="col-4 mb-1">
-                    <a href="{{ route('edit-data-siswa.edit', $siswa->id) }}" class="badge-soft orange">
-                        <i class="fa fa-edit"></i>
-                    </a>
-                </div>
-                <div class="col-4 mb-1">
-                    <form action="{{ route('data-siswa.destroy', $siswa->id) }}" method="POST"
-                          onsubmit="return confirm('Yakin ingin menghapus data ini?');">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="badge-soft red" style="border:none">
-                            <i class="fa fa-trash"></i>
-                        </button>
-                    </form>
-                </div>
-                <div class="col-4 mb-1">
-            <a href="{{ route('qrcode.show', $siswa->nis) }}" class="badge-soft green" title="Lihat QR">
-                <i class="fa fa-qrcode"></i>
-            </a>
-        </div>
-            </div>
+        <span style="letter-spacing: 1px;">
+        <a href="{{ route('edit-data-siswa.edit', $siswa->id) }}" class="badge-soft orange" style="margin-right:20px"><i class="fa fa-edit"></i> </a>
+        <form action="{{ route('data-siswa.destroy', $siswa->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');" style="display:inline; margin-right:20px">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="badge-soft red" style="border:none">
+                <i class="fa fa-trash"></i>
+            </button>
+        </form>
+        <a href="{{ route('qrcode.show', $siswa->nis) }}" class="badge-soft green" title="Lihat QR"><i class="fa fa-qrcode"></i></a>
+        </span>
         </td>
     </tr>
 @endforeach
