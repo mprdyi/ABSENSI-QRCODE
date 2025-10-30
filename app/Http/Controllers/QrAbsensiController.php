@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Absensi;
 use App\Models\Siswa;
+use Illuminate\Support\Facades\DB;
+
 
 class QrAbsensiController extends Controller
 {
@@ -111,7 +113,7 @@ class QrAbsensiController extends Controller
             <td>'.$no++.'</td>
             <td>'.($a->jam_masuk ?? '-').'</td>
             <td>'.($a->nis ?? '-').'</td>
-            <td>'.(optional($a->siswa)->nama ?? '-').'</td>
+            <td>'.(optional($a->siswa)->nama ? ucwords(strtolower(optional($a->siswa)->nama)) : '-').'</td>
             <td>'.(optional(optional($a->siswa)->kelas)->kelas ?? '-').'</td>
             <td>'.(optional(optional($a->siswa)->kelas)->waliKelas->nama_guru ?? '-').'</td>
             <td><span class="'.$badgeClass.'">'.($a->status ?? '-').'</span></td>
@@ -124,11 +126,17 @@ class QrAbsensiController extends Controller
 
 
 
-        public function show(string $id)
+
+
+        public function laporanMingguan()
         {
-            //
+            return view ('laporan.mingguan');
         }
 
+        public function laporanBulanan()
+        {
+            return view ('laporan.bulanan');
+        }
 
         public function edit(string $id)
         {

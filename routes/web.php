@@ -7,6 +7,7 @@ use App\Http\Controllers\DataKelasController;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\CsvController;
 use App\Http\Controllers\QrController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\QrAbsensiController;
 
 
@@ -71,6 +72,14 @@ Route::post('/import-guru', [CsvController::class, 'importGuru'])->name('import.
 Route::get('/data-absen-siswa', [QrAbsensiController::class, 'index'])->name('data-absensi-siswa.data');
 Route::post('/absensi/store', [QrAbsensiController::class, 'store'])->name('absensi.store');
 Route::get('/data-absensi-qr', [QrAbsensiController::class, 'dataAbsensiQr'])->name('data-absensi-siswa.Qr');
+
+//Laporan Absensi
+Route::get('/laporan-harian', [LaporanController::class, 'index'])->name('laporan-harian.harian');
+Route::get('/Edit-Absensi-Siswa/{id}', [LaporanController::class, 'edit'])->name('edit-absen.data');
+Route::put('/Edit-Absensi-Siswa/{id}', [LaporanController::class, 'update'])->name('edit-absen.update');
+Route::get('/edit-absen', [LaporanController::class, 'Filter'])->name('edit-absen.index');
+Route::get('/laporan-mingguan', [QrAbsensiController::class, 'laporanMingguan'])->name('laporan-mingguan.mingguan');
+Route::get('/laporan-bulanan', [QrAbsensiController::class, 'laporanBulanan'])->name('laporan-bulanan.bulanan');
 
 
 

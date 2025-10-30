@@ -52,9 +52,9 @@
     </a>
     <div id="collapseLaporanAdmin" class="collapse" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
-        <a class="collapse-item" href="#">Harian</a>
-        <a class="collapse-item" href="#">Mingguan</a>
-        <a class="collapse-item" href="#">Bulanan</a>
+        <a class="collapse-item" href="{{ route('laporan-harian.harian') }}">Harian</a>
+        <a class="collapse-item" href="{{ route('laporan-mingguan.mingguan') }}">Mingguan</a>
+        <a class="collapse-item" href="{{ route('laporan-bulanan.bulanan') }}">Bulanan</a>
       </div>
     </div>
   </li>
