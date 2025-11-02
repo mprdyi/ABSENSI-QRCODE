@@ -6,13 +6,14 @@ use Carbon\Carbon;
 use App\Models\Absensi;
 use App\Models\Siswa;
 use App\Models\DataKelas;
+use App\Models\ProfilSekolah;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 use Illuminate\Support\Facades\DB;
 
 class LaporanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
         $hariIni = Carbon::today();
@@ -35,7 +36,7 @@ class LaporanController extends Controller
         ->pluck('total', 'status');
 
         $totalSakit = $rekap['Sakit'] ?? 0;
-        $totalHadir = $rekap['Sakit'] ?? 0;
+        $totalHadir = $rekap['Hadir'] ?? 0;
         $totalTerlambat = $rekap['Terlambat'] ?? 0;
         $totalIzin = $rekap['Izin'] ?? 0;
         $totalAlpha = $rekap['Alpha'] ?? 0;
@@ -54,7 +55,7 @@ class LaporanController extends Controller
         $data_absensi = Absensi::with('siswa.kelas.waliKelas')
         ->whereDate('tanggal', Carbon::today())
         ->orderBy('jam_masuk', 'desc')
-        ->get();
+        ->paginate(20);
 
 
         // === REKAP KELAS X ===
@@ -99,6 +100,15 @@ class LaporanController extends Controller
         ])
         ->first();
 
+        $tampil_kelas = DataKelas::orderByRaw("
+        CASE
+            WHEN kelas LIKE 'X %' THEN 1
+            WHEN kelas LIKE 'XI %' THEN 2
+            WHEN kelas LIKE 'XII %' THEN 3
+            ELSE 4
+            END, kelas ASC
+        ")->get();
+
         $data = [
             'totalSiswa' => $totalSiswa,
             'totalLaki' => $totalLaki,
@@ -113,56 +123,68 @@ class LaporanController extends Controller
             'rekapKelasX' => $rekapKelasX,
             'rekapKelasXI' => $rekapKelasXI,
             'rekapKelasXII' => $rekapKelasXII,
-            'data_absensi' => $data_absensi
+            'data_absensi' => $data_absensi,
+            'tampil_kelas' => $tampil_kelas
 
         ];
 
         return view ('laporan.harian', $data);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
-    /**
-     * Display the specified resource.
-     */
+
+    //FILTER KELAS TAMPIL
     public function Filter(Request $request)
     {
-        $query = Absensi::with('siswa.kelas.waliKelas')
-        ->whereDate('tanggal', Carbon::today())
-        ->orderBy('jam_masuk', 'desc');
+        $hariIni = Carbon::today();
+        $totalAbsensiHariIni = Absensi::whereDate('tanggal', $hariIni)->count();
+        $tampil_kelas = DataKelas::orderBy('kelas', 'asc')->get();
 
-    if ($request->filled('kelas')) {
-        $query->whereHas('siswa.kelas', function($q) use ($request) {
-            $q->where('kelas', $request->kelas);
-        });
+        $absensi = Absensi::with('siswa.kelas.waliKelas')
+            ->whereDate('tanggal', Carbon::today())
+            ->orderBy('jam_masuk', 'desc');
+
+        //REKAP
+        $rekap = Absensi::whereDate('tanggal', $hariIni)
+        ->select('status')
+        ->selectRaw('COUNT(*) as total')
+        ->groupBy('status')
+        ->pluck('total', 'status');
+
+        $totalSakit = $rekap['Sakit'] ?? 0;
+        $totalHadir = $rekap['Hadir'] ?? 0;
+        $totalTerlambat = $rekap['Terlambat'] ?? 0;
+        $totalIzin = $rekap['Izin'] ?? 0;
+        $totalAlpha = $rekap['Alpha'] ?? 0;
+
+
+        if ($request->filled('kelas')) {
+            $absensi->whereHas('siswa.kelas', function ($q) use ($request) {
+                $q->where('kode_kelas', $request->kelas);
+            });
+        }
+        $absensi = $absensi->get();
+
+        $view_data =[
+            'absensi' => $absensi,
+            'tampil_kelas' => $tampil_kelas,
+            'totalAbsensiHariIni' => $totalAbsensiHariIni,
+            'totalSakit' =>$totalSakit,
+            'totalHadir' => $totalHadir,
+            'totalTerlambat' => $totalTerlambat,
+            'totalIzin ' => $totalIzin,
+            'totalAlpha' => $totalAlpha,
+
+
+        ];
+        return view('laporan.cari_data_kelas', $view_data);
+
     }
 
-    $data_absensi = $query->get();
-    $data_kelas = DataKelas::orderBy('kelas', 'asc')->get();
 
-    return view('absensi-siswa.data-absensi.edit-absensi', [
-        'data_absensi' => $data_absensi,
-        'data_kelas'   => $data_kelas,
-    ]);
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+    // EDIT STATUS ABSENSI
     public function edit($id)
     {
         $absensi = Absensi::with('siswa.kelas.waliKelas')->findOrFail($id);
@@ -173,9 +195,8 @@ class LaporanController extends Controller
         return view('absensi-siswa.data-absensi.edit-absensi', $data);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+
+    //UPDATE ABSENSI
     public function update(Request $request, string $id)
     {
         $validated = $request->validate([
@@ -183,15 +204,23 @@ class LaporanController extends Controller
         ]);
 
         $absen = Absensi::findOrFail($id);
+         // Ambil jam masuk dari tabel profile_sekolah
+         $profil = ProfilSekolah::first();
+         $jamMasuk = Carbon::createFromFormat('H:i:s', $profil->jam_masuk);
 
-        // Ubah status sesuai pilihan
+        // Tambah toleransi keterlambatan, misal 5 menit
+        $batasTerlambat = $jamMasuk;
+        $jamSekarang = Carbon::now();
+
+
+
         $absen->status = $validated['status'];
-
-        // Kalau statusnya bukan Terlambat → ubah keterangan jadi "0 menit"
         if ($validated['status'] !== 'Terlambat') {
             $absen->keterangan = '0 menit';
         }else {
-            $absen->keterangan = 'Error';
+            $menitTerlambat = $jamSekarang->diffInMinutes($batasTerlambat);
+            $keterangan = "{$menitTerlambat} menit";
+            $absen->keterangan = $keterangan;
         }
 
         $absen->save();
@@ -200,11 +229,77 @@ class LaporanController extends Controller
                          ->with('success', 'Data absensi berhasil diperbarui.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+
+    public function DownloadBackup()
+{
+    $hariIni = Carbon::today();
+
+    // === 1️⃣ REKAP TOTAL PER STATUS ===
+    $rekap = Absensi::whereDate('tanggal', $hariIni)
+        ->select('status')
+        ->selectRaw('COUNT(*) as total')
+        ->groupBy('status')
+        ->pluck('total', 'status');
+
+    $totalHadir     = $rekap['Hadir'] ?? 0;
+    $totalIzin      = $rekap['Izin'] ?? 0;
+    $totalSakit     = $rekap['Sakit'] ?? 0;
+    $totalAlpha     = $rekap['Alpha'] ?? 0;
+    $totalTerlambat = $rekap['Terlambat'] ?? 0;
+
+    $totalHadir =    $totalHadir +  $totalTerlambat;
+
+    // === 2️⃣ DATA SISWA TERLAMBAT ===
+    $dataTerlambat = Absensi::with('siswa.kelas')
+        ->whereDate('tanggal', $hariIni)
+        ->where('status', 'Terlambat')
+        ->get()
+        ->sortBy(function ($absen) {
+            $kelas = $absen->siswa->kelas->kelas ?? '';
+            if (str_starts_with($kelas, 'XII')) $level = 3;
+            elseif (str_starts_with($kelas, 'XI')) $level = 2;
+            else $level = 1;
+
+            preg_match('/[A-Z0-9]+$/', $kelas, $huruf);
+            $subkelas = $huruf[0] ?? '';
+            $nama = strtoupper($absen->siswa->nama ?? 'ZZZ');
+            return sprintf('%02d-%s-%s', $level, $subkelas, $nama);
+        });
+
+    // === 3️⃣ DATA KETIDAKHADIRAN (IZIN, SAKIT, ALPA) ===
+    $dataKetidakhadiran = Absensi::with('siswa.kelas')
+        ->whereDate('tanggal', $hariIni)
+        ->whereIn('status', ['Izin', 'Sakit', 'Alpha'])
+        ->get()
+        ->sortBy(function ($absen) {
+            $kelas = $absen->siswa->kelas->kelas ?? '';
+            if (str_starts_with($kelas, 'XII')) $level = 3;
+            elseif (str_starts_with($kelas, 'XI')) $level = 2;
+            else $level = 1;
+
+            preg_match('/[A-Z0-9]+$/', $kelas, $huruf);
+            $subkelas = $huruf[0] ?? '';
+            $nama = strtoupper($absen->siswa->nama ?? 'ZZZ');
+            return sprintf('%02d-%s-%s', $level, $subkelas, $nama);
+        });
+
+    $hariTeks = $hariIni->translatedFormat('d F Y');
+    $jamCetak = Carbon::now()->translatedFormat('d F Y H:i');
+
+    $pdf = Pdf::loadView('laporan.rekap_ketidakhadiran', [
+        'hariTeks' => $hariTeks,
+        'jamCetak' => $jamCetak,
+        'totalHadir' => $totalHadir,
+        'totalIzin' => $totalIzin,
+        'totalSakit' => $totalSakit,
+        'totalAlpha' => $totalAlpha,
+        'totalTerlambat' => $totalTerlambat,
+        'dataTerlambat' => $dataTerlambat,
+        'dataKetidakhadiran' => $dataKetidakhadiran,
+    ])->setPaper([0, 0, 595.276, 935.433], 'portrait');
+
+    return $pdf->download('Rekap_Absensi_' . $hariIni->format('d-m-Y') . '.pdf');
+}
+
+
 }

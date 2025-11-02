@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DataKelasController;
@@ -27,6 +28,10 @@ use App\Http\Controllers\QrAbsensiController;
 
 
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+//route pengaturan sekolah
+Route::get('/profil-sekolah', [ProfilController::class, 'index'])->name('profil-sekolah.index');
+Route::put('/profil-sekolah/update', [ProfilController::class, 'update'])->name('profil-sekolah.update');
 
 //route data siswa
 Route::get('/data-siswa', [SiswaController::class, 'index'])->name('admin.data-master.data-siswa');
@@ -75,16 +80,11 @@ Route::get('/data-absensi-qr', [QrAbsensiController::class, 'dataAbsensiQr'])->n
 
 //Laporan Absensi
 Route::get('/laporan-harian', [LaporanController::class, 'index'])->name('laporan-harian.harian');
+Route::get('/laporan-Arsip', [LaporanController::class, 'index'])->name('laporan-bulanan.bulanan');
 Route::get('/Edit-Absensi-Siswa/{id}', [LaporanController::class, 'edit'])->name('edit-absen.data');
 Route::put('/Edit-Absensi-Siswa/{id}', [LaporanController::class, 'update'])->name('edit-absen.update');
-Route::get('/edit-absen', [LaporanController::class, 'Filter'])->name('edit-absen.index');
-Route::get('/laporan-mingguan', [QrAbsensiController::class, 'laporanMingguan'])->name('laporan-mingguan.mingguan');
-Route::get('/laporan-bulanan', [QrAbsensiController::class, 'laporanBulanan'])->name('laporan-bulanan.bulanan');
-
-
-
-
-
+Route::get('/edit-absen', [LaporanController::class, 'Filter'])->name('Filter.kelas');
+Route::get('/Download-Backup', [LaporanController::class, 'DownloadBackup'])->name('download-backup.laporan');
 
 
 

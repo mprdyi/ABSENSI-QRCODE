@@ -9,7 +9,7 @@
 <div class="row mt-4">
     <div class="col-12">
 
-    <div class="card shadow-sm border-0 rounded-4">
+<div class="card shadow-sm border-0 rounded-4">
   <div class="card-body">
     <h5 class="fw-bold mb-3">Data GURU SMAN 9 Cirebon</h5>
 

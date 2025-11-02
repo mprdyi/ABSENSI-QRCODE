@@ -47,6 +47,7 @@
                   <th>Kelas</th>
                   <th>Wali Kelas</th>
                   <th>Status</th>
+                  <th>Keterangan</th>
                 </tr>
               </thead>
 

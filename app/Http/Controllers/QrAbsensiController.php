@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Absensi;
+use App\Models\ProfilSekolah;
 use App\Models\Siswa;
 use Illuminate\Support\Facades\DB;
 
@@ -58,16 +59,21 @@ class QrAbsensiController extends Controller
             ], 409); // 409 = Conflict
         }
 
-        $jamSekarang = Carbon::now();
-            $batasTerlambat = Carbon::createFromTime(6, 35, 0); // jam 06:35:00
+            // Ambil jam masuk dari tabel profile_sekolah
+            $profil = ProfilSekolah::first();
+            $jamMasuk = Carbon::createFromFormat('H:i:s', $profil->jam_masuk);
 
-            if ($jamSekarang->greaterThan($batasTerlambat)) {
+            $batasTerlambat = $jamMasuk;
+            $jamSekarang = Carbon::now();
+
+
+            if ($jamSekarang->gt($batasTerlambat)) {
                 $status = 'Terlambat';
                 $menitTerlambat = $jamSekarang->diffInMinutes($batasTerlambat);
                 $keterangan = "{$menitTerlambat} menit";
             } else {
                 $status = 'Hadir';
-                $keterangan = '-';
+                $keterangan = 'On time';
             }
 
         // Kalau belum, simpan data absensi
@@ -117,6 +123,7 @@ class QrAbsensiController extends Controller
             <td>'.(optional(optional($a->siswa)->kelas)->kelas ?? '-').'</td>
             <td>'.(optional(optional($a->siswa)->kelas)->waliKelas->nama_guru ?? '-').'</td>
             <td><span class="'.$badgeClass.'">'.($a->status ?? '-').'</span></td>
+            <td><span>'.($a->keterangan ?? '-').'</span></td>
         </tr>';
     }
 
@@ -125,33 +132,4 @@ class QrAbsensiController extends Controller
 
 
 
-
-
-
-        public function laporanMingguan()
-        {
-            return view ('laporan.mingguan');
-        }
-
-        public function laporanBulanan()
-        {
-            return view ('laporan.bulanan');
-        }
-
-        public function edit(string $id)
-        {
-            //
-        }
-
-
-        public function update(Request $request, string $id)
-        {
-            //
-        }
-
-
-        public function destroy(string $id)
-        {
-            //
-        }
-    }
+}

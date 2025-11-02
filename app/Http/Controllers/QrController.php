@@ -58,7 +58,7 @@ class QrController extends Controller
     }
 
 
-    
+
     public function downloadByKelas(Request $request)
     {
         $request->validate([
@@ -86,6 +86,8 @@ class QrController extends Controller
         return $pdf->download('QR-' . $namaKelas . '.pdf');
     }
 
+    }
 
 
-}
+
+

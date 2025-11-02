@@ -11,8 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('data_absensi', function (Blueprint $table) {
-            $table->unique(['nis', 'tanggal']);
+        Schema::create('profile', function (Blueprint $table) {
+            $table->id();
+            $table->string('nama_sekolah');
+            $table->string('kepsek');
+            $table->time('jam_masuk');
+            $table->timestamps();
         });
     }
 
@@ -21,8 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('data_absensi', function (Blueprint $table) {
-        
-        });
+        Schema::dropIfExists('profile');
     }
 };
