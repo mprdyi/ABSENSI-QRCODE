@@ -16,30 +16,30 @@
     <div class="col-md-3">
       <div class="card shadow-sm border-0 rounded-4 mb-3">
         <div class="card-body">
-          <p class="text-muted small mb-1">Total Siswa</p>
-          <h4 class="fw-bold">{{ $totalSiswa }}</h4>
+          <p class="text-muted small mb-1">Hadir</p>
+          <h4 class="fw-bold">{{ $totalHadir + $totalTerlambat }}</h4>
           <span class="text-success small fw-semibold">{{ $totalLaki }} L,  {{ $totalPerempuan }} P</span>
-          <p class="text-muted small mb-0">Total Keseluruhan</p>
+          <p class="text-muted small mb-0"> {{ $totalHadir}} Ontime | {{ $totalTerlambat }} Terlambat</p>
         </div>
       </div>
     </div>
     <div class="col-md-3">
       <div class="card shadow-sm border-0 rounded-4 mb-3">
         <div class="card-body">
-          <p class="text-muted small mb-1">Total Absensi</p>
-          <h4 class="fw-bold">{{ $totalAbsensiHariIni }}</h4>
+          <p class="text-muted small mb-1">Sakit </p>
+          <h4 class="fw-bold">{{ $totalSakit }}</h4>
           <span class="text-danger small fw-semibold">↓ 2.4%</span>
-          <p class="text-muted small mb-0">Absensi Hari Ini</p>
+          <p class="text-muted small mb-0">Sakit Hari Ini</p>
         </div>
       </div>
     </div>
     <div class="col-md-3">
       <div class="card shadow-sm border-0 rounded-4 mb-3">
         <div class="card-body">
-          <p class="text-muted small mb-1">Terlambat</p>
-          <h4 class="fw-bold">{{ $totalTerlambat }}</h4>
+          <p class="text-muted small mb-1">Izin</p>
+          <h4 class="fw-bold">{{ $totalIzin }}</h4>
           <span class="text-danger small fw-semibold">↓ 2.4%</span>
-          <p class="text-muted small mb-0">Terlambat Hari Ini</p>
+          <p class="text-muted small mb-0">Izin Hari Ini</p>
         </div>
       </div>
     </div>
@@ -49,7 +49,7 @@
           <p class="text-muted small mb-1">Alpa</p>
           <h4 class="fw-bold">{{ $totalAlpha }}</h4>
           <span class="text-success small fw-semibold">↑ 5.6%</span>
-          <p class="text-muted small mb-0">Alpha Hari Ini</p>
+          <p class="text-muted small mb-0">Alpa Hari Ini</p>
         </div>
       </div>
     </div>
@@ -70,18 +70,18 @@
     <div class="col-md-6">
       <div class="card shadow-sm border-0 rounded-4 mb-3">
         <div class="card-body">
-          <h6 class="fw-bold mb-2">Izin</h6>
-          <p class="fs-4 fw-bold text-primary mb-0">{{ $totalIzin }} Siswa</p>
-          <p class="text-muted small mb-0">Menunggu konfirmasi guru piket</p>
+          <h6 class="fw-bold mb-2">Total Siswa</h6>
+          <p class="fs-4 fw-bold text-primary mb-0">{{ $totalSiswa }}</p>
+          <p class="text-muted small mb-0"> {{$totalPerempuan}} Perempuan | {{$totalLaki}} Laki-Laki</p>
         </div>
       </div>
     </div>
     <div class="col-md-6">
       <div class="card shadow-sm border-0 rounded-4 mb-3">
         <div class="card-body">
-          <h6 class="fw-bold mb-2">Sakit</h6>
-          <p class="fs-4 fw-bold text-danger mb-0">{{ $totalSakit }} Siswa</p>
-          <p class="text-muted small mb-0">Tidak hadir tanpa keterangan</p>
+          <h6 class="fw-bold mb-2">Total Absensi</h6>
+          <p class="fs-4 fw-bold text-primary mb-0">{{ $totalAbsensiHariIni }} </p>
+          <p class="text-muted small mb-0">Absensi Hari Ini</p>
         </div>
       </div>
     </div>
@@ -177,17 +177,16 @@
 </div>
 </div>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
   const ctxBar = document.getElementById('barChart').getContext('2d');
   new Chart(ctxBar, {
     type: 'bar',
     data: {
-      labels: ['Senin ', 'Selasa', 'Rabu', 'Kamis', 'Jumat'],
+      labels: @json($labels),
       datasets: [{
         label: 'Jumlah Hadir',
-        data: [100, 130, 120, 160, 150],
+        data: @json($dataHadir),
         backgroundColor: '#715AFF',
         borderRadius: 6
       }]
@@ -206,7 +205,7 @@
 new Chart(ctxPie, {
   type: 'doughnut',
   data: {
-    labels: ['Hadir', 'Terlambat', 'Izin', 'Alpa'],
+    labels: ['Ontime', 'Terlambat', 'Izin', 'Alpa'],
     datasets: [{
       data: [{{ $totalHadir }}, {{ $totalTerlambat }}, {{ $totalIzin }}, {{ $totalAlpha }}],
       backgroundColor: ['#715AFF', '#FFAA00', '#1CC88A', '#E74A3B'],
@@ -218,7 +217,18 @@ new Chart(ctxPie, {
     maintainAspectRatio: false,
     cutout: '70%',
     plugins: {
-      legend: { display: false }
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            const dataset = context.dataset;
+            const total = dataset.data.reduce((a, b) => a + b, 0);
+            const value = dataset.data[context.dataIndex];
+            const percentage = ((value / total) * 100).toFixed(1);
+            return `${context.label}: ${percentage}%`;
+          }
+        }
+      }
     }
   }
 });

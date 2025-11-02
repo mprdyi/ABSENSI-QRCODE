@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Siswa;
@@ -11,61 +12,74 @@ class DashboardController extends Controller
     public function index()
     {
         $hariIni = Carbon::today();
-        // Hitung total siswa
+
+        // ===  REKAP JUMLAH SISWA ===
         $rekapJK = Siswa::select('jk')
             ->selectRaw('COUNT(*) as total')
             ->groupBy('jk')
             ->pluck('total', 'jk');
 
-        $totalLaki = $rekapJK['L'] ?? 0;
-        $totalPerempuan = $rekapJK['P'] ?? 0;
-        $totalSiswa = $totalLaki + $totalPerempuan;
+        $totalLaki       = $rekapJK['L'] ?? 0;
+        $totalPerempuan  = $rekapJK['P'] ?? 0;
+        $totalSiswa      = $totalLaki + $totalPerempuan;
 
-        $totalAbsensiHariIni = Absensi::whereDate('tanggal', $hariIni)->count();
+        // ===  REKAP ABSENSI HARI INI ===
+        $rekapAbsensi = Absensi::whereDate('tanggal', $hariIni)
+            ->select('status')
+            ->selectRaw('COUNT(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status');
 
-        $rekap = Absensi::whereDate('tanggal', $hariIni)
-        ->select('status')
-        ->selectRaw('COUNT(*) as total')
-        ->groupBy('status')
-        ->pluck('total', 'status');
+        $totalHadir      = ($rekapAbsensi['Hadir'] ?? 0) + ($rekapAbsensi['Terlambat'] ?? 0);
+        $totalIzin       = $rekapAbsensi['Izin'] ?? 0;
+        $totalSakit      = $rekapAbsensi['Sakit'] ?? 0;
+        $totalAlpha      = $rekapAbsensi['Alpha'] ?? 0;
+        $totalTerlambat  = $rekapAbsensi['Terlambat'] ?? 0;
+        $totalAbsensiHariIni = array_sum($rekapAbsensi->toArray());
 
-        $totalSakit = $rekap['Sakit'] ?? 0;
-        $totalHadir = $rekap['Sakit'] ?? 0;
-        $totalTerlambat = $rekap['Terlambat'] ?? 0;
-        $totalIzin = $rekap['Izin'] ?? 0;
-        $totalAlpha = $rekap['Alpha'] ?? 0;
-
-
+        // === 10 SISWA PALING SERING TERLAMBAT ===
         $topTerlambat = Absensi::with('siswa.kelas.waliKelas')
-        ->select('nis')
-        ->selectRaw('COUNT(*) as jumlah')
-        ->selectRaw('ROUND(AVG(CAST(REGEXP_REPLACE(keterangan, "[^0-9]", "") AS UNSIGNED))) as rata_rata')
-        ->where('status', 'Terlambat')
-        ->groupBy('nis')
-        ->orderByDesc('jumlah')
-        ->limit(10)
-        ->get();
+            ->select('nis')
+            ->selectRaw('COUNT(*) as jumlah')
+            ->selectRaw('ROUND(AVG(CAST(REGEXP_REPLACE(keterangan, "[^0-9]", "") AS UNSIGNED))) as rata_rata')
+            ->where('status', 'Terlambat')
+            ->groupBy('nis')
+            ->orderByDesc('jumlah')
+            ->limit(10)
+            ->get();
 
+        // === GRAFIK MINGGUAN (Senin–Jumat) ===
+        $startOfWeek = Carbon::now()->startOfWeek(Carbon::MONDAY);
+        $endOfWeek   = Carbon::now()->endOfWeek(Carbon::FRIDAY);
 
-        $data = [
-            'totalSiswa' => $totalSiswa,
-            'totalLaki' => $totalLaki,
-            'totalPerempuan' => $totalPerempuan,
+        $grafikMingguan = Absensi::selectRaw('DAYNAME(tanggal) as hari, COUNT(*) as total')
+            ->whereBetween('tanggal', [$startOfWeek, $endOfWeek])
+            ->whereIn('status', ['Hadir', 'Terlambat'])
+            ->groupBy('tanggal')
+            ->orderBy('tanggal', 'asc')
+            ->get();
+
+        // Susun urutan Senin–Jumat
+        $labels = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
+        $dataHadir = [];
+        foreach ($labels as $hari) {
+            $dataHadir[] = $grafikMingguan->firstWhere('hari', $hari)?->total ?? 0;
+        }
+
+        // === KIRIM KE VIEW ===
+        return view('dashboard', [
+            'totalSiswa'          => $totalSiswa,
+            'totalLaki'           => $totalLaki,
+            'totalPerempuan'      => $totalPerempuan,
             'totalAbsensiHariIni' => $totalAbsensiHariIni,
-            'totalSakit' => $totalSakit,
-            'totalHadir' => $totalHadir,
-            'totalIzin' => $totalIzin,
-            'totalAlpha' => $totalAlpha,
-            'totalTerlambat' => $totalTerlambat,
-            'topTerlambat' =>   $topTerlambat
-
-        ];
-
-
-        // Kirim ke view
-        return view('dashboard', $data);
+            'totalHadir'          => $totalHadir,
+            'totalIzin'           => $totalIzin,
+            'totalSakit'          => $totalSakit,
+            'totalAlpha'          => $totalAlpha,
+            'totalTerlambat'      => $totalTerlambat,
+            'topTerlambat'        => $topTerlambat,
+            'labels'              => $labels,
+            'dataHadir'           => $dataHadir,
+        ]);
     }
-
-
-
 }

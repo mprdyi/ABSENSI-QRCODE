@@ -10,6 +10,7 @@ use App\Http\Controllers\CsvController;
 use App\Http\Controllers\QrController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\QrAbsensiController;
+use App\Http\Controllers\IzinKelasController;
 
 
 
@@ -80,11 +81,17 @@ Route::get('/data-absensi-qr', [QrAbsensiController::class, 'dataAbsensiQr'])->n
 
 //Laporan Absensi
 Route::get('/laporan-harian', [LaporanController::class, 'index'])->name('laporan-harian.harian');
-Route::get('/laporan-Arsip', [LaporanController::class, 'index'])->name('laporan-bulanan.bulanan');
+Route::get('/laporan-Arsip', [LaporanController::class, 'arsip'])->name('arsip-absensi.all');
 Route::get('/Edit-Absensi-Siswa/{id}', [LaporanController::class, 'edit'])->name('edit-absen.data');
 Route::put('/Edit-Absensi-Siswa/{id}', [LaporanController::class, 'update'])->name('edit-absen.update');
-Route::get('/edit-absen', [LaporanController::class, 'Filter'])->name('Filter.kelas');
+Route::get('/filter-absen', [LaporanController::class, 'Filter'])->name('Filter.kelas');
+Route::get('/absensi/filter', [LaporanController::class, 'CariArsip'])->name('cari-data.arsip');
 Route::get('/Download-Backup', [LaporanController::class, 'DownloadBackup'])->name('download-backup.laporan');
+
+//IZIN MENINGGALKAN KELAS
+Route::get('/Izin-Meninggalkan-Kelas', [IzinKelasController::class, 'index'])->name('izin.kelas');
+Route::get('/get-siswa-by-kelas/{id_kelas}', [IzinKelasController::class, 'getSiswaByKelas'])->name('getSiswaByKelas');
+
 
 
 

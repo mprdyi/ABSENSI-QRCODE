@@ -231,10 +231,10 @@ class LaporanController extends Controller
 
 
     public function DownloadBackup()
-{
+    {
     $hariIni = Carbon::today();
 
-    // === 1️⃣ REKAP TOTAL PER STATUS ===
+    // ===  REKAP TOTAL PER STATUS ===
     $rekap = Absensi::whereDate('tanggal', $hariIni)
         ->select('status')
         ->selectRaw('COUNT(*) as total')
@@ -299,7 +299,50 @@ class LaporanController extends Controller
     ])->setPaper([0, 0, 595.276, 935.433], 'portrait');
 
     return $pdf->download('Rekap_Absensi_' . $hariIni->format('d-m-Y') . '.pdf');
-}
+    }
+
+
+
+
+    public function arsip(){
+
+    $absensi = Absensi::with('siswa.kelas.waliKelas')
+    ->orderBy('tanggal', 'desc')
+    ->orderBy('jam_masuk', 'desc')
+    ->paginate(20);
+
+    $view_data = [
+        'data_absensi' =>   $absensi
+    ];
+        return view('laporan.arsip',$view_data );
+    }
+
+
+
+    public function CariArsip(Request $request)
+    {
+    $search = $request->input('search');
+
+    $absensi = Absensi::with('siswa.kelas.waliKelas')
+        ->when($search, function ($query, $search) {
+            $query->whereHas('siswa', function ($q) use ($search) {
+                $q->where('nama', 'like', "%{$search}%")
+                  ->orWhereHas('kelas', function ($q2) use ($search) {
+                      $q2->where('kelas', 'like', "%{$search}%");
+                  });
+            });
+        })
+        ->orderBy('tanggal', 'desc')
+        ->orderBy('jam_masuk', 'desc')
+        ->paginate(20);
+
+        $view_data = [
+            'data_absensi' =>   $absensi
+        ];
+
+    return view('laporan.cari-arsip', $view_data);
+    }
+
 
 
 }

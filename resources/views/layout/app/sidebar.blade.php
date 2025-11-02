@@ -53,7 +53,7 @@
     <div id="collapseLaporanAdmin" class="collapse" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
         <a class="collapse-item" href="{{ route('laporan-harian.harian') }}">Harian</a>
-        <a class="collapse-item" href="{{ route('laporan-bulanan.bulanan') }}">Arsip</a>
+        <a class="collapse-item" href="{{ route('arsip-absensi.all') }}">Arsip</a>
       </div>
     </div>
   </li>
@@ -68,7 +68,7 @@
 
     <!-- Nav Item - izin keluar -->
     <li class="nav-item">
-    <a class="nav-link" href="#">
+    <a class="nav-link" href="{{ route('izin.kelas') }}">
       <i class="fa fa-qrcode"></i>
       <span>Surat Izin</span>
     </a>

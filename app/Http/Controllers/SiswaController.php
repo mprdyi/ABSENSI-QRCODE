@@ -72,8 +72,6 @@ class SiswaController extends Controller
           }
       }
 
-
-
     // EDIT DATA
         public function edit($id)
         {
