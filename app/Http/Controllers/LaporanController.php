@@ -164,7 +164,7 @@ class LaporanController extends Controller
                 $q->where('kode_kelas', $request->kelas);
             });
         }
-        $absensi = $absensi->get();
+        $absensi = $absensi->paginate(30);
 
         $view_data =[
             'absensi' => $absensi,

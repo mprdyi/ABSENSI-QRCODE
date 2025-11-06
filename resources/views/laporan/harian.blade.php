@@ -176,7 +176,7 @@
           </div>
         </div>
         <div class="card-footer">
-        H: {{ $totalHadir }} &nbsp;&nbsp; A: {{ $totalAlpha }} &nbsp;&nbsp; S: {{ $totalSakit }} &nbsp;&nbsp; I: {{ $totalIzin }} &nbsp;&nbsp; T: {{ $totalTerlambat }}
+       A: {{ $totalAlpha }} &nbsp;&nbsp; S: {{ $totalSakit }} &nbsp;&nbsp; I: {{ $totalIzin }} &nbsp;&nbsp; T: {{ $totalTerlambat }}
         </div>
       </div>
     </div>

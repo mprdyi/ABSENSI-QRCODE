@@ -216,7 +216,7 @@
             </table>
 
             <div class="d-flex justify-content-end align-items-center mt-3">
-
+            {{ $absensi->onEachSide(1)->links('pagination::bootstrap-5') }}
             </div>
           </div>
         </div>

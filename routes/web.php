@@ -12,6 +12,7 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\QrAbsensiController;
 use App\Http\Controllers\IzinKelasController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\UserController;
 
 
 
@@ -36,6 +37,14 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth'])->group(function () {
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+//Route User
+Route::get('/data-user', [UserController::class, 'index'])->name('user.data');
+Route::post('/data-user/store', [UserController::class, 'store'])->name('data-user.store');
+Route::get('/data-user/edit/{id}', [UserController::class, 'edit'])->name('data-user.edit');
+Route::put('/data-user/update/{id}', [UserController::class, 'update'])->name('data-user.update');
+Route::delete('/data-user/destroy/{id}', [UserController::class, 'destroy'])->name('data-user.destroy');
+
 //route pengaturan sekolah
 Route::get('/profil-sekolah', [ProfilController::class, 'index'])->name('profil-sekolah.index');
 Route::put('/profil-sekolah/update', [ProfilController::class, 'update'])->name('profil-sekolah.update');

@@ -43,7 +43,7 @@
         <a class="collapse-item" href="{{ url('data-siswa') }}">Data Siswa</a>
         <a class="collapse-item" href="{{ url('data-guru') }}">Data Guru</a>
         <a class="collapse-item" href="{{ url('data-kelas') }}">Data Kelas</a>
-        <a class="collapse-item" href="{{ url('data-osis') }}">Data User</a>
+        <a class="collapse-item" href="{{ route('user.data') }}">Data User</a>
       </div>
     </div>
   </li>
@@ -151,9 +151,18 @@
   <!-- Heading -->
   <div class="sidebar-heading">AREA OSIS</div>
 
+
+  <!-- Nav Item - QR -->
+  <li class="nav-item">
+    <a class="nav-link" href="{{ route('data-absensi-siswa.data') }}">
+      <i class="fa fa-qrcode"></i>
+      <span>Absensi QR</span>
+    </a>
+  </li>
+
   <!-- Nav Item - Riwayat Scan -->
   <li class="nav-item">
-    <a class="nav-link" href="#">
+    <a class="nav-link" href="{{ route('arsip-absensi.all') }}">
       <i class="fa fa-clock"></i>
       <span>Riwayat Scan</span>
     </a>
@@ -161,7 +170,7 @@
 
   <!-- Nav Item - Laporan Harian -->
   <li class="nav-item">
-    <a class="nav-link" href="#">
+    <a class="nav-link" href="{{ route('laporan-harian.harian') }}">
       <i class="fa fa-calendar-day"></i>
       <span>Laporan Harian</span>
     </a>

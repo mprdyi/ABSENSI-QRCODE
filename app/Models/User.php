@@ -54,6 +54,7 @@ class User extends Authenticatable
         return $this->role === 'siswa';
     }
 
+    
     /**
      * The attributes that should be cast.
      *
