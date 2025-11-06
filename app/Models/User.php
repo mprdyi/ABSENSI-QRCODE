@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -32,6 +33,26 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isGuru()
+    {
+        return $this->role === 'guru';
+    }
+
+    public function isOsis()
+    {
+        return $this->role === 'osis';
+    }
+
+    public function isSiswa()
+    {
+        return $this->role === 'siswa';
+    }
 
     /**
      * The attributes that should be cast.

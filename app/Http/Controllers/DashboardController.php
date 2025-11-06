@@ -30,7 +30,7 @@ class DashboardController extends Controller
             ->groupBy('status')
             ->pluck('total', 'status');
 
-        $totalHadir      = ($rekapAbsensi['Hadir'] ?? 0) + ($rekapAbsensi['Terlambat'] ?? 0);
+        $totalHadir      = ($rekapAbsensi['Hadir'] ?? 0);
         $totalIzin       = $rekapAbsensi['Izin'] ?? 0;
         $totalSakit      = $rekapAbsensi['Sakit'] ?? 0;
         $totalAlpha      = $rekapAbsensi['Alpha'] ?? 0;
@@ -45,26 +45,29 @@ class DashboardController extends Controller
             ->where('status', 'Terlambat')
             ->groupBy('nis')
             ->orderByDesc('jumlah')
+            ->orderByDesc('rata_rata')
             ->limit(10)
             ->get();
 
         // === GRAFIK MINGGUAN (Senin–Jumat) ===
         $startOfWeek = Carbon::now()->startOfWeek(Carbon::MONDAY);
-        $endOfWeek   = Carbon::now()->endOfWeek(Carbon::FRIDAY);
+        $endOfWeek   = $startOfWeek->copy()->addDays(4)->endOfDay(); // sampai Jumat
 
-        $grafikMingguan = Absensi::selectRaw('DAYNAME(tanggal) as hari, COUNT(*) as total')
+        $grafikMingguan = Absensi::selectRaw('WEEKDAY(tanggal) as hari, COUNT(*) as total')
             ->whereBetween('tanggal', [$startOfWeek, $endOfWeek])
             ->whereIn('status', ['Hadir', 'Terlambat'])
-            ->groupBy('tanggal')
-            ->orderBy('tanggal', 'asc')
+            ->groupBy('hari')
+            ->orderBy('hari')
             ->get();
 
-        // Susun urutan Senin–Jumat
+        // Susun urutan Senin–Jumat (0=Senin, 4=Jumat)
         $labels = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
         $dataHadir = [];
-        foreach ($labels as $hari) {
-            $dataHadir[] = $grafikMingguan->firstWhere('hari', $hari)?->total ?? 0;
+
+        foreach (range(0, 4) as $i) {
+            $dataHadir[] = $grafikMingguan->firstWhere('hari', $i)?->total ?? 0;
         }
+
 
         // === KIRIM KE VIEW ===
         return view('dashboard', [
@@ -82,4 +85,9 @@ class DashboardController extends Controller
             'dataHadir'           => $dataHadir,
         ]);
     }
+
+    public function login(){
+        return view('login');
+    }
+
 }

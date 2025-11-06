@@ -17,9 +17,11 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            // role column: admin, guru, osis, siswa
+            $table->enum('role', ['admin','guru','osis','siswa'])->default('siswa');
             $table->rememberToken();
             $table->timestamps();
-        });
+            });
     }
 
     /**

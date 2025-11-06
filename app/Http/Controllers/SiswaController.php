@@ -26,11 +26,14 @@ class SiswaController extends Controller
                 END, kelas ASC
             ")->get();
 
+            $hitung_data = Siswa::count();
+
 
             $view_data = [
                 'siswas' => $siswas,
                 'data_kelas' => $data_kelas,
                 'title' => 'Data Siswa',
+                'hitung_data' => $hitung_data,
             ];
 
             return view('admin.data-master.data-siswa', $view_data);

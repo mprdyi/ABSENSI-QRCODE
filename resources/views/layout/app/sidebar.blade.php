@@ -2,7 +2,7 @@
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
   <!-- Sidebar - Brand -->
-  <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+  <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ url('/') }}">
     <div class="sidebar-brand-icon">
       <img src="{{ asset('image/logo-sma.png')  }}" alt="" width="40px">
     </div>
@@ -22,6 +22,11 @@
 
   <!-- Divider -->
   <hr class="sidebar-divider">
+
+  {{-- ========================== --}}
+  {{-- AREA ADMIN --}}
+  {{-- ========================== --}}
+  @if (Auth::user()->role === 'admin')
 
   <!-- Heading -->
   <div class="sidebar-heading">AREA ADMIN</div>
@@ -43,8 +48,25 @@
     </div>
   </li>
 
-  <!-- Nav Item - Laporan Rekap -->
+
+  <!-- Nav Item - Cetak QR -->
   <li class="nav-item">
+    <a class="nav-link" href="{{ route('data-absensi-siswa.data') }}">
+      <i class="fa fa-qrcode"></i>
+      <span>Absensi QR</span>
+    </a>
+  </li>
+
+    <!-- Nav Item - izin keluar -->
+    <li class="nav-item">
+    <a class="nav-link" href="{{ route('izin.kelas') }}">
+      <i class="fa fa-file"></i>
+      <span>Surat Izin</span>
+    </a>
+  </li>
+
+   <!-- Nav Item - Laporan Rekap -->
+   <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLaporanAdmin"
        aria-expanded="true" aria-controls="collapseLaporanAdmin">
       <i class="fa fa-envelope-open-text"></i>
@@ -58,22 +80,6 @@
     </div>
   </li>
 
-  <!-- Nav Item - Cetak QR -->
-  <li class="nav-item">
-    <a class="nav-link" href="{{ route('data-absensi-siswa.data') }}">
-      <i class="fa fa-qrcode"></i>
-      <span>Absensi QR</span>
-    </a>
-  </li>
-
-    <!-- Nav Item - izin keluar -->
-    <li class="nav-item">
-    <a class="nav-link" href="{{ route('izin.kelas') }}">
-      <i class="fa fa-qrcode"></i>
-      <span>Surat Izin</span>
-    </a>
-  </li>
-
 
   <!-- Nav Item - Pengaturan -->
   <li class="nav-item">
@@ -85,7 +91,11 @@
 
   <!-- Divider -->
   <hr class="sidebar-divider">
-
+  @endif
+  {{-- ========================== --}}
+  {{-- AREA GURU / PIKET --}}
+  {{-- ========================== --}}
+  @if (Auth::user()->role === 'guru')
   <!-- Heading -->
   <div class="sidebar-heading">AREA PIKET</div>
 
@@ -115,22 +125,28 @@
 
   <!-- Nav Item - Cetak QR -->
   <li class="nav-item">
-    <a class="nav-link" href="#">
+    <a class="nav-link" href="">
       <i class="fa fa-qrcode"></i>
-      <span>Cetak QR</span>
+      <span>Absensi Qr</span>
     </a>
   </li>
 
     <!-- Nav Item - Cetak QR -->
     <li class="nav-item">
-    <a class="nav-link" href="#">
-      <i class="fa fa-qrcode"></i>
+    <a class="nav-link" href="{{ route('izin.kelas') }}">
+      <i class="fa fa-file"></i>
       <span>Surat Izin</span>
     </a>
   </li>
 
   <!-- Divider -->
   <hr class="sidebar-divider">
+  @endif
+
+{{-- ========================== --}}
+{{-- AREA OSIS --}}
+{{-- ========================== --}}
+@if (Auth::user()->role === 'osis')
 
   <!-- Heading -->
   <div class="sidebar-heading">AREA OSIS</div>
@@ -154,6 +170,13 @@
   <!-- Divider -->
   <hr class="sidebar-divider">
 
+  @endif
+
+{{-- ========================== --}}
+{{-- AREA SISWA / KOORDINATOR KELAS --}}
+{{-- ========================== --}}
+@if (Auth::user()->role === 'siswa')
+
   <!-- Heading -->
   <div class="sidebar-heading">AREA KOORDINATOR KELAS</div>
 
@@ -173,13 +196,15 @@
     </a>
   </li>
 
+
   <!-- Divider -->
   <hr class="sidebar-divider d-none d-md-block">
-
+  @endif
   <!-- Sidebar Toggler -->
   <div class="text-center d-none d-md-inline">
     <button class="rounded-circle border-0" id="sidebarToggle"></button>
   </div>
 
 </ul>
+
 <!-- End of Sidebar -->

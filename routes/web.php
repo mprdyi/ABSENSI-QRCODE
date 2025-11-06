@@ -11,6 +11,7 @@ use App\Http\Controllers\QrController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\QrAbsensiController;
 use App\Http\Controllers\IzinKelasController;
+use App\Http\Controllers\Auth\AuthController;
 
 
 
@@ -28,8 +29,13 @@ use App\Http\Controllers\IzinKelasController;
 */
 
 
-Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+// LOGIN
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+Route::middleware(['auth'])->group(function () {
+Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 //route pengaturan sekolah
 Route::get('/profil-sekolah', [ProfilController::class, 'index'])->name('profil-sekolah.index');
 Route::put('/profil-sekolah/update', [ProfilController::class, 'update'])->name('profil-sekolah.update');
@@ -43,13 +49,12 @@ Route::put('/data-siswa/{id}', [SiswaController::class, 'update'])->name('edit-d
 Route::get('/cari-siswa', [SiswaController::class, 'search'])->name('cari-siswa');
 Route::get('/get-wali-kelas/{id}', [SiswaController::class, 'getWaliKelas']);
 
+
+// KODE NIS QRCODE
 Route::post('/import-siswa', [CsvController::class, 'importSiswa'])->name('import.siswa');
 Route::get('/qrcode/{nis}', [QrController::class, 'show'])->name('qrcode.show');
 Route::get('/qrcode/{nis}/pdf', [QrController::class, 'downloadPdf'])->name('qrcode.pdf');
 Route::post('/download-qrcode-kelas', [QrController::class, 'downloadByKelas'])->name('download.qrcode.kelas');
-
-
-
 
 
 
@@ -91,7 +96,10 @@ Route::get('/Download-Backup', [LaporanController::class, 'DownloadBackup'])->na
 //IZIN MENINGGALKAN KELAS
 Route::get('/Izin-Meninggalkan-Kelas', [IzinKelasController::class, 'index'])->name('izin.kelas');
 Route::get('/get-siswa-by-kelas/{id_kelas}', [IzinKelasController::class, 'getSiswaByKelas'])->name('getSiswaByKelas');
+Route::post('/izin/store', [IzinKelasController::class, 'store'])->name('izin.store');
+Route::get('/surat-izin/download/{nis}', [IzinKelasController::class, 'DownloadSurat'])->name('surat-izin.download');
+Route::get('/cari/data/izin', [IzinKelasController::class, 'cari'])->name('cari-data.izin');
 
-
+});
 
 
