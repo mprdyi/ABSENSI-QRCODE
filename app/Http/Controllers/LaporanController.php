@@ -16,7 +16,7 @@ class LaporanController extends Controller
 
     public function index()
     {
-        $hariIni = Carbon::today();
+        $hariIni = Carbon::today()->toDateString();;
         // Hitung total siswa
         $rekapJK = Siswa::select('jk')
             ->selectRaw('COUNT(*) as total')
@@ -59,46 +59,52 @@ class LaporanController extends Controller
 
 
         // === REKAP KELAS X ===
-        $rekapKelasX = Absensi::join('siswas', 'data_absensi.nis', '=', 'siswas.nis')
-        ->join('data_kelas', 'siswas.id_kelas', '=', 'data_kelas.id')
-        ->whereDate('data_absensi.tanggal', $hariIni)
-        ->where('data_kelas.kelas', 'LIKE', 'X %')
-        ->select([
-            DB::raw("SUM(CASE WHEN data_absensi.status = 'Hadir' THEN 1 ELSE 0 END) as total_hadir"),
-            DB::raw("SUM(CASE WHEN data_absensi.status = 'Izin' THEN 1 ELSE 0 END) as total_izin"),
-            DB::raw("SUM(CASE WHEN data_absensi.status = 'Sakit' THEN 1 ELSE 0 END) as total_sakit"),
-            DB::raw("SUM(CASE WHEN data_absensi.status = 'Alpha' THEN 1 ELSE 0 END) as total_alpha"),
-            DB::raw("SUM(CASE WHEN data_absensi.status = 'Terlambat' THEN 1 ELSE 0 END) as total_terlambat")
-        ])
+        $rekapKelasX = DB::table('data_absensi')
+        ->join('siswas', 'data_absensi.nis', '=', 'siswas.nis')
+        ->join('data_kelas', 'siswas.id_kelas', '=', 'data_kelas.kode_kelas')
+        ->where('data_kelas.kelas', 'like', 'X-%')
+        ->whereDate('data_absensi.tanggal', now()->toDateString())
+        ->select(
+            DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'hadir' THEN 1 ELSE 0 END) as total_hadir"),
+            DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'izin' THEN 1 ELSE 0 END) as total_izin"),
+            DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'sakit' THEN 1 ELSE 0 END) as total_sakit"),
+            DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'alpha' THEN 1 ELSE 0 END) as total_alpha"),
+            DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'terlambat' THEN 1 ELSE 0 END) as total_terlambat")
+        )
         ->first();
 
         // === REKAP KELAS XI ===
-        $rekapKelasXI = Absensi::join('siswas', 'data_absensi.nis', '=', 'siswas.nis')
-        ->join('data_kelas', 'siswas.id_kelas', '=', 'data_kelas.id')
-        ->whereDate('data_absensi.tanggal', $hariIni)
-        ->where('data_kelas.kelas', 'LIKE', 'XI %')
-        ->select([
-            DB::raw("SUM(CASE WHEN data_absensi.status = 'Hadir' THEN 1 ELSE 0 END) as total_hadir"),
-            DB::raw("SUM(CASE WHEN data_absensi.status = 'Izin' THEN 1 ELSE 0 END) as total_izin"),
-            DB::raw("SUM(CASE WHEN data_absensi.status = 'Sakit' THEN 1 ELSE 0 END) as total_sakit"),
-            DB::raw("SUM(CASE WHEN data_absensi.status = 'Alpha' THEN 1 ELSE 0 END) as total_alpha"),
-            DB::raw("SUM(CASE WHEN data_absensi.status = 'Terlambat' THEN 1 ELSE 0 END) as total_terlambat")
-        ])
+        $rekapKelasXI = DB::table('data_absensi')
+        ->join('siswas', 'data_absensi.nis', '=', 'siswas.nis')
+        ->join('data_kelas', 'siswas.id_kelas', '=', 'data_kelas.kode_kelas')
+        ->where('data_kelas.kelas', 'like', 'XI-%')
+        ->whereDate('data_absensi.tanggal', now()->toDateString())
+        ->select(
+            DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'hadir' THEN 1 ELSE 0 END) as total_hadir"),
+            DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'izin' THEN 1 ELSE 0 END) as total_izin"),
+            DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'sakit' THEN 1 ELSE 0 END) as total_sakit"),
+            DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'alpha' THEN 1 ELSE 0 END) as total_alpha"),
+            DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'terlambat' THEN 1 ELSE 0 END) as total_terlambat")
+        )
         ->first();
 
+
+
         // === REKAP KELAS XII ===
-        $rekapKelasXII = Absensi::join('siswas', 'data_absensi.nis', '=', 'siswas.nis')
-        ->join('data_kelas', 'siswas.id_kelas', '=', 'data_kelas.id')
-        ->whereDate('data_absensi.tanggal', $hariIni)
-        ->where('data_kelas.kelas', 'LIKE', 'XII %')
-        ->select([
-            DB::raw("SUM(CASE WHEN data_absensi.status = 'Hadir' THEN 1 ELSE 0 END) as total_hadir"),
-            DB::raw("SUM(CASE WHEN data_absensi.status = 'Izin' THEN 1 ELSE 0 END) as total_izin"),
-            DB::raw("SUM(CASE WHEN data_absensi.status = 'Sakit' THEN 1 ELSE 0 END) as total_sakit"),
-            DB::raw("SUM(CASE WHEN data_absensi.status = 'Alpha' THEN 1 ELSE 0 END) as total_alpha"),
-            DB::raw("SUM(CASE WHEN data_absensi.status = 'Terlambat' THEN 1 ELSE 0 END) as total_terlambat")
-        ])
+        $rekapKelasXII = DB::table('data_absensi')
+        ->join('siswas', 'data_absensi.nis', '=', 'siswas.nis')
+        ->join('data_kelas', 'siswas.id_kelas', '=', 'data_kelas.kode_kelas')
+        ->where('data_kelas.kelas', 'like', 'XII%')
+        ->whereDate('data_absensi.tanggal', now()->toDateString())
+        ->select(
+            DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'hadir' THEN 1 ELSE 0 END) as total_hadir"),
+            DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'izin' THEN 1 ELSE 0 END) as total_izin"),
+            DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'sakit' THEN 1 ELSE 0 END) as total_sakit"),
+            DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'alpha' THEN 1 ELSE 0 END) as total_alpha"),
+            DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'terlambat' THEN 1 ELSE 0 END) as total_terlambat")
+        )
         ->first();
+
 
         $tampil_kelas = DataKelas::orderByRaw("
         CASE
@@ -166,6 +172,54 @@ class LaporanController extends Controller
         }
         $absensi = $absensi->paginate(30);
 
+
+        // === REKAP KELAS X ===
+        $rekapKelasX = DB::table('data_absensi')
+        ->join('siswas', 'data_absensi.nis', '=', 'siswas.nis')
+        ->join('data_kelas', 'siswas.id_kelas', '=', 'data_kelas.kode_kelas')
+        ->where('data_kelas.kelas', 'like', 'X-%')
+        ->whereDate('data_absensi.tanggal', now()->toDateString())
+        ->select(
+            DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'hadir' THEN 1 ELSE 0 END) as total_hadir"),
+            DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'izin' THEN 1 ELSE 0 END) as total_izin"),
+            DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'sakit' THEN 1 ELSE 0 END) as total_sakit"),
+            DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'alpha' THEN 1 ELSE 0 END) as total_alpha"),
+            DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'terlambat' THEN 1 ELSE 0 END) as total_terlambat")
+        )
+        ->first();
+
+        // === REKAP KELAS XI ===
+        $rekapKelasXI = DB::table('data_absensi')
+        ->join('siswas', 'data_absensi.nis', '=', 'siswas.nis')
+        ->join('data_kelas', 'siswas.id_kelas', '=', 'data_kelas.kode_kelas')
+        ->where('data_kelas.kelas', 'like', 'XI-%')
+        ->whereDate('data_absensi.tanggal', now()->toDateString())
+        ->select(
+            DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'hadir' THEN 1 ELSE 0 END) as total_hadir"),
+            DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'izin' THEN 1 ELSE 0 END) as total_izin"),
+            DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'sakit' THEN 1 ELSE 0 END) as total_sakit"),
+            DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'alpha' THEN 1 ELSE 0 END) as total_alpha"),
+            DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'terlambat' THEN 1 ELSE 0 END) as total_terlambat")
+        )
+        ->first();
+
+
+
+        // === REKAP KELAS XII ===
+        $rekapKelasXII = DB::table('data_absensi')
+        ->join('siswas', 'data_absensi.nis', '=', 'siswas.nis')
+        ->join('data_kelas', 'siswas.id_kelas', '=', 'data_kelas.kode_kelas')
+        ->where('data_kelas.kelas', 'like', 'XII%')
+        ->whereDate('data_absensi.tanggal', now()->toDateString())
+        ->select(
+            DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'hadir' THEN 1 ELSE 0 END) as total_hadir"),
+            DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'izin' THEN 1 ELSE 0 END) as total_izin"),
+            DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'sakit' THEN 1 ELSE 0 END) as total_sakit"),
+            DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'alpha' THEN 1 ELSE 0 END) as total_alpha"),
+            DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'terlambat' THEN 1 ELSE 0 END) as total_terlambat")
+        )
+        ->first();
+
         $view_data =[
             'absensi' => $absensi,
             'tampil_kelas' => $tampil_kelas,
@@ -173,11 +227,13 @@ class LaporanController extends Controller
             'totalSakit' =>$totalSakit,
             'totalHadir' => $totalHadir,
             'totalTerlambat' => $totalTerlambat,
-            'totalIzin ' => $totalIzin,
+            'totalIzin' => $totalIzin,
             'totalAlpha' => $totalAlpha,
-
-
+            'rekapKelasX' => $rekapKelasX,
+            'rekapKelasXI' => $rekapKelasXI,
+            'rekapKelasXII' => $rekapKelasXII
         ];
+
         return view('laporan.cari_data_kelas', $view_data);
 
     }

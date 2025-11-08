@@ -126,8 +126,51 @@ document.addEventListener("DOMContentLoaded", function () {
     sidebar.classList.remove("active");
   }
 });
-</script>
 
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector("form");
+    const password = document.querySelector('input[name="password"]');
+    const confirm = document.querySelector('input[name="password_confirmation"]');
+
+    // buat elemen error (langsung di bawah input)
+    const passwordError = document.createElement("small");
+    passwordError.classList.add("text-danger", "d-block", "mt-1");
+    password.parentNode.appendChild(passwordError);
+
+    const confirmError = document.createElement("small");
+    confirmError.classList.add("text-danger", "d-block", "mt-1");
+    confirm.parentNode.appendChild(confirmError);
+
+    // fungsi untuk cek password saat diketik
+    function validatePassword() {
+        passwordError.textContent = "";
+        confirmError.textContent = "";
+
+        if (password.value.trim() !== "") {
+            if (password.value.length < 6) {
+                passwordError.textContent = "Password minimal 6 karakter.";
+            }
+
+            if (confirm.value.trim() !== "" && password.value !== confirm.value) {
+                confirmError.textContent = "Konfirmasi password tidak cocok.";
+            }
+        }
+    }
+
+    // realtime listener
+    password.addEventListener("input", validatePassword);
+    confirm.addEventListener("input", validatePassword);
+
+    // saat submit dicek lagi
+    form.addEventListener("submit", function (e) {
+        validatePassword();
+
+        if (passwordError.textContent !== "" || confirmError.textContent !== "") {
+            e.preventDefault(); // cegah kirim form
+        }
+    });
+});
+</script>
 
 
 

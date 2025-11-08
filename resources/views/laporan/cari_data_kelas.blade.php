@@ -77,59 +77,61 @@
         <a href="{{ route('download-backup.laporan') }}" class="badge-soft purple" style="position:absolute; right:0; transform:translateY(-50px)"> <i class="fa fa-download"> </i> Backup & Rekap</a>
 </div>
   <div class="row g-4">
-
-    <!-- Kartu Statistik -->
+    <!-- Kelas X -->
     <div class="col-12 col-md-6 col-lg-3">
       <div class="dashboard-card kelas10-card mb-3">
         <div class="d-flex justify-content-between align-items-center">
           <div>
             <div class="card-title">Kelas X</div>
-            <div class="card-value">120 <small>↑</small></div>
+            <div class="card-value"> {{ $rekapKelasX->total_hadir + $rekapKelasX->total_terlambat + $rekapKelasX->total_sakit + $rekapKelasX->total_izin + $rekapKelasX->total_alpha  ?? 0 }}<small>↑</small></div>
           </div>
           <div class="icon-circle">
             <i class="fa fa-graduation-cap"></i>
           </div>
         </div>
-        <div class="card-footer">
-          A: 25 &nbsp;&nbsp; S: 14 &nbsp;&nbsp; I: 4 &nbsp;&nbsp; T: {{ $rekapKelasX->total_terlambat ?? 0 }}
+        <div class="card-footer" style="font-size:12px">
+        H : {{ $rekapKelasX->total_hadir ?? 0 }} &nbsp;&nbsp; A: {{ $rekapKelasX->total_alpha ?? 0 }} &nbsp;&nbsp; S: {{ $rekapKelasX->total_sakit ?? 0 }} &nbsp;&nbsp; I: {{ $rekapKelasX->total_izin ?? 0 }} &nbsp;&nbsp; T: {{ $rekapKelasX->total_terlambat ?? 0 }}
         </div>
       </div>
     </div>
 
+    <!-- Kelas XI -->
     <div class="col-12 col-md-6 col-lg-3">
       <div class="dashboard-card kelas11-card mb-3">
         <div class="d-flex justify-content-between align-items-center">
           <div>
             <div class="card-title">Kelas XI</div>
-            <div class="card-value">44 <small>↑</small></div>
+            <div class="card-value"> {{ $rekapKelasXI->total_hadir + $rekapKelasXI->total_terlambat + $rekapKelasXI->total_sakit + $rekapKelasXI->total_izin + $rekapKelasXI->total_alpha  ?? 0 }}<small>↑</small></div>
           </div>
           <div class="icon-circle">
             <i class="fa fa-book"></i>
           </div>
         </div>
-        <div class="card-footer">
-          A: 23 &nbsp;&nbsp; S: 15 &nbsp;&nbsp; I: 2 &nbsp;&nbsp; T: {{ $rekapKelasXI->total_terlambat ?? 0 }}
+        <div class="card-footer" style="font-size:12px">
+          H : {{ $rekapKelasXI->total_hadir ?? 0 }} &nbsp;&nbsp; A: {{ $rekapKelasXI->total_alpha ?? 0 }} &nbsp;&nbsp; S: {{ $rekapKelasXI->total_sakit ?? 0 }} &nbsp;&nbsp; I: {{ $rekapKelasXI->total_izin ?? 0 }} &nbsp;&nbsp; T: {{ $rekapKelasXI->total_terlambat ?? 0 }}
         </div>
       </div>
     </div>
 
+    <!-- Kelas XII -->
     <div class="col-12 col-md-6 col-lg-3">
       <div class="dashboard-card kelas12-card mb-3">
         <div class="d-flex justify-content-between align-items-center">
           <div>
             <div class="card-title">Kelas XII</div>
-            <div class="card-value">87 <small>↑</small></div>
+            <div class="card-value"> {{ $rekapKelasXII->total_hadir + $rekapKelasXII->total_terlambat + $rekapKelasXII->total_sakit + $rekapKelasXII->total_izin + $rekapKelasXII->total_alpha  ?? 0 }}<small>↑</small></div>
           </div>
           <div class="icon-circle">
             <i class="fa fa-trophy"></i>
           </div>
         </div>
-        <div class="card-footer">
-          A: 19 &nbsp;&nbsp; S: 10 &nbsp;&nbsp; I: 3 &nbsp;&nbsp; T: {{ $rekapKelasXII->total_terlambat ?? 0 }}
+        <div class="card-footer" style="font-size:12px">
+          H : {{ $rekapKelasXII->total_hadir ?? 0 }} &nbsp;&nbsp; A: {{ $rekapKelasXII->total_alpha ?? 0 }} &nbsp;&nbsp; S: {{ $rekapKelasXII->total_sakit ?? 0 }} &nbsp;&nbsp; I: {{ $rekapKelasXII->total_izin ?? 0 }} &nbsp;&nbsp; T: {{ $rekapKelasXII->total_terlambat ?? 0 }}
         </div>
       </div>
     </div>
 
+    <!-- Total Siswa -->
     <div class="col-12 col-md-6 col-lg-3">
       <div class="dashboard-card total-card mb-3">
         <div class="d-flex justify-content-between align-items-center">
@@ -141,15 +143,14 @@
             <i class="fa fa-users"></i>
           </div>
         </div>
-        <div class="card-footer">
-             </div>
-             H: {{ $totalHadir }} &nbsp;&nbsp; A: {{ $totalAlpha }} &nbsp;&nbsp; S: {{ $totalSakit }} &nbsp;&nbsp; I:20 &nbsp;&nbsp; T: {{ $totalTerlambat }}
+        <div class="card-footer" style="font-size:12px">
+        H: {{ $totalHadir }} &nbsp;&nbsp; A: {{ $totalAlpha }} &nbsp;&nbsp; S: {{ $totalSakit }} &nbsp;&nbsp; I: {{ $totalIzin }} &nbsp;&nbsp; T: {{ $totalTerlambat }}
+        </div>
       </div>
     </div>
 
   </div>
 </div>
-
 <div class="container-fluid">
   <div class="row mt-2">
     <div class="col-12">

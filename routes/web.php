@@ -13,6 +13,7 @@ use App\Http\Controllers\QrAbsensiController;
 use App\Http\Controllers\IzinKelasController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProfilUserController;
 
 
 
@@ -44,6 +45,11 @@ Route::post('/data-user/store', [UserController::class, 'store'])->name('data-us
 Route::get('/data-user/edit/{id}', [UserController::class, 'edit'])->name('data-user.edit');
 Route::put('/data-user/update/{id}', [UserController::class, 'update'])->name('data-user.update');
 Route::delete('/data-user/destroy/{id}', [UserController::class, 'destroy'])->name('data-user.destroy');
+
+//user akun
+Route::get('/profil-user', [ProfilUserController::class, 'index'])->name('profil.user');
+Route::put('/update-user', [ProfilUserController::class, 'update'])->name('profil-user.update');
+
 
 //route pengaturan sekolah
 Route::get('/profil-sekolah', [ProfilController::class, 'index'])->name('profil-sekolah.index');
