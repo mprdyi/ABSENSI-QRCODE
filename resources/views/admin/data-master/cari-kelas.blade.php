@@ -16,32 +16,33 @@
             {{ session('success') }}
         </div>
         @endif
-    <div class="table-responsive">
-    <div class="container">
-    <div class="row">
-        <div class="col-md-8">
-        <div class="search-box mt-3 mb-4" style="margin-left:-20px">
-        <form action="" method="GET">
+
+
+        <div class="row mb-2">
+        <div class="col-md-10 mb-3">
+        <div class="search-box">
+        <form action="{{ route('cari-kelas') }}" method="GET">
             <input type="text" name="search" class="form-control" placeholder="Cari data kelas...">
             <button type="submit"><i class="fa fa-search"></i></button>
         </form>
         </div>
         </div>
 
-        <div class="col-md-4 position-relative">
+        <div class="col-md-2">
         <a href="#"
-            class="btn-tambah shadow-sm fw-semibold px-3 py-2 mt-3"
+            class="btn-tambah shadow-sm fw-semibold px-3 py-2 mb-3"
             title="Tambah Data"
             role="button"
             aria-label="Tambah data" data-bs-toggle="modal" data-bs-target="#modalTambah">
-            <i class="fa fa-plus"></i> Tambah Data
+            <i class="fa fa-plus"></i> Kelas
         </a>
         </div>
+    </div>
 
-    </div>
-    </div>
-      <table class="table table-borderless align-middle custom-table">
-        <thead>
+
+    <div class="table-responsive">
+      <table class="table table-borderless align-middle custom-table mt-5">
+        <thead style="white-space:nowrap">
           <tr>
             <th>No</th>
             <th>Kode Kelas</th>
@@ -50,7 +51,7 @@
             <th>Aksi</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody style="font-size:14px">
         @foreach ($kelas as $data_kelas)
         @php
         $warnakelas = $data_kelas->kelas;
@@ -72,19 +73,16 @@
             <td><span  class="badge-soft {{ $color }}">{{ $data_kelas->kelas }}</span></td>
             <td><span class="badge-soft purple">{{ $data_kelas->waliKelas->nama_guru ?? '-' }}</span></td>
             <td class="fw-semibold text-success">
-                <div class="row">
-                    <div class="col-6">
+            <span style="letter-spacing: 1px;">
                     <a href="{{ route('data-kelas.edit', $data_kelas->id) }} " class="badge-soft orange"><i class="fa fa-edit"></i></a>
                     </div>
-                    <div class="col-6">
-                    <form action="{{ route('data-kelas.destroy', $data_kelas->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
+                    <form action="{{ route('data-kelas.destroy', $data_kelas->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');" style="display:inline; margin-left:20px">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="badge-soft red" style="border:none"><i class="fa fa-trash"></i></a></button>
                     </form>
-                    </div>
-                </div>
 
+        </span>
             </td>
           </tr>
           @endforeach

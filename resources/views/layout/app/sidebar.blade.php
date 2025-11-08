@@ -1,14 +1,20 @@
+
 <!-- Sidebar -->
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+<!-- Tombol Close (muncul hanya di HP) -->
 
   <!-- Sidebar - Brand -->
   <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ url('/') }}">
     <div class="sidebar-brand-icon">
-      <img src="{{ asset('image/logo-sma.png')  }}" alt="" width="40px">
+      <img src="{{ asset('image/logo-sma.png')  }}" alt="logo" width="40px">
     </div>
-    <div class="sidebar-brand-text mx-3">SMAN <sup>9 Cirebon</sup></div>
+    <div class="sidebar-brand-text mx-3">SMAN <sup>9 <span id="hi">Cirebon</span></sup></div>
   </a>
-
+  <div class="sidebar-close d-md-none text-right p-2">
+  <button id="closeSidebar" class="btn btn-light btn-sm" style="background:transparent; color:white; border:none">
+    <i class="fa fa-times"></i>
+  </button>
+</div>
   <!-- Divider -->
   <hr class="sidebar-divider my-0">
 
@@ -217,3 +223,8 @@
 </ul>
 
 <!-- End of Sidebar -->
+
+
+
+
+

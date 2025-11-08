@@ -1,14 +1,11 @@
 @extends('layout.app')
 @section('title', 'Hasil Data')
-
 @section('content')
 
 
 <div class="container-fluid">
-<div class="row mt-4">
-    <div class="col-12">
 
-    <div class="card shadow-sm border-0 rounded-4">
+<div class="card shadow-sm border-0 rounded-4">
   <div class="card-body">
     <h5 class="fw-bold mb-3">Data Siswa SMAN 9 Cirebon</h5>
     @if(session('success'))
@@ -16,29 +13,18 @@
             {{ session('success') }}
         </div>
         @endif
+
+
+    <div class="search-box mt-3 mb-4">
+    <form action="" method="GET">
+        <input type="text" name="search" class="form-control" placeholder="Cari data siswa...">
+        <button type="submit"><i class="fa fa-search"></i></button>
+    </form>
+    </div>
     <div class="table-responsive">
-    <div class="container">
-    <div class="row">
-        <div class="col-md-8">
-        <div class="search-box mt-3 mb-4" style="margin-left:-20px">
-        <form action="" method="GET">
-            <input type="text" name="search" class="form-control" placeholder="Cari data siswa...">
-            <button type="submit"><i class="fa fa-search"></i></button>
-        </form>
-        </div>
-        </div>
 
-        <div class="col-md-4 position-relative">
-        <a href="{{ route('admin.data-master.data-siswa') }}"
-            class="badge-soft blue shadow-sm fw-semibold px-3 py-2 mt-3 position-absolute"
-            title="Tambah Data" style="right:0">
-            <i class="fa fa-arrow-left"></i> Kembali
-        </a>
-        </div>
 
-    </div>
-    </div>
-    <table class="table table-borderless align-middle custom-table">
+ <table class="table table-borderless align-middle custom-table">
   <thead>
     <tr>
       <th>No</th>
@@ -47,10 +33,14 @@
       <th>Gender</th>
       <th>Kelas</th>
       <th>Wali Kelas</th>
-      <th>Aksi</th>
+      <th style="white-space:nowrap">Aksi <a href="{{ route('admin.data-master.data-siswa') }}"
+            class="badge-soft blue shadow-sm fw-semibold px-3 py-2"
+            title="Tambah Data" style="white-space:nowrap; transform:translateX(20px)">
+            <i class="fa fa-arrow-left"></i> Kembali
+        </a></th>
     </tr>
   </thead>
-  <tbody>
+  <tbody style="font-size:14px">
     @foreach ($siswas as $siswa)
       <tr>
         <td>{{ $loop->iteration + ($siswas->currentPage() - 1) * $siswas->perPage() }}</td>
@@ -119,8 +109,7 @@
 
 
       </div>
-    </div>
-  </div>
+
 
 
 @endsection

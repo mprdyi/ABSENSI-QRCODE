@@ -292,7 +292,7 @@
           <th>Wali Kelas</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody style="font-size:14px">
         @foreach($topTerlambat as $index => $item)
           @php
             $kelas = $item->siswa->kelas->kelas ?? '-';
@@ -324,7 +324,7 @@
             <td>{{ $index + 1 }}</td>
             <td>
               <div>
-                <div class="fw-semibold text-dark">{{ $item->siswa->nama ?? '-' }}</div>
+                <div class="fw-semibold text-dark" style="text-transform:capitalize"> {{ ucwords(strtolower($item->siswa->nama ?? '-')) }}</div>
               </div>
             </td>
             <td><span class="badge-soft {{ $warnaBadge }}">{{ $kelas }}</span></td>

@@ -121,7 +121,7 @@
             <i class="fa fa-graduation-cap"></i>
           </div>
         </div>
-        <div class="card-footer">
+        <div class="card-footer" style="font-size:12px">
           A: 25 &nbsp;&nbsp; S: 14 &nbsp;&nbsp; I: 4 &nbsp;&nbsp; T: {{ $rekapKelasX->total_terlambat ?? 0 }}
         </div>
       </div>
@@ -139,7 +139,7 @@
             <i class="fa fa-book"></i>
           </div>
         </div>
-        <div class="card-footer">
+        <div class="card-footer" style="font-size:12px">
           A: 23 &nbsp;&nbsp; S: 15 &nbsp;&nbsp; I: 2 &nbsp;&nbsp; T: {{ $rekapKelasXI->total_terlambat ?? 0 }}
         </div>
       </div>
@@ -157,7 +157,7 @@
             <i class="fa fa-trophy"></i>
           </div>
         </div>
-        <div class="card-footer">
+        <div class="card-footer" style="font-size:12px">
           A: 19 &nbsp;&nbsp; S: 10 &nbsp;&nbsp; I: 3 &nbsp;&nbsp; T: {{ $rekapKelasXII->total_terlambat ?? 0 }}
         </div>
       </div>
@@ -175,7 +175,7 @@
             <i class="fa fa-users"></i>
           </div>
         </div>
-        <div class="card-footer">
+        <div class="card-footer" style="font-size:12px">
        A: {{ $totalAlpha }} &nbsp;&nbsp; S: {{ $totalSakit }} &nbsp;&nbsp; I: {{ $totalIzin }} &nbsp;&nbsp; T: {{ $totalTerlambat }}
         </div>
       </div>
@@ -221,7 +221,7 @@
                   <th>Aksi</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody style="font-size:14px">
                 @foreach ($data_absensi as $item_absen)
                   <tr>
                     <td>{{ $loop->iteration }}</td>

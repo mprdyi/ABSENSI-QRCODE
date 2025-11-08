@@ -1,0 +1,137 @@
+
+#accordionSidebar {
+  transition: transform 0.3s ease, width 0.3s ease;
+}
+
+/* === MOBILE STYLE === */
+@media (max-width: 768px) {
+  #accordionSidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 240px;
+    z-index: 2000;
+    transform: translateX(-100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-top: 0;
+  }
+
+  #accordionSidebar.active {
+    transform: translateX(0);
+  }
+
+  .sidebar-close {
+    display: block;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2100;
+
+  }
+
+  /* Brand biar pas */
+  #accordionSidebar .sidebar-brand {
+    height: 60px;
+    padding: 10px 15px;
+  }
+  #accordionSidebar  .sidebar-brand-icon{
+    transform:translateX(-35px);
+  }
+  #accordionSidebar #hi{
+    display:none;
+  }
+  #accordionSidebar .sidebar-brand-text{
+    display:inline-block;
+    transform:translateX(-30px);
+
+  }
+
+  /* Nav item spacing */
+  #accordionSidebar .nav-item {
+    margin-bottom: 4px;
+    white-space:nowrap;
+  }
+
+  /* === PERBAIKAN UTAMA: menu font & layout === */
+  #accordionSidebar .nav-link span {
+  font-size: 14px !important;    /* ubah ukuran teks */
+  white-space:nowrap;
+}
+
+#accordionSidebar .nav-link i {
+  font-size: 14px !important;    /* ikon sedikit lebih besar */
+  margin-right: 12px !important;
+  width: 22px !important;
+  text-align: center;
+}
+
+#accordionSidebar .nav-link {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+}
+
+#accordionSidebar .nav-link span {
+  display: inline-block !important;
+  white-space: nowrap !important;
+}
+
+
+
+  /* Heading area (AREA ADMIN) */
+  #accordionSidebar .sidebar-heading {
+    padding: 8px 18px 5px;
+    font-size: 13px;
+    text-align:left;
+
+  }
+
+  /* Divider */
+  #accordionSidebar hr.sidebar-divider {
+    margin: 10px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  /* === Dropdown inner (biar rapi di HP) === */
+  #accordionSidebar .collapse-inner {
+    padding: 5px 0;
+    transform:translateX(-100px)
+  }
+
+  #accordionSidebar .collapse-inner .collapse-item {
+    font-size: 14px;
+    padding: 6px 20px;
+    white-space: nowrap;
+  }
+
+  #accordionSidebar .collapse-inner .collapse-item:hover {
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+}
+
+/* === DESKTOP === */
+@media (min-width: 769px) {
+  .sidebar-close {
+    display: none;
+  }
+
+}
+
+
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #111;
+    text-align: center;
+    padding: 10px;
+    z-index:-1;
+    padding:10px;
+}

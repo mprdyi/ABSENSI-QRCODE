@@ -316,8 +316,7 @@ master siswa
 /* Tombol gradient biru elegan */
 .btn-tambah {
     position: absolute;
-    right: 15px;          /* pojok kanan */
-    top: 15px;            /* sedikit turun */
+    right: 15px;
     background: linear-gradient(135deg, #0052D4 0%, #4364F7 50%, #6FB1FC 100%);
     color: #fff;
     border: none;
@@ -645,6 +644,28 @@ master siswa
     .form-row {
         flex-direction: column;
     }
+    #judul-navbar{
+        display:none;
+    }
+
+
+}
+
+/* Responsif */
+@media (max-width: 800px) {
+
+    .search-box{
+        width:100%;
+    }
+    .btn-tambah{
+        width:100%;
+        left:0;
+        right:0;
+    }
+    .search-box button:hover {
+        background-color: #0056b3;
+        
+      }
 }
 
 /* Samakan tinggi semua input dan select */

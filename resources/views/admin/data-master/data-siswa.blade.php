@@ -1,56 +1,69 @@
 @extends('layout.app')
 @section('title', 'Data Siswa')
-
 @section('content')
-<div class="container-fluid">
-<div class="row mt-4">
-    <div class="col-12">
 
-    <div class="card shadow-sm border-0 rounded-4">
+<style>
+   @media (max-width: 860px) {
+
+        .btn-tambah{
+            width:100%;
+        }
+        .btn-print{
+            width:100%;
+            posistion:absolute;
+            right:20px;
+            padding-top:34px;
+            padding-bottom:34px;
+            display:inline-block;
+            height:40px;
+        }
+   }
+   @media (min-width: 1200px) {
+    .btn-print{
+        transform:translateX(135px);
+        display:inline-block;
+        height:40px;
+    }
+    }
+</style>
+<div class="container-fluid">
+<div class="card shadow-sm border-0 rounded-4">
   <div class="card-body">
-    <h5 class="fw-bold mb-3">Data Siswa SMAN 9 Cirebon</h5>
-    @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
-    <div class="table-responsive">
-    <div class="container">
-    <div class="row">
+
+        <h5 class="fw-bold mb-3">Data Siswa SMAN 9 Cirebon</h5>
+        @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
+
+
+    <div class="row  mb-3">
         <div class="col-md-8">
-        <div class="search-box mt-3 mb-4" style="margin-left:-20px">
+        <div class="search-box mt-3">
         <form action="{{ route('cari-siswa') }}" method="GET">
-            <input type="text" name="search" class="form-control" placeholder="Tersedia {{$hitung_data }} data siswa...">
+            <input type="text" name="search" class="form-control" placeholder="Tersedia {{$hitung_data }} data siswa..." style="width:100%">
             <button type="submit"><i class="fa fa-search"></i></button>
         </form>
         </div>
         </div>
-
         <div class="col-md-4 position-relative">
             <div class="row">
                 <div class="col-6">
-                <a href="#"
-                        class="badge-soft blue  py-2 mt-5 position-absolute"
-                        title="Print QrCode"
-                        role="button"
-                        aria-label="download semua data"  data-bs-toggle="modal" data-bs-target="#modalPrintQr" style="right: 0; top:-12px;">
-                        <i class="fa fa-qrcode"></i> Print
+                <a href="#" class="badge-soft blue mt-4 py-2 btn-print" title="Print QrCode" role="button" aria-label="download semua data"  data-bs-toggle="modal" data-bs-target="#modalPrintQr">
+                    <i class="fa fa-qrcode"></i> Print
                     </a>
                 </div>
                 <div class="col-6">
-                    <a href="#"
-                        class="btn-tambah shadow-sm fw-semibold px-3 py-2 mt-3"
-                        title="Tambah Data"
-                        role="button"
-                        aria-label="Tambah data" data-bs-toggle="modal" data-bs-target="#modalTambah">
-                        <i class="fa fa-plus"></i> Tambah Data
-                    </a>
+                <a href="#" class="btn-tambah shadow-sm fw-semibold px-3 py-2 mt-4" title="Tambah Data" role="button" aria-label="Tambah data" data-bs-toggle="modal" data-bs-target="#modalTambah"> <i class="fa fa-plus"></i> Siswa
+                </a>
                 </div>
             </div>
         </div>
+    </div>
 
-    </div>
-    </div>
+    <div class="table-responsive">
       <table class="table table-borderless align-middle custom-table">
         <thead>
           <tr>
@@ -84,7 +97,7 @@
     <tr>
         <td>{{ $loop->iteration + ($siswas->currentPage() - 1) * $siswas->perPage() }}</td>
         <td><span>{{ $siswa->nis }}</span></td>
-        <td>{{ $siswa->nama }}</td>
+        <td>{{ ucwords(strtolower($siswa->nama ?? '-')) }}</td>
         <td class="fw-semibold text-dark">{{ $siswa->jk }}</td>
         <td><span class="badge-soft {{ $color }}">{{ $kelasNama }}</span></td>
         <td><span>{{ $waliNama }}</span></td>

@@ -79,7 +79,7 @@
             <th>Aksi</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody style="font-size:14px">
             @foreach($data as $item)
             <tr>
                 <td>{{ $loop->iteration }}</td>

@@ -1,11 +1,27 @@
 @extends('layout.app')
 @section('title', 'Izin Meninggalkan Kelas')
 @section('content')
+<style>
+/* Responsif */
+@media (max-width: 800px) {
 
+    .search-box{
+    transform:translateY(30px);
+    }
+
+    .btn-tambah{
+        width:95%;
+        margin-left:8px;
+        padding:10px;
+    }
+
+}
+</style>
 <div class="container-fluid">
 @if(session('success'))
   <div class="alert alert-success">{{ session('success') }}</div>
 @endif
+
 
 <!-- Modal -->
 <div class="modal fade" id="izinModal" tabindex="-1" aria-labelledby="izinModalLabel" aria-hidden="true">
@@ -78,17 +94,22 @@
 
     <div class="card shadow-sm border-0 rounded-4 mt-3">
         <div class="card-body">
-          <h5 class="fw-bold mb-3">DATA IZIN MENINGGALKAN KELAS</h5>
-           <!-- Tombol untuk buka modal -->
-            <button type="button" class="btn btn-primary position-absolute" data-bs-toggle="modal" data-bs-target="#izinModal" style="right:35px; top:18px">
-            + Tambah Izin
-            </button>
-            <br>
+            <div class="row">
+                <div class="col-md-8"  ><h5 class="fw-bold mb-3">IZIN MENINGGALKAN KELAS</h5></div>
+                <div class="col-md-4 mb-2">
+                     <!-- Tombol untuk buka modal -->
+                    <button type="button" class="btn btn-tambah mb-5" data-bs-toggle="modal" data-bs-target="#izinModal">
+                    +  Izin
+                    </button>
+                </div>
+            </div>
+
+
 
           {{-- 🔹 CARI SISWA --}}
           <form method="GET" action="{{ route('cari-data.izin') }}" class="filter-kelas">
             <div class="container-fluid">
-                    <div class="search-box mt-3 mb-4" style="margin-left:-20px; width:100%">
+                    <div class="search-box mt-3 mb-4 " style="margin-left:-20px; width:100%">
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="Tersedia {{ $hitung_data }} data izin....." style="border-radius:15px">
                         <button type="submit"  style="right:-25px; border-radius:7px"><i class="fa fa-search"></i></button>
                     </div>
@@ -97,7 +118,7 @@
 
           <div class="table-responsive">
             <table class="table table-borderless align-middle custom-table">
-              <thead>
+              <thead style="white-space:nowrap">
                 <tr>
                   <th>No</th>
                   <th>Nama</th>
@@ -111,11 +132,11 @@
 
                 </tr>
               </thead>
-              <tbody>
+              <tbody style="font-size:14px">
               @foreach ($izin as $item)
                 <tr>
                     <td>{{  $loop->iteration + ($izin->currentPage() - 1) * $izin->perPage() }}</td>
-                    <td>{{ $item->siswa->nama ?? '-' }}</td>
+                    <td>{{ ucwords(strtolower($item->siswa->nama ?? '-' ))}}</td>
                     <td>{{ $item->siswa->kelas->waliKelas->nama_guru ?? '-' }}</td>
                     <td>{{ $item->siswa->kelas->kelas ?? '-' }}</td>
                     <td>Jam ke-{{ $item->waktu_izin  ??'-' }}</td>

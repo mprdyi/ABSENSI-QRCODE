@@ -1,5 +1,5 @@
 @extends('layout.app')
-@section('title', 'Absensi Siswa')
+@section('title','Absensi Siswa')
 @section('content')
 
 <div class="container-fluid">

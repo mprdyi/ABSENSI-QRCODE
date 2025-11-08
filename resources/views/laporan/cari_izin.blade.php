@@ -5,17 +5,19 @@
 <div class="container-fluid">
 @if(session('success'))
   <div class="alert alert-success">{{ session('success') }}</div>
-@endif
+  @endif
 
 
     <div class="card shadow-sm border-0 rounded-4 mt-3">
         <div class="card-body">
-          <h5 class="fw-bold mb-3">DATA IZIN MENINGGALKAN KELAS</h5>
-           <!-- Tombol untuk buka modal -->
-            <a href="{{ route('izin.kelas') }}" class="badge-soft blue position-absolute" style="right:35px; top:18px">
-             <i class="fa fa-arrow-left"></i> Kembali
-            </a>
-            <br>
+        <div class="row">
+                <div class="col-md-8"  ><h5 class="fw-bold mb-3">IZIN MENINGGALKAN KELAS</h5></div>
+                <div class="col-md-4">
+
+                     <a href="{{ route('izin.kelas') }}" class="btn-back badge-soft blue"> <i class="fa fa-arrow-left"></i> Kembali</a>
+
+                </div>
+            </div>
 
           {{-- 🔹 CARI SISWA --}}
           <form method="GET" action="{{ route('cari-data.izin') }}" class="filter-kelas">
@@ -29,7 +31,7 @@
 
           <div class="table-responsive">
             <table class="table table-borderless align-middle custom-table">
-              <thead>
+              <thead style="white-space:nowrap">
                 <tr>
                   <th>No</th>
                   <th>Nama</th>
@@ -43,11 +45,11 @@
 
                 </tr>
               </thead>
-              <tbody>
+              <tbody style="font-size:14px">
               @foreach ($izin as $item)
                 <tr>
                     <td>{{  $loop->iteration + ($izin->currentPage() - 1) * $izin->perPage() }}</td>
-                    <td>{{ $item->siswa->nama ?? '-' }}</td>
+                    <td>{{ ucwords(strtolower($item->siswa->nama ?? '-' ))}}</td>
                     <td>{{ $item->siswa->kelas->waliKelas->nama_guru ?? '-' }}</td>
                     <td>{{ $item->siswa->kelas->kelas ?? '-' }}</td>
                     <td>Jam ke-{{ $item->waktu_izin  ??'-' }}</td>

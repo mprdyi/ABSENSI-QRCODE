@@ -6,7 +6,7 @@
     <i class="fa fa-bars"></i>
   </button>
 
-  <h5 class="mb-0">SMA NEGERI 9 CIREBON</h5>
+  <h5 class="mb-0" id="judul-navbar">SMA NEGERI 9 CIREBON</h5>
 
   <!-- Topbar Navbar -->
   <ul class="navbar-nav ml-auto">

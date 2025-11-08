@@ -18,19 +18,7 @@
     <link href="{{ asset('Asset/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/mycss.css') }}" rel="stylesheet">
-<style>
-    footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: #111;
-    text-align: center;
-    padding: 10px;
-    z-index:-1;
-    padding:10px;
-}
-</style>
+    <link href="{{ asset('css/sidebar.css') }}" rel="stylesheet">
 
 </head>
 <body id="page-top">
@@ -52,6 +40,12 @@
 
     <!-- End of Main Content -->
     <!-- Bootstrap core JavaScript -->
+     <!-- Page level plugins
+    <script src="{{ asset('Asset/chart.js/Chart.min.js') }}"></script> -->
+
+    <!-- Page level custom scripts
+    <script src="{{ asset('js/demo/chart-area-demo.js') }}"></script>
+    <script src="{{ asset('js/demo/chart-pie-demo.js') }}"></script>  -->
     <script src="{{ asset('Asset/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('Asset/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
@@ -60,14 +54,6 @@
 
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
-
-    <!-- Page level plugins
-    <script src="{{ asset('Asset/chart.js/Chart.min.js') }}"></script> -->
-
-    <!-- Page level custom scripts
-    <script src="{{ asset('js/demo/chart-area-demo.js') }}"></script>
-    <script src="{{ asset('js/demo/chart-pie-demo.js') }}"></script>  -->
-
     <script src="{{ asset('js/my-js.js') }}"></script>
 
     <!-- Bootstrap 5 Bundle JS (sudah termasuk Popper.js) -->
@@ -109,7 +95,42 @@ $(document).ready(function () {
     });
 });
 
+
+
+// INI MENU HAMBURGER
+document.addEventListener("DOMContentLoaded", function () {
+  const sidebar = document.getElementById("accordionSidebar");
+  const toggleBtn = document.getElementById("sidebarToggleTop");
+  const closeBtn = document.getElementById("closeSidebar");
+
+  if (!sidebar || !toggleBtn) return;
+
+  // ---- Hapus semua event bawaan dari tombol SB Admin 2 ----
+  const newToggleBtn = toggleBtn.cloneNode(true);
+  toggleBtn.parentNode.replaceChild(newToggleBtn, toggleBtn);
+
+  // ---- Tambahkan event toggle baru kita ----
+  newToggleBtn.addEventListener("click", function (e) {
+    e.preventDefault();
+    sidebar.classList.toggle("active");
+  });
+
+  if (closeBtn) {
+    closeBtn.addEventListener("click", function () {
+      sidebar.classList.remove("active");
+    });
+  }
+
+  // Pastikan sidebar tertutup saat pertama kali di layar kecil
+  if (window.innerWidth <= 768) {
+    sidebar.classList.remove("active");
+  }
+});
 </script>
+
+
+
+
 
 </body>
 </html>

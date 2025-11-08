@@ -190,7 +190,7 @@
                   <th>Aksi</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody style="font-size:14px">
                 @forelse ($absensi as $item_absen)
                   <tr>
                     <td>{{ $loop->iteration }}</td>
