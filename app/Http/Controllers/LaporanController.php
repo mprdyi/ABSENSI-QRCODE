@@ -6,9 +6,11 @@ use Carbon\Carbon;
 use App\Models\Absensi;
 use App\Models\Siswa;
 use App\Models\DataKelas;
+use App\Models\IzinKelas;
 use App\Models\ProfilSekolah;
+use ZipArchive;
+use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf;
-
 use Illuminate\Support\Facades\DB;
 
 class LaporanController extends Controller
@@ -448,12 +450,62 @@ class LaporanController extends Controller
             ];
         }
 
+         //  Ambil data izin dan hitung kategori
+         $izin_kelas = [];
+         foreach ($siswaList as $siswa) {
+             $izin_pribadi = IzinKelas::where('nis', $siswa->nis)
+                 ->whereYear('created_at', $tahun)
+                 ->where('keperluan', 'Pribadi')
+                 ->count();
+
+             $izin_sekolah = IzinKelas::where('nis', $siswa->nis)
+                 ->whereYear('created_at', $tahun)
+                 ->where('keperluan', 'Sekolah')
+                 ->count();
+
+             $izin_kelas[] = [
+                 'nis' => $siswa->nis,
+                 'nama' => $siswa->nama,
+                 'jk' => $siswa->jk,
+                 'kelas' => $kelas->kelas,
+                 'pribadi' => $izin_pribadi,
+                 'sekolah' => $izin_sekolah,
+                 'total' => $izin_pribadi + $izin_sekolah,
+             ];
+            }
         $pdf = Pdf::loadView('pdf.rekap_tahunan', [
             'kelas' => $kelas,
             'rekap' => $rekap,
-        ])->setPaper([0, 0, 936, 612]);
+            'izin_kelas' =>  $izin_kelas
+        ])->setPaper([0, 0, 936, 612])->output();
 
-        return $pdf->stream('Rekap_Absensi_Tahunan_' . $kelas->kelas . '.pdf');
+        $pdf2 = Pdf::loadView('pdf.izin_kelas', [
+            'kelas' => $kelas,
+            'izin_kelas' => $izin_kelas,
+        ])->setPaper([0, 0, 612, 936], 'portrait')->output();
+
+        // === Simpan sementara dan zip ===
+        Storage::put('Rekap_Tahunan.pdf', $pdf);
+        Storage::put('Rekap_Izin.pdf', $pdf2);
+
+        $zip = new ZipArchive;
+        $zipFileName = 'Rekap_Absensi_' . $kelas->kelas . '.zip';
+        $zipPath = storage_path("app/$zipFileName");
+
+        if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
+            $zip->addFile(storage_path('app/Rekap_Tahunan.pdf'), 'Rekap_Tahunan.pdf');
+            $zip->addFile(storage_path('app/Rekap_Izin.pdf'), 'Rekap_Izin.pdf');
+            $zip->close();
+        }
+
+        // Bersihkan file PDF sementara
+        Storage::delete(['Rekap_Tahunan.pdf', 'Rekap_Izin.pdf']);
+
+        // === Kirim file ZIP ===
+        return response()->download($zipPath)->deleteFileAfterSend(true);
+
+
+        //return $pdf->stream('Rekap_Absensi_Tahunan_' . $kelas->kelas . '.pdf');
     }
 
 

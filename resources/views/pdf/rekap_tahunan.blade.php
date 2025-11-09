@@ -19,17 +19,15 @@
 </head>
 <body>
 
+@php
+    // Bagi 2 halaman: Jan–Jun dan Jul–Des
+    $bulanSet = [
+        ['JAN' => 1, 'FEB' => 2, 'MAR' => 3, 'APR' => 4, 'MEI' => 5, 'JUN' => 6],
+        ['JUL' => 7, 'AGU' => 8, 'SEP' => 9, 'OKT' => 10, 'NOV' => 11, 'DES' => 12],
+    ];
+@endphp
 
-
-    @php
-        // Bagi 2 halaman: Jan–Jun dan Jul–Des
-        $bulanSet = [
-            ['JAN' => 1, 'FEB' => 2, 'MAR' => 3, 'APR' => 4, 'MEI' => 5, 'JUN' => 6],
-            ['JUL' => 7, 'AGU' => 8, 'SEP' => 9, 'OKT' => 10, 'NOV' => 11, 'DES' => 12],
-        ];
-    @endphp
-
-    @foreach ($bulanSet as $halaman => $bulanList)
+@foreach ($bulanSet as $halaman => $bulanList)
 
     <h2>Rekap Absensi Tahunan</h2>
     <h4>{{ strtoupper($kelas->kelas) }} - Tahun {{ date('Y') }}
@@ -40,88 +38,144 @@
         <p><strong>Wali Kelas:</strong> {{ $kelas->waliKelas->nama_guru ?? '-' }}</p>
     </div>
 
-        <table>
-            <thead>
-                <tr>
-                    <th rowspan="2" style="width:25px;">No</th>
-                    <th rowspan="2" style="width:200px;">Nama Siswa</th>
-                    <th colspan="{{ count($bulanList) * 4 }}">DATA KEHADIRAN SISWA</th>
-                    <th colspan="4">Total</th>
-                </tr>
-                <tr>
-                    @foreach ($bulanList as $namaBulan => $angka)
-                        <th colspan="4">{{ $namaBulan }}</th>
-                    @endforeach
+    <table>
+        <thead style="">
+            <tr>
+                <th rowspan="3" style="width:25px;">No</th>
+                <th rowspan="3" style="width:200px;">Nama Siswa</th>
+                <th colspan="{{ count($bulanList) * 4 }}">DATA KEHADIRAN SISWA</th>
+                <th colspan="4">Total</th>
+            </tr>
+            <tr>
+                @foreach ($bulanList as $namaBulan => $angka)
+                    <th colspan="4">{{ $namaBulan }}</th>
+                @endforeach
+                <th>A</th><th>I</th><th>S</th><th>T</th>
+            </tr>
+            <tr>
+
+                @foreach ($bulanList as $namaBulan => $angka)
                     <th>A</th><th>I</th><th>S</th><th>T</th>
-                </tr>
-                <tr>
-                    <th colspan="2"></th>
+                @endforeach
+                <th>A</th><th>I</th><th>S</th><th>T</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @forelse ($rekap as $data)
+                @php
+                $bgColor = $loop->odd ? '#ffffff' : '#dce3f0';
+
+                    // Hitung total per halaman (Jan–Jun atau Jul–Des)
+                    $totalA = 0;
+                    $totalI = 0;
+                    $totalS = 0;
+                    $totalT = 0;
+                @endphp
+
+                <tr style="background-color: {{ $bgColor }};">
+                    <td>{{ $loop->iteration }}</td>
+                    <td style="text-align:left;">{{ $data['nama'] ?? '-' }}</td>
+
+                    {{-- isi bulan per halaman --}}
                     @foreach ($bulanList as $namaBulan => $angka)
-                        <th>A</th><th>I</th><th>S</th><th>T</th>
+                        @php
+                            $bulanData = $data['bulan'][$angka] ?? ['A'=>0,'I'=>0,'S'=>0,'T'=>0];
+                            $totalA += $bulanData['A'];
+                            $totalI += $bulanData['I'];
+                            $totalS += $bulanData['S'];
+                            $totalT += $bulanData['T'];
+                        @endphp
+                        <td>{{ $bulanData['A'] }}</td>
+                        <td>{{ $bulanData['I'] }}</td>
+                        <td>{{ $bulanData['S'] }}</td>
+                        <td>{{ $bulanData['T'] }}</td>
                     @endforeach
-                    <th>A</th><th>I</th><th>S</th><th>T</th>
+
+                    {{-- total per halaman --}}
+                    <td>{{ $totalA }}</td>
+                    <td>{{ $totalI }}</td>
+                    <td>{{ $totalS }}</td>
+                    <td>{{ $totalT }}</td>
                 </tr>
-            </thead>
+            @empty
+                <tr>
+                    <td colspan="{{ 2 + (count($bulanList) * 4) + 4 }}">Tidak ada data absensi</td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
 
-            <tbody>
-                @forelse ($rekap as $data)
-                    @php
-                        $bgColor = $loop->odd ? '#ffffff' : '#f9f9f9';
+    <br><br>
+    <div style="text-align:right;">
+        <p>Cirebon, {{ now()->translatedFormat('d F Y') }}</p>
+        <br><br><br>
+        <p><strong>{{ $kelas->waliKelas->nama_guru ?? '____________________' }}</strong></p>
+        <p>Wali Kelas</p>
+    </div>
 
-                        // Hitung total per halaman (Jan–Jun atau Jul–Des)
-                        $totalA = 0;
-                        $totalI = 0;
-                        $totalS = 0;
-                        $totalT = 0;
-                    @endphp
+    {{-- setelah halaman Juli–Desember, tambahkan halaman rekap izin --}}
+    @if ($loop->last)
+    <div class="page-break"></div>
 
-                    <tr style="background-color: {{ $bgColor }};">
-                        <td>{{ $loop->iteration }}</td>
-                        <td style="text-align:left;">{{ $data['nama'] ?? '-' }}</td>
+<h2>Rekap Izin Meninggalkan Kelas</h2>
+<h4>{{ strtoupper($kelas->kelas) }} - Tahun {{ date('Y') }}</h4>
 
-                        {{-- isi bulan per halaman --}}
-                        @foreach ($bulanList as $namaBulan => $angka)
-                            @php
-                                $bulanData = $data['bulan'][$angka] ?? ['A'=>0,'I'=>0,'S'=>0,'T'=>0];
-                                $totalA += $bulanData['A'];
-                                $totalI += $bulanData['I'];
-                                $totalS += $bulanData['S'];
-                                $totalT += $bulanData['T'];
-                            @endphp
-                            <td>{{ $bulanData['A'] }}</td>
-                            <td>{{ $bulanData['I'] }}</td>
-                            <td>{{ $bulanData['S'] }}</td>
-                            <td>{{ $bulanData['T'] }}</td>
-                        @endforeach
+<table>
+    <thead>
+        <tr>
+            <th rowspan="2">No</th>
+            <th rowspan="2">NIS</th>
+            <th rowspan="2">Nama</th>
+            <th rowspan="2">JK</th>
+            <th rowspan="2">Kelas</th>
+            <th colspan="2">Izin Meninggalkan Kelas</th>
+            <th rowspan="2">Total</th>
+        </tr>
+        <tr>
 
-                        {{-- total per halaman --}}
-                        <td>{{ $totalA }}</td>
-                        <td>{{ $totalI }}</td>
-                        <td>{{ $totalS }}</td>
-                        <td>{{ $totalT }}</td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="{{ 2 + (count($bulanList) * 4) + 4 }}">Tidak ada data absensi</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+            <th>Keperluan Pribadi</th>
+            <th>Keperluan Sekolah</th>
+        </tr>
+    </thead>
+    <tbody>
+        @forelse ($izin_kelas as $izin)
+        @php
+        $bgColor = $loop->odd ? '#ffffff' : '#f1f1f1';
+        @endphp
+            <tr  style="background-color: {{ $bgColor }};">
+                <td>{{ $loop->iteration }}</td>
+                <td>{{ $izin['nis'] }}</td>
+                <td style="text-align:left;">{{ $izin['nama'] }}</td>
+                <td>{{ $izin['jk'] }}</td>
+                <td>{{ $izin['kelas'] }}</td>
+                <td>{{ $izin['pribadi'] }}</td>
+                <td>{{ $izin['sekolah'] }}</td>
+                <td>{{ $izin['total'] }}</td>
+            </tr>
+        @empty
+            <tr>
+                <td colspan="8">Tidak ada data izin meninggalkan kelas</td>
+            </tr>
+        @endforelse
+    </tbody>
+</table>
+<br><br>
+    <div style="text-align:right;">
+        <p>Cirebon, {{ now()->translatedFormat('d F Y') }}</p>
+        <br><br><br>
+        <p><strong>{{ $kelas->waliKelas->nama_guru ?? '____________________' }}</strong></p>
+        <p>Wali Kelas</p>
+    </div>
 
-        <br><br>
-        <div style="text-align:right;">
-            <p>Cirebon, {{ now()->translatedFormat('d F Y') }}</p>
-            <br>
-            <br>
-            <br>
-            <p><strong>{{ $kelas->waliKelas->nama_guru ?? '____________________' }}</strong></p>
-            <p>Wali Kelas</p>
-        </div>
 
-        @if (!$loop->last)
-            <div class="page-break"></div>
-        @endif
-    @endforeach
+    @endif
+
+    @if (!$loop->last)
+        <div class="page-break"></div>
+    @endif
+
+@endforeach
 
 </body>
 </html>

@@ -28,7 +28,7 @@
       <div class="modal-body">
 
         <!-- Form Rekap -->
-        <form id="formManual"  action="{{ route('rekap.perkelas') }}" method="POST" target="_blank">
+        <form id="formManual"  action="{{ route('rekap.perkelas') }}" method="POST">
           @csrf
           <div class="form-group mb-3">
             <select name="id_kelas" class="form-control modern-input">
