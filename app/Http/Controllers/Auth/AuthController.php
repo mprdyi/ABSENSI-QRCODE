@@ -23,7 +23,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            // cukup arahkan ke satu halaman dashboard
+            // arahkan ke satu halaman dashboard
             return redirect()->route('dashboard');
         }
 

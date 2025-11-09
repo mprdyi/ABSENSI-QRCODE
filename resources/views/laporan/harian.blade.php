@@ -218,7 +218,9 @@
                   <th>Wali Kelas</th>
                   <th>Status</th>
                   <th>Keterangan</th>
+                  @if (Auth::user()->role === 'admin' || Auth::user()->role === 'guru')
                   <th>Aksi</th>
+                  @endif
                 </tr>
               </thead>
               <tbody style="font-size:14px">
@@ -232,11 +234,13 @@
                     <td>{{ $item_absen->siswa->kelas->waliKelas->nama_guru ?? '-' }}</td>
                     <td>{{ $item_absen->status }}</td>
                     <td>{{ $item_absen->keterangan}}</td>
+                    @if (Auth::user()->role === 'admin' || Auth::user()->role === 'guru')
                     <td>
                       <a href="{{ route('edit-absen.data', $item_absen->id) }}" class="badge-soft orange">
                         <i class="fa fa-edit"></i>
                       </a>
                     </td>
+                    @endif
                   </tr>
                 @endforeach
               </tbody>

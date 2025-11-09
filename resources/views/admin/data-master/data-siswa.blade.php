@@ -48,6 +48,7 @@
         </form>
         </div>
         </div>
+        @if (Auth::user()->role === 'admin')
         <div class="col-md-4 position-relative">
             <div class="row">
                 <div class="col-6">
@@ -61,6 +62,7 @@
                 </div>
             </div>
         </div>
+        @endif
     </div>
 
     <div class="table-responsive">
@@ -103,6 +105,7 @@
         <td><span>{{ $waliNama }}</span></td>
         <td class="fw-semibold text-success">
         <span style="letter-spacing: 1px;">
+        @if (Auth::user()->role === 'admin')
         <a href="{{ route('edit-data-siswa.edit', $siswa->id) }}" class="badge-soft orange" style="margin-right:20px"><i class="fa fa-edit"></i> </a>
         <form action="{{ route('data-siswa.destroy', $siswa->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');" style="display:inline; margin-right:20px">
             @csrf
@@ -111,6 +114,7 @@
                 <i class="fa fa-trash"></i>
             </button>
         </form>
+        @endif
         <a href="{{ route('qrcode.show', $siswa->nis) }}" class="badge-soft green" title="Lihat QR"><i class="fa fa-qrcode"></i></a>
         </span>
         </td>

@@ -50,12 +50,13 @@
   </div>
 </div>
 
-
+@if (Auth::user()->role === 'admin' || Auth::user()->role === 'guru')
 <div class="container-fluid mt-5">
 <div class="download mb-3" style="position:relative">
 <a href="#" class="badge-soft purple" style="position:absolute; right:0; transform:translateY(-50px)" data-bs-toggle="modal" data-bs-target="#cetak-rekap"> <i class="fa fa-download"> </i> Absensi & Izin</a>
 </div>
 </div>
+@endif
   <div class="row mt-2">
     <div class="col-12">
       <div class="card shadow-sm border-0 rounded-4">

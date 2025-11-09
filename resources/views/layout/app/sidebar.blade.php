@@ -19,12 +19,13 @@
   <hr class="sidebar-divider my-0">
 
   <!-- Nav Item - Dashboard -->
-  <li class="nav-item active">
-    <a class="nav-link" href="{{ url('/') }}">
+  <li class="nav-item">
+    <a class="nav-link " href="{{ url('/') }}">
       <i class="fas fa-fw fa-tachometer-alt"></i>
       <span>Dashboard</span>
     </a>
   </li>
+
 
   <!-- Divider -->
   <hr class="sidebar-divider">
@@ -105,33 +106,19 @@
   <!-- Heading -->
   <div class="sidebar-heading">AREA PIKET</div>
 
-  <!-- Nav Item - Daftar Hadir -->
+  <!-- Nav Item -Data siswa -->
   <li class="nav-item">
-    <a class="nav-link" href="#">
-      <i class="fas fa-clipboard-list"></i>
-      <span>Daftar Hadir</span>
+    <a class="nav-link" href="{{ url('data-siswa') }}">
+      <i class="fa fa-users"></i>
+      <span>Data siswa</span>
     </a>
   </li>
 
-  <!-- Nav Item - Laporan Rekap -->
-  <li class="nav-item">
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLaporanPiket"
-       aria-expanded="true" aria-controls="collapseLaporanPiket">
-      <i class="fa fa-envelope-open-text"></i>
-      <span>Laporan Rekap</span>
-    </a>
-    <div id="collapseLaporanPiket" class="collapse" data-parent="#accordionSidebar">
-      <div class="bg-white py-2 collapse-inner rounded">
-        <a class="collapse-item" href="#">Harian</a>
-        <a class="collapse-item" href="#">Mingguan</a>
-        <a class="collapse-item" href="#">Bulanan</a>
-      </div>
-    </div>
-  </li>
+
 
   <!-- Nav Item - Cetak QR -->
   <li class="nav-item">
-    <a class="nav-link" href="">
+    <a class="nav-link" href="{{ route('data-absensi-siswa.data') }}">
       <i class="fa fa-qrcode"></i>
       <span>Absensi Qr</span>
     </a>
@@ -145,6 +132,21 @@
     </a>
   </li>
 
+ <!-- Nav Item - Laporan Rekap -->
+ <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLaporanAdmin"
+       aria-expanded="true" aria-controls="collapseLaporanAdmin">
+      <i class="fa fa-envelope-open-text"></i>
+      <span>Laporan Rekap</span>
+    </a>
+    <div id="collapseLaporanAdmin" class="collapse" data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        <a class="collapse-item" href="{{ route('laporan-harian.harian') }}">Harian</a>
+        <a class="collapse-item" href="{{ route('arsip-absensi.all') }}">Arsip</a>
+      </div>
+    </div>
+  </li>
+
   <!-- Divider -->
   <hr class="sidebar-divider">
   @endif
@@ -156,6 +158,14 @@
 
   <!-- Heading -->
   <div class="sidebar-heading">AREA OSIS</div>
+
+   <!-- Nav Item -Data siswa -->
+   <li class="nav-item">
+    <a class="nav-link" href="{{ url('data-siswa') }}">
+      <i class="fa fa-users"></i>
+      <span>Data siswa</span>
+    </a>
+  </li>
 
 
   <!-- Nav Item - QR -->

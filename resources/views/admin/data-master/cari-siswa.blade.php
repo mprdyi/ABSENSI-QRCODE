@@ -33,11 +33,14 @@
       <th>Gender</th>
       <th>Kelas</th>
       <th>Wali Kelas</th>
-      <th style="white-space:nowrap">Aksi <a href="{{ route('admin.data-master.data-siswa') }}"
+      <th style="white-space:nowrap">Aksi
+      @if (Auth::user()->role === 'admin')<a href="{{ route('admin.data-master.data-siswa') }}"
             class="badge-soft blue shadow-sm fw-semibold px-3 py-2"
             title="Tambah Data" style="white-space:nowrap; transform:translateX(20px)">
             <i class="fa fa-arrow-left"></i> Kembali
-        </a></th>
+        </a>
+        @endif
+    </th>
     </tr>
   </thead>
   <tbody style="font-size:14px">
@@ -68,6 +71,7 @@
 
         <td class="fw-semibold text-success">
           <div class="row">
+          @if (Auth::user()->role === 'admin')
             <div class="col-4">
               <a href="{{ route('edit-data-siswa.edit', $siswa->id) }}" class="badge-soft orange">
                 <i class="fa fa-edit"></i>
@@ -83,6 +87,7 @@
                 </button>
               </form>
             </div>
+             @endif
             <div class="col-4">
             <a href="{{ route('qrcode.show', $siswa->nis) }}" class="badge-soft green" title="Lihat QR">
                 <i class="fa fa-qrcode"></i>
