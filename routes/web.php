@@ -120,6 +120,12 @@ Route::put('/Edit-Absensi-Siswa/{id}', [LaporanController::class, 'update'])->na
 Route::get('/filter-absen', [LaporanController::class, 'Filter'])->name('Filter.kelas');
 Route::get('/absensi/filter', [LaporanController::class, 'CariArsip'])->name('cari-data.arsip');
 Route::get('/Download-Backup', [LaporanController::class, 'DownloadBackup'])->name('download-backup.laporan');
+// laporan
+Route::get('/get-wali-kelas/{id}', [LaporanController::class, 'getWaliKelas'])->name('get-wali-kelas');
+Route::post('/rekap-perkelas', [LaporanController::class, 'downloadRekapPDF'])->name('rekap.perkelas');
+
+
+
 
 //IZIN MENINGGALKAN KELAS
 Route::get('/Izin-Meninggalkan-Kelas', [IzinKelasController::class, 'index'])->name('izin.kelas');

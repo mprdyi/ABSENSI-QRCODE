@@ -3,7 +3,6 @@
 @section('content')
 
 
-
 <div class="container-fluid">
     @if (session('success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -16,6 +15,47 @@
                 {{ session('error') }}
     </div>
         @endif
+
+<!-- Modal  -->
+<div class="modal fade" id="cetak-rekap" tabindex="-1" aria-labelledby="cetak rekap" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content custom-modal shadow-lg">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold text-dark">Download  & Rekap</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <!-- Form Rekap -->
+        <form id="formManual"  action="{{ route('rekap.perkelas') }}" method="POST" target="_blank">
+          @csrf
+          <div class="form-group mb-3">
+            <select name="id_kelas" class="form-control modern-input">
+              <option value="">-- kelas --</option>
+              @foreach ($kelas as $k)
+                  <option value="{{ $k->kode_kelas }}">{{ $k->kelas }}</option>
+              @endforeach
+            </select>
+          </div>
+          <div class="form-group mb-3 mt-2">
+            <input type="text" name="wali_kelas" class="form-control modern-input" placeholder="Wali Kelas" readonly>
+          </div>
+          <button type="submit" class="btn btn-primary rounded-3 px-4 py-2">Simpan</button>
+        </form>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="container-fluid mt-5">
+<div class="download mb-3" style="position:relative">
+<a href="#" class="badge-soft purple" style="position:absolute; right:0; transform:translateY(-50px)" data-bs-toggle="modal" data-bs-target="#cetak-rekap"> <i class="fa fa-download"> </i> Absensi & Izin</a>
+</div>
+</div>
   <div class="row mt-2">
     <div class="col-12">
       <div class="card shadow-sm border-0 rounded-4">

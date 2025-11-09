@@ -96,7 +96,7 @@
 <div class="container-fluid py-5">
 <div class="download mb-3" style="position:relative">
         <a href="{{ route('download-backup.laporan') }}" class="badge-soft purple" style="position:absolute; right:0; transform:translateY(-50px)"> <i class="fa fa-download"> </i> Backup & Rekap</a>
-    </div>
+</div>
 @if (session('success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         {{ session('success') }}

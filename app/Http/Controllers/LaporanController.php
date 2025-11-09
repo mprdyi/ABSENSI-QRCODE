@@ -367,14 +367,99 @@ class LaporanController extends Controller
     ->orderBy('jam_masuk', 'desc')
     ->paginate(20);
 
+     //ambil semua kelas
+     $kelas = DataKelas::all();
+
     $view_data = [
-        'data_absensi' =>   $absensi
+        'data_absensi' =>   $absensi,
+        'kelas' => $kelas,
     ];
         return view('laporan.arsip',$view_data );
     }
 
+    //GET WALI KELAS
+    public function getWaliKelas($id)
+    {
+        $kelas = DataKelas::with('waliKelas')->where('kode_kelas', $id)->first();
+
+        if ($kelas && $kelas->waliKelas) {
+            return response()->json([
+                'wali' => [
+                    'id' => $kelas->waliKelas->id,
+                    'nama' => $kelas->waliKelas->nama_guru
+                ]
+            ]);
+        } else {
+            return response()->json(['wali' => null]);
+        }
+    }
 
 
+    public function downloadRekapPDF(Request $request)
+    {
+        $request->validate([
+            'id_kelas' => 'required',
+        ]);
+
+        $kelas = DataKelas::with(['waliKelas', 'siswa'])->where('kode_kelas', $request->id_kelas)->first();
+
+        if (!$kelas) {
+            return back()->with('error', 'Kelas tidak ditemukan.');
+        }
+
+        $tahun = now()->year;
+        $siswaList = $kelas->siswa;
+
+        $rekap = [];
+
+        foreach ($siswaList as $siswa) {
+            $rekap[$siswa->nis]['nama'] = $siswa->nama;
+
+            for ($bulan = 1; $bulan <= 12; $bulan++) {
+                $rekap[$siswa->nis]['bulan'][$bulan] = [
+                    'A' => Absensi::whereYear('tanggal', $tahun)
+                        ->whereMonth('tanggal', $bulan)
+                        ->where('nis', $siswa->nis)
+                        ->where('status', 'Alpha')
+                        ->count(),
+                    'I' => Absensi::whereYear('tanggal', $tahun)
+                        ->whereMonth('tanggal', $bulan)
+                        ->where('nis', $siswa->nis)
+                        ->where('status', 'Izin')
+                        ->count(),
+                    'S' => Absensi::whereYear('tanggal', $tahun)
+                        ->whereMonth('tanggal', $bulan)
+                        ->where('nis', $siswa->nis)
+                        ->where('status', 'Sakit')
+                        ->count(),
+                    'T' => Absensi::whereYear('tanggal', $tahun)
+                        ->whereMonth('tanggal', $bulan)
+                        ->where('nis', $siswa->nis)
+                        ->where('status', 'Terlambat')
+                        ->count(),
+                ];
+            }
+
+            $rekap[$siswa->nis]['total'] = [
+                'A' => array_sum(array_column($rekap[$siswa->nis]['bulan'], 'A')),
+                'I' => array_sum(array_column($rekap[$siswa->nis]['bulan'], 'I')),
+                'S' => array_sum(array_column($rekap[$siswa->nis]['bulan'], 'S')),
+                'T' => array_sum(array_column($rekap[$siswa->nis]['bulan'], 'T')),
+            ];
+        }
+
+        $pdf = Pdf::loadView('pdf.rekap_tahunan', [
+            'kelas' => $kelas,
+            'rekap' => $rekap,
+        ])->setPaper([0, 0, 936, 612]);
+
+        return $pdf->stream('Rekap_Absensi_Tahunan_' . $kelas->kelas . '.pdf');
+    }
+
+
+
+
+    //  CARI ASRIP
     public function CariArsip(Request $request)
     {
     $search = $request->input('search');
