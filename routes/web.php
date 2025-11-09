@@ -14,6 +14,8 @@ use App\Http\Controllers\IzinKelasController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfilUserController;
+use App\Http\Controllers\Auth\CustomForgotPasswordController;
+use App\Http\Controllers\Auth\CustomRessetPasswordController;
 
 
 
@@ -35,6 +37,17 @@ use App\Http\Controllers\ProfilUserController;
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+//FORGOT
+Route::get('forgot-password', [CustomForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('password-email', [CustomForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+
+// Form reset password (GET)
+Route::get('password-reset/{token}', [CustomRessetPasswordController::class, 'showResetForm'])
+->name('password.reset');
+Route::post('password-reset', [CustomRessetPasswordController::class, 'reset'])
+->name('password.update');
+
 
 Route::middleware(['auth'])->group(function () {
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');

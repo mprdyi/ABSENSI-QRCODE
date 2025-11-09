@@ -127,6 +127,9 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
+
+//VALIDASI PASSWORD INPUT
+
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.querySelector("form");
     const password = document.querySelector('input[name="password"]');

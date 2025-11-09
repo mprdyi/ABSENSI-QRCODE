@@ -274,7 +274,7 @@
         </div>
         <button class="btn-login">Sign in</button>
         <div class="extra">
-          <a href="#">Forgot Password?</a>
+          <a href="{{ route('password.request') }}">Forgot Password?</a>
         </div>
       </form>
     </div>
