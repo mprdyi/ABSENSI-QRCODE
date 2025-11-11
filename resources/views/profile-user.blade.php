@@ -36,10 +36,11 @@
                 </div>
 
                 <div class="form-group mb-3">
-                    <input type="email" class="form-control modern-input" name="email"
+                    <input type="{{ Auth::user()->role === 'siswa' ? 'hidden' : 'text' }}" class="form-control modern-input" name="email"
                         value="{{ old('email', $user->email) }}"
-                        placeholder="Masukan Email...">
+                        placeholder="Masukan Username or Email...">
                 </div>
+
 
                 <div class="form-group mb-3">
                 <input type="password" class="form-control modern-input" name="password"

@@ -56,6 +56,11 @@ return [
             'throw' => false,
         ],
 
+        'google' => [
+            'driver' => 'google',
+            'serviceAccount' => storage_path('app/g-drive-akses.json'),
+            'folder' => env('GOOGLE_DRIVE_FOLDER_ID', null),
+        ],
     ],
 
     /*
@@ -72,5 +77,8 @@ return [
     'links' => [
         public_path('storage') => storage_path('app/public'),
     ],
+
+
+
 
 ];

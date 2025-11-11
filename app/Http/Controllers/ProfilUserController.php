@@ -25,7 +25,7 @@ class ProfilUserController extends Controller
 
         $request->validate([
             'nama_user' => 'required|string|max:255',
-            'email'     => 'required|email|max:255',
+            'email'     => 'nullable|string|max:255',
             'password'  => 'nullable|min:6|confirmed'
 
         ]);

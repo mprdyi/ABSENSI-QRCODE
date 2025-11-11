@@ -98,6 +98,7 @@
  <div id="content">
 
 <div class="container-fluid py-4" style="background-color:#f6f8fc; min-height:100vh;">
+@if (Auth::user()->role === 'admin' || Auth::user()->role === 'guru' || Auth::user()->role === 'osis')
   <div class="mb-4">
     <h4 class="fw-bold">Hello, {{ Auth::user()->name }}</h4>
     <p class="text-muted">Selamat datang di aplikasi management absensi neglan cirebon</p>
@@ -345,6 +346,34 @@
 
 </div>
 </div>
+@endif
+
+@if(Auth::user()->role === 'siswa')
+<div class="container mt-5">
+    <div class="card rounded-4 shadow-lg"
+         style="background-color: #ffffff; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+        <div class="card-body p-5">
+            <h2 class="fw-bold mb-3" style="background: linear-gradient(135deg, #667eea, #764ba2);
+                                            -webkit-background-clip: text;
+                                            -webkit-text-fill-color: transparent;">
+             Hello, {{ Auth::user()->name }}
+            </h2>
+            <p class="fst-italic mb-4" style="color: #4b5563; font-size: 1.1rem;">
+                “Selamat datang di kelas kami! Semoga setiap kegiatan belajar mengajar
+                memberikan pengalaman yang menyenangkan, penuh ilmu, dan inspirasi.
+                Mari kita bersama-sama menjaga semangat, kedisiplinan, dan kerja sama
+                untuk mencapai prestasi terbaik.”
+            </p>
+            <p class="mb-0 fw-semibold" style="color: #1f2937;">
+                — {{ Auth::user()->name }}
+            </p>
+            <small class="text-muted">Koordinator Kelas 2025/2026</small>
+        </div>
+    </div>
+</div>
+
+
+@endif
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>

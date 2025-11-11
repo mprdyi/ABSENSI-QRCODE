@@ -20,20 +20,83 @@
 <body>
 
     <!-- ✅ Halaman 1: Rekap Jumlah -->
-    <h2>Rekap Jumlah Absensi<br><small>{{ $hariTeks }}</small></h2>
+   <!-- <table>
+        <tr>
+            <thead>
+                <th colspan="2">Siswa Terlambat</th>
+                <th>Siswa Tidak Hadir</th>
+                <th colspan="3">Alasan</th>
+        </tr>
+        <tr>
+            <th>KELAS</th>
+            <th>JUMLAH</th>
+            <th>JUMLAH</th>
+            <th>S</th>
+            <th>I</th>
+            <th>A</th>
+            </thead>
+        </tr>
+    </table> -->
+
+    <h2>REKAP JUMLAH ABSENSI SISWA<br>
+    SMA NEGERI 9 CIREBON <br>
+    <small>{{ $hariTeks }}</small></h2>
     <table>
-        <tr><th>Status</th><th>Jumlah</th></tr>
-        <tr><td>Hadir</td><td>{{$totalHadir }}</td></tr>
-        <tr><td>Izin</td><td>{{ $totalIzin }}</td></tr>
-        <tr><td>Sakit</td><td>{{ $totalSakit }}</td></tr>
-        <tr><td>Alpha</td><td>{{ $totalAlpha }}</td></tr>
+    <tr>
+                <th colspan="2">Siswa Terlambat</th>
+                <th>Siswa Tidak Hadir</th>
+                <th colspan="3">Alasan</th>
+        </tr>
+        <tr>
+            <th>KELAS</th>
+            <th>JUMLAH</th>
+            <th>JUMLAH</th>
+            <th>S</th>
+            <th>I</th>
+            <th>A</th>
+            </thead>
+        </tr>
+        <tr>
+            <td>X</td>
+            <td>{{ $rekapKelasX->total_terlambat }}</td>
+            <td>{{ $rekapKelasX->total_sakit + $rekapKelasX->total_izin + $rekapKelasX->total_alpha  ?? 0 }}</td>
+            <td>{{ $rekapKelasX->total_izin }}</td>
+            <td>{{ $rekapKelasX->total_sakit }}</td>
+            <td>{{ $rekapKelasX->total_alpha }}</td>
+        </tr>
+        <tr>
+            <td>XI</td>
+            <td>{{ $rekapKelasXI->total_terlambat }}</td>
+            <td>{{ $rekapKelasXI->total_sakit + $rekapKelasXI->total_izin + $rekapKelasXI->total_alpha  ?? 0 }}</td>
+            <td>{{ $rekapKelasXI->total_izin }}</td>
+            <td>{{ $rekapKelasXI->total_sakit }}</td>
+            <td>{{ $rekapKelasXI->total_alpha }}</td>
+        </tr>
+        <tr>
+            <td>XII</td>
+            <td>{{ $rekapKelasXII->total_terlambat }}</td>
+            <td>{{ $rekapKelasXII->total_sakit + $rekapKelasXII->total_izin + $rekapKelasXII->total_alpha  ?? 0 }}</td>
+            <td>{{ $rekapKelasXII->total_izin }}</td>
+            <td>{{ $rekapKelasXII->total_sakit }}</td>
+            <td>{{ $rekapKelasXII->total_alpha }}</td>
+        </tr>
+        <tr>
+            <td>Jumlah</td>
+            <td>{{ $rekapKelasX->total_terlambat + $rekapKelasXI->total_terlambat + $rekapKelasXII->total_terlambat }}</td>
+            <td>{{ ( $rekapKelasXII->total_sakit + $rekapKelasXII->total_izin + $rekapKelasXII->total_alpha  ?? 0) + ( $rekapKelasXI->total_sakit + $rekapKelasXI->total_izin + $rekapKelasXI->total_alpha  ?? 0) + ( $rekapKelasX->total_sakit + $rekapKelasX->total_izin + $rekapKelasX->total_alpha  ?? 0) }}</td>
+            <td>{{ $rekapKelasX->total_sakit + $rekapKelasXI->total_sakit + $rekapKelasXII->total_sakit }}</td>
+            <td>{{ $rekapKelasX->total_izin + $rekapKelasXI->total_izin + $rekapKelasXII->total_izin }}</td>
+            <td>{{ $rekapKelasX->total_alpha + $rekapKelasXI->total_alpha + $rekapKelasXII->total_alpha }}</td>
+        </tr>
     </table>
 
     <p style="margin-top: 30px; text-align: right;">Dicetak: {{ $jamCetak }}</p>
 
     <!-- ✅ Halaman 2: Terlambat -->
     <div class="page-break"></div>
-    <h2>Daftar Siswa Terlambat<br><small>{{ $hariTeks }}</small></h2>
+    <h2>Daftar Siswa Terlambat<br>
+    SMA NEGERI 9 CIREBON <br>
+    <small>{{ $hariTeks }}</small></h2>
     <table>
         <thead>
             <tr>
@@ -57,7 +120,9 @@
 
     <!-- ✅ Halaman 3: Ketidakhadiran -->
     <div class="page-break"></div>
-    <h2>Daftar Ketidakhadiran (Izin, Sakit, Alpha)<br><small>{{ $hariTeks }}</small></h2>
+    <h2>Daftar Ketidakhadiran (Izin, Sakit, Alpha)<br>
+    SMA NEGERI 9 CIREBON <br>
+    <small>{{ $hariTeks }}</small></h2>
     <table>
         <thead>
             <tr>

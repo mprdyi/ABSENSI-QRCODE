@@ -344,6 +344,54 @@ class LaporanController extends Controller
     $hariTeks = $hariIni->translatedFormat('d F Y');
     $jamCetak = Carbon::now()->translatedFormat('d F Y H:i');
 
+    //REKAP DATA ABSENSI PERKELAS X XI XII
+     // === REKAP KELAS X ===
+     $rekapKelasX = DB::table('data_absensi')
+     ->join('siswas', 'data_absensi.nis', '=', 'siswas.nis')
+     ->join('data_kelas', 'siswas.id_kelas', '=', 'data_kelas.kode_kelas')
+     ->where('data_kelas.kelas', 'like', 'X-%')
+     ->whereDate('data_absensi.tanggal', now()->toDateString())
+     ->select(
+         DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'hadir' THEN 1 ELSE 0 END) as total_hadir"),
+         DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'izin' THEN 1 ELSE 0 END) as total_izin"),
+         DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'sakit' THEN 1 ELSE 0 END) as total_sakit"),
+         DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'alpha' THEN 1 ELSE 0 END) as total_alpha"),
+         DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'terlambat' THEN 1 ELSE 0 END) as total_terlambat")
+     )
+     ->first();
+
+     // === REKAP KELAS XI ===
+     $rekapKelasXI = DB::table('data_absensi')
+     ->join('siswas', 'data_absensi.nis', '=', 'siswas.nis')
+     ->join('data_kelas', 'siswas.id_kelas', '=', 'data_kelas.kode_kelas')
+     ->where('data_kelas.kelas', 'like', 'XI-%')
+     ->whereDate('data_absensi.tanggal', now()->toDateString())
+     ->select(
+         DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'hadir' THEN 1 ELSE 0 END) as total_hadir"),
+         DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'izin' THEN 1 ELSE 0 END) as total_izin"),
+         DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'sakit' THEN 1 ELSE 0 END) as total_sakit"),
+         DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'alpha' THEN 1 ELSE 0 END) as total_alpha"),
+         DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'terlambat' THEN 1 ELSE 0 END) as total_terlambat")
+     )
+     ->first();
+
+
+
+     // === REKAP KELAS XII ===
+     $rekapKelasXII = DB::table('data_absensi')
+     ->join('siswas', 'data_absensi.nis', '=', 'siswas.nis')
+     ->join('data_kelas', 'siswas.id_kelas', '=', 'data_kelas.kode_kelas')
+     ->where('data_kelas.kelas', 'like', 'XII%')
+     ->whereDate('data_absensi.tanggal', now()->toDateString())
+     ->select(
+         DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'hadir' THEN 1 ELSE 0 END) as total_hadir"),
+         DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'izin' THEN 1 ELSE 0 END) as total_izin"),
+         DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'sakit' THEN 1 ELSE 0 END) as total_sakit"),
+         DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'alpha' THEN 1 ELSE 0 END) as total_alpha"),
+         DB::raw("SUM(CASE WHEN LOWER(data_absensi.status) = 'terlambat' THEN 1 ELSE 0 END) as total_terlambat")
+     )
+     ->first();
+
     $pdf = Pdf::loadView('laporan.rekap_ketidakhadiran', [
         'hariTeks' => $hariTeks,
         'jamCetak' => $jamCetak,
@@ -354,9 +402,23 @@ class LaporanController extends Controller
         'totalTerlambat' => $totalTerlambat,
         'dataTerlambat' => $dataTerlambat,
         'dataKetidakhadiran' => $dataKetidakhadiran,
+        'rekapKelasX' => $rekapKelasX,
+        'rekapKelasXI' => $rekapKelasXI,
+        'rekapKelasXII' => $rekapKelasXII
     ])->setPaper([0, 0, 595.276, 935.433], 'portrait');
 
-    return $pdf->download('Rekap_Absensi_' . $hariIni->format('d-m-Y') . '.pdf');
+     // Simpan sementara ke storage lokal
+     $filename = 'Rekap_Absensi_' . $hariIni->format('d-m-Y') . '.pdf';
+     $path = storage_path('app/public/' . $filename);
+     $pdf->save($path);
+
+     // Upload ke Google Drive
+     Storage::disk('google')->put($filename, file_get_contents($path));
+
+     // Langsung download juga ke user
+     return response()->download($path)->deleteFileAfterSend(true);
+
+    //return $pdf->download('Rekap_Absensi_' . $hariIni->format('d-m-Y') . '.pdf');
     }
 
 
@@ -477,9 +539,9 @@ class LaporanController extends Controller
             'kelas' => $kelas,
             'rekap' => $rekap,
             'izin_kelas' =>  $izin_kelas
-        ])->setPaper([0, 0, 936, 612])->output();
+        ])->setPaper([0, 0, 936, 612]);
 
-        $pdf2 = Pdf::loadView('pdf.izin_kelas', [
+        /* $pdf2 = Pdf::loadView('pdf.izin_kelas', [
             'kelas' => $kelas,
             'izin_kelas' => $izin_kelas,
         ])->setPaper([0, 0, 612, 936], 'portrait')->output();
@@ -502,10 +564,10 @@ class LaporanController extends Controller
         Storage::delete(['Rekap_Tahunan.pdf', 'Rekap_Izin.pdf']);
 
         // === Kirim file ZIP ===
-        return response()->download($zipPath)->deleteFileAfterSend(true);
+        return response()->download($zipPath)->deleteFileAfterSend(true); */
 
 
-        //return $pdf->stream('Rekap_Absensi_Tahunan_' . $kelas->kelas . '.pdf');
+        return $pdf->stream('Rekap_Absensi_Tahunan_' . $kelas->kelas . '.pdf');
     }
 
 

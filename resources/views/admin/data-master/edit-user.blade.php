@@ -30,7 +30,7 @@
 
           <div class="col-6">
             <div class="form-group mb-3">
-              <input type="email" class="form-control modern-input" name="email"
+              <input type="text" class="form-control modern-input" name="email"
                 value="{{ old('email', $user->email) }}" placeholder="Email...">
             </div>
           </div>

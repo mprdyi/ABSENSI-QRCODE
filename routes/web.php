@@ -1,4 +1,5 @@
 <?php
+use Illuminate\Support\Facades\Storage;
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfilController;
@@ -16,7 +17,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfilUserController;
 use App\Http\Controllers\Auth\CustomForgotPasswordController;
 use App\Http\Controllers\Auth\CustomRessetPasswordController;
-
+use App\Http\Controllers\DataUserSiswaController;
 
 
 
@@ -32,6 +33,25 @@ use App\Http\Controllers\Auth\CustomRessetPasswordController;
 |
 */
 
+Route::get('/test-drive', function () {
+    try {
+
+            $result = Storage::disk('google')->put('halo.txt', 'Halo Laravel!');
+            return $result ? '✅ Upload berhasil!' : '❌ Upload gagal!';
+        } catch (\Exception $e) {
+            return '❌ Error: ' . $e->getMessage();
+        }
+});
+
+
+// Form ajukan absensi
+Route::get('/ajukan-absensi', [DataUserSiswaController::class, 'ajukanAbsensi'])->name('ajukan-absensi.show');
+
+// Ambil siswa via AJAX
+Route::get('/get-siswa-by-kelas-2/{id_kelas}', [DataUserSiswaController::class, 'getSiswaByKelas'])->name('get-siswa-by-kelas');
+
+// Submit form (POST)
+Route::post('/ajukan-absensi', [DataUserSiswaController::class, 'submitAbsensi'])->name('ajukan-absensi.submit');
 
 // LOGIN
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -129,6 +149,12 @@ Route::middleware(['auth', 'role:admin,guru,osis'])->group(function () {
     Route::get('/get-wali-kelas/{id}', [LaporanController::class, 'getWaliKelas'])->name('get-wali-kelas');
     Route::post('/rekap-perkelas', [LaporanController::class, 'downloadRekapPDF'])->name('rekap.perkelas');
 });
+
+//SISWA USER
+Route::get('/data-absen-kelas', [DataUserSiswaController::class, 'dataSiswa'])->name('data-absen.kelas');
+Route::put('/absensi/{id}', [DataUserSiswaController::class, 'update'])->name('absensi-update-to-siswa.update');
+
+
 
 });
 

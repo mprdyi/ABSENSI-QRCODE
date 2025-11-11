@@ -13,7 +13,7 @@
       font-family: "Poppins", sans-serif;
     }
 
-    body {
+     .wrapper{
       display: flex;
       height: 100vh;
       width: 100vw;
@@ -189,7 +189,7 @@
 
     /* === RESPONSIVE === */
     @media (max-width: 850px) {
-      body {
+      .wrapper {
         flex-direction: column;
         height: auto;
       }
@@ -215,10 +215,46 @@
         opacity: 1;
       }
     }
+    .badge-soft {
+    display: inline-block;
+    padding: 0.4rem 0.7rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    }
 
+    .badge-soft.purple {
+    background-color: rgba(113, 90, 255, 0.1);
+    color: #715AFF;
+    border:none;
+    }
+    .wrapper{
+
+    }
+
+    .ajukan-izin{
+    padding: 8px 16px;
+    border-radius: 40px;
+    background-color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 2px 6px rgba(0, 0, 0, 0.10);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    postion:absolute;
+    right:100px;
+    top:20px;
+    }
+    .ajukan-izin:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.20), 0 4px 10px rgba(0, 0, 0, 0.12);
+    }
+    .ajukan-izin a{
+        text-decoration:none;
+        color:gray;
+        font-weight:bold;
+    }
     @media (max-width: 400px) {
       .glass-box {
         padding: 20px 15px;
+        margin-top:50px;
       }
       .glass-box h1 {
         font-size: 1.3rem;
@@ -228,9 +264,35 @@
         margin-bottom: 10px;
       }
     }
+    .ajukan-izin {
+    position: fixed;       /* jadi nempel di viewport */
+    top: 20px;             /* jarak dari atas layar */
+    right: 37px;           /* jarak dari kanan layar */
+    z-index: 999;          /* pastikan di atas semua elemen */
+    padding: 8px 16px;
+    border-radius: 40px;
+    background-color: #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15), 0 2px 6px rgba(0,0,0,0.10);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    font-size:14px;
+}
+
+.ajukan-izin:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.20), 0 4px 10px rgba(0,0,0,0.12);
+}
+
+
   </style>
 </head>
 <body>
+<div class="ajukan-izin">
+    <a href="{{ route('ajukan-absensi.show') }}">
+        <i class="fa-solid fa-file-circle-plus badge-soft purple"></i> Ajukan Izin
+    </a>
+</div>
+
+<div class="wrapper">
   <div class="left">
     <div class="glass-box" id="gb">
       <div class="logo">
@@ -266,7 +328,7 @@
         @csrf
         <div class="input-group">
           <label>Username</label>
-          <input type="email" placeholder="Username" name="email">
+          <input type="text" placeholder="Username or email" name="email">
         </div>
         <div class="input-group">
           <label>Password</label>
@@ -279,6 +341,8 @@
       </form>
     </div>
   </div>
+  </div>
+
 
   <script>
     // ganti teks deskripsi saat di layar kecil

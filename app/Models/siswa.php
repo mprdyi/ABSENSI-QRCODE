@@ -31,4 +31,13 @@ class siswa extends Model
     {
         return $this->hasMany(Absensi::class, 'nis', 'nis');
     }
+
+
+
+    public function user()
+    {
+        return $this->hasOne(User::class, 'email', 'nis');
+    }
+
+
 }

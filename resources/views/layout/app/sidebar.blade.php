@@ -1,4 +1,5 @@
 
+
 <!-- Sidebar -->
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 <!-- Tombol Close (muncul hanya di HP) -->
@@ -203,21 +204,13 @@
 @if (Auth::user()->role === 'siswa')
 
   <!-- Heading -->
-  <div class="sidebar-heading">AREA KOORDINATOR KELAS</div>
+  <div class="sidebar-heading">KOORDINATOR KELAS</div>
 
   <!-- Nav Item - Daftar Hadir -->
   <li class="nav-item">
-    <a class="nav-link" href="#">
+    <a class="nav-link" href="{{ route('data-absen.kelas') }}">
       <i class="fa fa-clipboard-list"></i>
       <span>Daftar Hadir</span>
-    </a>
-  </li>
-
-  <!-- Nav Item - Ajukan Izin -->
-  <li class="nav-item">
-    <a class="nav-link" href="#">
-      <i class="fa fa-file-signature"></i>
-      <span>Ajukan Izin</span>
     </a>
   </li>
 
