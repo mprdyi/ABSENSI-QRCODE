@@ -9,50 +9,66 @@ use Carbon\Carbon;
 class AutoAlpha extends Command
 {
     /**
-     * The name and signature of the console command.
+     * Nama command yang bisa dijalankan lewat terminal.
      *
      * @var string
      */
     protected $signature = 'absen:auto-alpha';
 
     /**
-     * The console command description.
+     * Deskripsi command ini.
      *
      * @var string
      */
-    protected $description = 'Otomatis set status Alpha untuk siswa yang belum absen jam 08:00';
+    protected $description = 'Otomatis memberi status Alpa untuk siswa yang belum absen pada jam tertentu';
 
     /**
-     * Execute the console command.
+     * Jalankan command.
      */
     public function handle()
     {
         $today = Carbon::today()->toDateString();
 
-        // 1. Ambil semua NIS siswa
+        // 1️⃣ Cek apakah hari ini sudah ada absen (berarti bukan hari libur)
+        $adaAbsenHariIni = DB::table('data_absensi')
+            ->whereDate('tanggal', $today)
+            ->whereIn('status', ['Hadir', 'Terlambat'])
+            ->exists();
+
+        if (!$adaAbsenHariIni) {
+            $this->info('Tidak dijalankan karena belum ada absensi hari ini (mungkin hari libur).');
+            return;
+        }
+
+        // 2️⃣ Ambil semua siswa
         $allSiswa = DB::table('siswas')->pluck('nis');
 
-        // 2. Ambil semua NIS yang sudah absen hari ini
-        $absenHariIni = DB::table('data_absensi')
+        // 3️⃣ Ambil siswa yang sudah absen hari ini
+        $sudahAbsen = DB::table('data_absensi')
             ->whereDate('tanggal', $today)
             ->pluck('nis');
 
-        // 3. Siswa yang belum absen
-        $belumAbsen = $allSiswa->diff($absenHariIni);
+        // 4️⃣ Bedakan siapa yang belum absen
+        $belumAbsen = $allSiswa->diff($sudahAbsen);
 
-        // 4. Insert status Alpha
+        if ($belumAbsen->isEmpty()) {
+            $this->info('Semua siswa sudah absen, tidak ada yang di-Alpa.');
+            return;
+        }
+
+        // 5️⃣ Insert otomatis status Alpa
         foreach ($belumAbsen as $nis) {
             DB::table('data_absensi')->insert([
                 'nis' => $nis,
                 'tanggal' => $today,
-                'jam_masuk' => null,
+                'jam_masuk' => now()->format('H:i:s'),
                 'status' => 'Alpha',
-                'keterangan' => null,
+                'keterangan' => 'Tidak hadir',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
         }
 
-        $this->info('Absensi Alpha otomatis berhasil.');
+        $this->info('✅ Otomatis Alpa berhasil dimasukkan untuk siswa yang belum absen.');
     }
 }

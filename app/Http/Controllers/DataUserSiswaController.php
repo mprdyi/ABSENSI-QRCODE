@@ -77,29 +77,41 @@ class DataUserSiswaController extends Controller
     $request->validate([
         'kelas_ajukan' => 'required',
         'siswa_ajukan' => 'required',
-        'status_ajukan' => 'required',
+        'status_ajukan' => 'required|in:izin,sakit',
         'keterangan_ajukan' => 'nullable|string'
     ]);
 
-    // Ambil NIS dari request
     $nis = $request->siswa_ajukan;
 
-    // Cek apakah siswa ada
+    // 1️⃣ Cek apakah siswa ada
     $siswa = Siswa::where('nis', $nis)->first();
     if (!$siswa) {
         return redirect()->back()->withErrors(['siswa_ajukan' => 'Siswa tidak ditemukan.']);
     }
 
-    // Cek apakah sudah absen hari ini
+    // 2️⃣ Cek apakah hari ini sudah ada absensi "hadir" (patokan hari aktif)
+    $adaHadirHariIni = Absensi::whereDate('tanggal', now()->toDateString())
+        ->where('status', 'hadir')
+        ->exists();
+
+    if (!$adaHadirHariIni) {
+        return redirect()->back()->withErrors([
+            'status_ajukan' => 'Belum ada siswa yang hadir hari ini, sepertinya hari ini libur. Pengajuan izin/sakit tidak bisa dilakukan.'
+        ]);
+    }
+
+    // 3️⃣ Cek apakah siswa sudah absen hari ini
     $sudahAbsen = Absensi::where('nis', $nis)
         ->whereDate('tanggal', now()->toDateString())
         ->exists();
 
     if ($sudahAbsen) {
-        return redirect()->back()->withErrors(['siswa_ajukan' => 'Anda sudah absen hari ini!']);
+        return redirect()->back()->withErrors([
+            'siswa_ajukan' => 'Siswa ini sudah memiliki data absensi hari ini.'
+        ]);
     }
 
-    // Simpan ke database
+    // 4️⃣ Simpan data absensi izin/sakit
     Absensi::create([
         'nis' => $nis,
         'tanggal' => now()->format('Y-m-d'),

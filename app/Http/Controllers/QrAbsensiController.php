@@ -30,7 +30,8 @@ class QrAbsensiController extends Controller
 
 
 
-    //INSERT DATA
+    //INSERT DATA VERSI LAMA 
+
     public function store(Request $request)
     {
         $request->validate([
@@ -91,6 +92,7 @@ class QrAbsensiController extends Controller
             'data' => $absen
         ]);
     }
+
 
     public function dataAbsensiQr()
     {
