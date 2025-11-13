@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 
+use Google\Client;
+use Google\Service\Drive;
+use Google\Service\Drive\DriveFile;
+
 class LaporanController extends Controller
 {
 
@@ -307,7 +311,7 @@ class LaporanController extends Controller
 
     $totalHadir =    $totalHadir +  $totalTerlambat;
 
-    // === 2️⃣ DATA SISWA TERLAMBAT ===
+    // === 2️ DATA SISWA TERLAMBAT ===
     $dataTerlambat = Absensi::with('siswa.kelas')
         ->whereDate('tanggal', $hariIni)
         ->where('status', 'Terlambat')
@@ -324,7 +328,7 @@ class LaporanController extends Controller
             return sprintf('%02d-%s-%s', $level, $subkelas, $nama);
         });
 
-    // === 3️⃣ DATA KETIDAKHADIRAN (IZIN, SAKIT, ALPA) ===
+    // === 3️ DATA KETIDAKHADIRAN (IZIN, SAKIT, ALPA) ===
     $dataKetidakhadiran = Absensi::with('siswa.kelas')
         ->whereDate('tanggal', $hariIni)
         ->whereIn('status', ['Izin', 'Sakit', 'Alpha'])
@@ -407,18 +411,34 @@ class LaporanController extends Controller
         'rekapKelasXII' => $rekapKelasXII
     ])->setPaper([0, 0, 595.276, 935.433], 'portrait');
 
-     // Simpan sementara ke storage lokal
-     $filename = 'Rekap_Absensi_' . $hariIni->format('d-m-Y') . '.pdf';
-     $path = storage_path('app/public/' . $filename);
-     $pdf->save($path);
+  // === SIMPAN PDF KE FILE SEMENTARA ===
+        $filename = 'Rekap_Absensi_' . now()->format('Y-m-d_H-i-s') . '.pdf';
+        $path = storage_path('app/' . $filename);
 
-     // Upload ke Google Drive
-     Storage::disk('google')->put($filename, file_get_contents($path));
+        $pdf->save($path);
 
-     // Langsung download juga ke user
-     return response()->download($path)->deleteFileAfterSend(true);
+// === UPLOAD KE GOOGLE DRIVE ===
+        $client = new \Google\Client();
+        $client->setClientId(env('GOOGLE_DRIVE_CLIENT_ID'));
+        $client->setClientSecret(env('GOOGLE_DRIVE_CLIENT_SECRET'));
+        $client->refreshToken(env('GOOGLE_DRIVE_REFRESH_TOKEN'));
 
-    //return $pdf->download('Rekap_Absensi_' . $hariIni->format('d-m-Y') . '.pdf');
+        $driveService = new \Google\Service\Drive($client);
+
+        $fileMetadata = new \Google\Service\Drive\DriveFile([
+            'name' => $filename,
+            'parents' => [env('GOOGLE_DRIVE_FOLDER_ID')],
+        ]);
+
+        $content = file_get_contents($path);
+        $file = $driveService->files->create($fileMetadata, [
+            'data' => $content,
+            'mimeType' => 'application/pdf',
+            'uploadType' => 'multipart',
+        ]);
+
+// === DOWNLOAD KE USER dan HAPUS SETELAH DIKIRIM ===
+        return response()->download($path)->deleteFileAfterSend(true);
     }
 
 

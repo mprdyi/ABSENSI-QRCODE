@@ -83,13 +83,13 @@ class DataUserSiswaController extends Controller
 
     $nis = $request->siswa_ajukan;
 
-    // 1️⃣ Cek apakah siswa ada
+    // 1 Cek apakah siswa ada
     $siswa = Siswa::where('nis', $nis)->first();
     if (!$siswa) {
         return redirect()->back()->withErrors(['siswa_ajukan' => 'Siswa tidak ditemukan.']);
     }
 
-    // 2️⃣ Cek apakah hari ini sudah ada absensi "hadir" (patokan hari aktif)
+    //  3Cek apakah hari ini sudah ada absensi "hadir" (patokan hari aktif)
     $adaHadirHariIni = Absensi::whereDate('tanggal', now()->toDateString())
         ->where('status', 'hadir')
         ->exists();
@@ -100,7 +100,7 @@ class DataUserSiswaController extends Controller
         ]);
     }
 
-    // 3️⃣ Cek apakah siswa sudah absen hari ini
+    // 3 Cek apakah siswa sudah absen hari ini
     $sudahAbsen = Absensi::where('nis', $nis)
         ->whereDate('tanggal', now()->toDateString())
         ->exists();
@@ -111,7 +111,7 @@ class DataUserSiswaController extends Controller
         ]);
     }
 
-    // 4️⃣ Simpan data absensi izin/sakit
+    // 4️ Simpan data absensi izin/sakit
     Absensi::create([
         'nis' => $nis,
         'tanggal' => now()->format('Y-m-d'),
