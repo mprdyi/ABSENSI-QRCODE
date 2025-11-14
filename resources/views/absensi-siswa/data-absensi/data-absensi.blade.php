@@ -71,6 +71,11 @@
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
+
+    // === Inisialisasi Audio sekali aja  ===
+    const successBeep = new Audio("{{ asset('sounds/beep.mp3') }}");
+    const errorBeep = new Audio("{{ asset('sounds/censor-beep.mp3') }}");
+
     let html5QrCode = null;
     let isScanning = false;
     let scannedNIS = {}; // track NIS yang sudah di-scan hari ini
@@ -105,10 +110,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 qrResult.style.display = "block";
 
                 if(res.success){
+                    successBeep.play(); // suara sukses
                     qrResult.textContent = "✅ Absensi berhasil: " + qrCodeMessage;
                 } else if(res.status === 409 || res.message.includes("sudah absen")){
+                    errorBeep.play(); //
                     qrResult.textContent = "⚠ Siswa sudah absen hari ini!";
                 } else {
+                    errorBeep.play();
                     qrResult.textContent = "⚠ " + res.message;
                 }
 
@@ -117,6 +125,7 @@ document.addEventListener("DOMContentLoaded", function () {
             error: function(xhr){
                 if(xhr.status === 409){
                     qrResult.style.display = "block";
+                    errorBeep.play();
                     qrResult.textContent = "⚠ Siswa sudah absen hari ini!";
                 } else {
                     qrResult.style.display = "block";
@@ -171,11 +180,13 @@ formManual.addEventListener('submit', function(e){
             $('.btn-primary').attr('disabled', true).text('Menyimpan...');
         },
         success: function(response){
+            successBeep.play();
             showAlert(response.success ? 'success' : 'warning', response.message);
             formManual.reset();
             refreshTable();
         },
         error: function(xhr){
+            errorBeep.play();
             if(xhr.status === 409) showAlert('warning', '⚠ Siswa sudah absen hari ini!');
             else showAlert('danger', '❌ NIS Tidak Terdaftar,, Gagal menyimpan data.');
         },

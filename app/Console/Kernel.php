@@ -4,7 +4,9 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use App\Console\Commands\AutoAlpha; // <- tambahkan ini
+use App\Console\Commands\AutoAlpha;
+use App\Console\Commands\SendLateReport;
+use App\Models\ProfilSekolah;
 
 class Kernel extends ConsoleKernel
 {
@@ -14,7 +16,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        AutoAlpha::class, // <- pastikan ini ada
+        AutoAlpha::class,
     ];
 
     /**
@@ -22,15 +24,25 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-         // Jalankan otomatis setiap Senin–Jumat jam 07:50
+
+          // Ambil jam dinamis dari database
+            $profil = ProfilSekolah::first();
+
+            $jamAutoAlpa = substr($profil->auto_alpa ?? '07:15', 0, 5);
+            $jamNotifWA  = substr($profil->notif_wa ?? '07:20', 0, 5);
+
+          // AUTO ALPHA → jalan duluan
             $schedule->command('absen:auto-alpha')
             ->weekdays()
-            ->dailyAt('07:15')
+            ->dailyAt($jamAutoAlpa)
             ->appendOutputTo(storage_path('logs/cron.log'));
 
-        // Kalau mau test, aktifkan ini:
-        // $schedule->command('absen:auto-alpha')->everyMinute();
-    }
+        // KIRIM WA TERLAMBAT → jeda 5 menit
+            $schedule->command('absen:kirim-terlambat')
+            ->weekdays()
+            ->dailyAt($jamNotifWA)
+            ->appendOutputTo(storage_path('logs/cron.log'));
+        }
 
     /**
      * Daftarkan command aplikasi.

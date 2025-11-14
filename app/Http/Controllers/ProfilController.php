@@ -7,13 +7,6 @@ use App\Models\ProfilSekolah;
 class ProfilController extends Controller
 {
 
-    public function boot()
-{
-    // Data profil sekolah tersedia di semua view
-    View::composer('*', function ($view) {
-        $view->with('sekolah', ProfilSekolah::first());
-    });
-}
 
     public function index()
     {
@@ -28,6 +21,8 @@ class ProfilController extends Controller
             'nama_sekolah' => 'required|string|max:255',
             'kepsek'       => 'required|string|max:255',
             'jam_masuk'    => 'required|date_format:H:i:s',
+            'auto_alpa'    => 'required|date_format:H:i:s',
+            'notif_wa'    => 'required|date_format:H:i:s',
         ]);
 
         $sekolah = ProfilSekolah::findOrFail($validated['id']);
@@ -37,6 +32,8 @@ class ProfilController extends Controller
             'nama_sekolah' => $validated['nama_sekolah'],
             'kepsek'       => $validated['kepsek'],
             'jam_masuk'    => $validated['jam_masuk'],
+            'auto_alpa'    => $validated['auto_alpa'],
+            'notif_wa'    => $validated['notif_wa'],
         ])->save();
 
         return redirect()->back()->with('success', 'Profil sekolah berhasil diperbarui!');

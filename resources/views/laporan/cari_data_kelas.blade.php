@@ -47,6 +47,9 @@
     margin-top: 12px;
     padding-top: 8px;
     background: transparent;
+    padding-left:0;
+    padding-right:0;
+    text-align:center;
   }
   .kelas10-card { background: linear-gradient(135deg, #56CCF2, #2F80ED); }
   .kelas11-card { background: linear-gradient(135deg, #6EE7B7, #3B82F6); }

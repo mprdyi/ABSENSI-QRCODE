@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('nama_sekolah');
             $table->string('kepsek');
             $table->time('jam_masuk');
+            $table->time('auto_alpa');
+            $table->time('notif_wa');
             $table->timestamps();
         });
     }

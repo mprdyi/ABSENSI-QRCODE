@@ -59,12 +59,15 @@
   }
 
   .card-footer {
-    font-size: 0.9rem;
     color: rgba(255, 255, 255, 0.85);
     border-top: 1px solid rgba(255,255,255,0.25);
     margin-top: 12px;
     padding-top: 8px;
-    background: transparent;
+    background:transparent;
+    padding-left:0;
+    padding-right:0;
+    text-align:center;
+    //background: transparent;
   }
 
   .kelas10-card { background: linear-gradient(135deg, #56CCF2, #2F80ED); }
@@ -94,9 +97,12 @@
 </style>
 
 <div class="container-fluid py-5">
+@if (Auth::user()->role === 'admin' || Auth::user()->role === 'guru')
 <div class="download mb-3" style="position:relative">
         <a href="{{ route('download-backup.laporan') }}" class="badge-soft purple" style="position:absolute; right:0; transform:translateY(-50px)"> <i class="fa fa-download"> </i> Backup & Rekap</a>
 </div>
+@endif
+
 @if (session('success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         {{ session('success') }}

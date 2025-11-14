@@ -12,8 +12,10 @@ class ProfilSekolah extends Model
     protected $fillable = [
         'nama_sekolah',
         'kepsek',
-        'jam_masuk'
+        'jam_masuk',
+        'auto_alpa',
+        'notif_wa'
     ];
 
-    public $timestamps = false; // <--- ini mencegah Laravel otomatis set updated_at
+    public $timestamps = false; //  mencegah Laravel otomatis set updated_at
 }

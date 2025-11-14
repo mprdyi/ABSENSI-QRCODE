@@ -18,6 +18,7 @@ use App\Http\Controllers\ProfilUserController;
 use App\Http\Controllers\Auth\CustomForgotPasswordController;
 use App\Http\Controllers\Auth\CustomRessetPasswordController;
 use App\Http\Controllers\DataUserSiswaController;
+use App\Services\FonnteService;
 
 
 
@@ -33,14 +34,8 @@ use App\Http\Controllers\DataUserSiswaController;
 |
 */
 
-Route::get('/test-drive', function () {
-    try {
-
-            $result = Storage::disk('google')->put('halo.txt', 'Halo Laravel!');
-            return $result ? '✅ Upload berhasil!' : '❌ Upload gagal!';
-        } catch (\Exception $e) {
-            return '❌ Error: ' . $e->getMessage();
-        }
+Route::get('/test-wa', function () {
+    return \App\Services\FonnteService::send('6285861864228', 'Test kirim WA dari Laravel');
 });
 
 

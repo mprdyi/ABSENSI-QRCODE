@@ -34,6 +34,16 @@
                     <input type="time" class="form-control modern-input" name="jam_masuk" step="1"
                         value="{{ old('jam_masuk', $sekolah->jam_masuk) }}">
                 </div>
+                <div class="form-group mb-3">
+                    <label for="auto-alpa">Auto Alpa</label>
+                    <input type="time" class="form-control modern-input" name="auto_alpa" step="1"
+                        value="{{ old('auto_alpa', $sekolah->auto_alpa) }}">
+                </div>
+                <div class="form-group mb-3">
+                    <label for="notif">Notifikasi siswa terlambat</label>
+                    <input type="time" class="form-control modern-input" name="notif_wa" step="1"
+                        value="{{ old('notif_wa', $sekolah->notif_wa) }}">
+                </div>
 
                 <button type="submit" class="btn btn-primary">Update</button>
             </form>
