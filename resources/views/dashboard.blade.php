@@ -98,7 +98,7 @@
  <div id="content">
 
 <div class="container-fluid py-4" style="background-color:#f6f8fc; min-height:100vh;">
-@if (Auth::user()->role === 'admin' || Auth::user()->role === 'guru' || Auth::user()->role === 'osis')
+@if (Auth::user()->role === 'admin' || Auth::user()->role === 'guru' || Auth::user()->role === 'osis'|| Auth::user()->role === 'walkes')
   <div class="mb-4">
     <h4 class="fw-bold">Hello, {{ Auth::user()->name }}</h4>
     <p class="text-muted">Selamat datang di aplikasi management absensi neglan cirebon</p>

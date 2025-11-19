@@ -54,7 +54,12 @@ class User extends Authenticatable
         return $this->role === 'siswa';
     }
 
-    
+    public function isWalkes()
+    {
+        return $this->role === 'walkes';
+    }
+
+
     /**
      * The attributes that should be cast.
      *

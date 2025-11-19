@@ -105,7 +105,7 @@
   {{-- ========================== --}}
   @if (Auth::user()->role === 'guru')
   <!-- Heading -->
-  <div class="sidebar-heading">AREA PIKET</div>
+  <div class="sidebar-heading">AREA GURU</div>
 
   <!-- Nav Item -Data siswa -->
   <li class="nav-item">
@@ -168,7 +168,6 @@
     </a>
   </li>
 
-
   <!-- Nav Item - QR -->
   <li class="nav-item">
     <a class="nav-link" href="{{ route('data-absensi-siswa.data') }}">
@@ -218,6 +217,41 @@
   <!-- Divider -->
   <hr class="sidebar-divider d-none d-md-block">
   @endif
+
+{{-- ========================== --}}
+{{-- AREA WALKES --}}
+{{-- ========================== --}}
+@if (Auth::user()->role === 'walkes')
+
+  <!-- Heading -->
+  <div class="sidebar-heading">AREA WALKES</div>
+   <!-- Nav Item - Daftar Hadir -->
+   <li class="nav-item">
+    <a class="nav-link" href="{{ route('data-absen.kelas') }}">
+      <i class="fa fa-clipboard-list"></i>
+      <span>Daftar Hadir</span>
+    </a>
+  </li>
+ <!-- Nav Item - Daftar Hadir -->
+ <li class="nav-item">
+    <a class="nav-link" href="{{ route('data-absen.kelas') }}">
+      <i class="fa fa-clipboard-list"></i>
+      <span>Pengajuan</span>
+    </a>
+  </li>
+   <!-- Nav Item - QR -->
+   <li class="nav-item">
+    <a class="nav-link" href="{{ route('data-absensi-siswa.data') }}">
+      <i class="fa fa-qrcode"></i>
+      <span>Absensi QR</span>
+    </a>
+  </li>
+
+  <!-- Divider -->
+  <hr class="sidebar-divider d-none d-md-block">
+  @endif
+
+
   <!-- Sidebar Toggler -->
   <div class="text-center d-none d-md-inline">
     <button class="rounded-circle border-0" id="sidebarToggle"></button>

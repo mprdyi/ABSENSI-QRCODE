@@ -50,6 +50,7 @@
                         <option value="guru">Guru</option>
                         <option value="osis">MPK / Osis</option>
                         <option value="siswa">Siswa</option>
+                        <option value="walkes">Wali Kelas</option>
                     </select>
                 </div>
                 </div>

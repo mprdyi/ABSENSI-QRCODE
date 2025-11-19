@@ -1,13 +1,23 @@
 @extends('layout.app')
 
-@section('title', 'Absensi Kelas ' . $siswaLogin->kelas->kelas)
+@section('title', 'Absensi Kelas ' . optional($siswaLogin?->kelas)->kelas ?? 'Guru')
 
 @section('content')
 <div class="container-fluid mt-4">
     <div class="card shadow-sm border-0 rounded-4">
         <div class="card-body">
-            <h5 class="fw-bold mb-3">Absensi Hari Ini - Kelas: {{ $siswaLogin->kelas->kelas }}</h5>
+            <h5 class="fw-bold mb-3">Absensi Hari Ini - Kelas:
 
+            @if($user->role == 'siswa')
+                {{ $siswaLogin->kelas->kelas }}
+            @else
+                {{ $kelasWali }}
+            @endif
+            </h5>
+            <span class="ms-3" style="font-size:12px">Alpha: {{ $totalAlpha }}</span>
+            <span class="ms-1" style="font-size:12px">Izin: {{ $totalIzin }}</span>
+            <span class="ms-1" style="font-size:12px">Sakit: {{ $totalSakit }}</span>
+            <span class="ms-1" style="font-size:12px">Terlambat: {{ $totalTerlambat }}</span>
             <div class="table-responsive">
                 <table class="table table-borderless align-middle text-center custom-table">
                     <thead class="table-light" style="white-space:nowrap; text-align:left;">
@@ -26,9 +36,9 @@
                             $absensi = $siswa->absensi->first();
                             $status = $absensi?->status ?? 'belum absen';
                             $badgeClass = match(strtolower($status)) {
-                                'izin' => 'badge-soft  green',
-                                'sakit' => 'badge-soft  purple',
-                                'alpha' => 'badge-soft  red',
+                                'izin' => 'badge-soft green',
+                                'sakit' => 'badge-soft purple',
+                                'alpha' => 'badge-soft red',
                                 'terlambat' => 'badge-soft orange',
                                 'hadir' => 'badge-soft blue',
                                 default => 'badge-soft gray'
@@ -43,17 +53,14 @@
                             </td>
                             <td>{{ $absensi?->keterangan ?? '-' }}</td>
                             <td>
-                            @php
-                                $status = $siswa->absensi->first()?->status ?? 'belum absen';
-                                // Cek boleh edit atau tidak
-                                $bolehEdit = !in_array(strtolower($status), ['terlambat', 'belum absen']);
-                                $btnClass = $bolehEdit ? 'badge-soft orange' : 'badge-soft gray';
-                            @endphp
-
-                            <button class="btn btn-sm {{ $btnClass }}"
-                                    {{ $bolehEdit ? 'data-bs-toggle=modal data-bs-target=#editAbsensiModal'.$siswa->id : 'disabled' }}>
-                                <i class="fa fa-edit"></i>
-                            </button>
+                                @php
+                                    $bolehEdit = !in_array(strtolower($status), ['terlambat', 'belum absen']);
+                                    $btnClass = $bolehEdit ? 'badge-soft orange' : 'badge-soft gray';
+                                @endphp
+                                <button class="btn btn-sm {{ $btnClass }}"
+                                        {{ $bolehEdit ? 'data-bs-toggle=modal data-bs-target=#editAbsensiModal'.$siswa->id : 'disabled' }}>
+                                    <i class="fa fa-edit"></i>
+                                </button>
                             </td>
                         </tr>
                         @endforeach
@@ -64,7 +71,7 @@
     </div>
 </div>
 
-<!-- Semua modal diletakkan di sini, di luar table -->
+<!-- Semua modal tetap di luar table -->
 @foreach($siswas as $siswa)
 @php
     $absensi = $siswa->absensi->first();

@@ -116,7 +116,7 @@ Route::middleware(['auth', 'role:admin,guru'])->group(function () {
 
 //route data siswa
 Route::get('/data-siswa', [SiswaController::class, 'index'])->name('admin.data-master.data-siswa');
-Route::middleware(['auth', 'role:admin,guru,osis'])->group(function () {
+Route::middleware(['auth', 'role:admin,guru,osis,walkes'])->group(function () {
     Route::post('/data-siswa/store', [SiswaController::class, 'store'])->name('data-siswa.store');
     Route::delete('/data-siswa/{id}', [SiswaController::class, 'destroy'])->name('data-siswa.destroy');
     Route::get('/data-siswa/{id}/edit', [SiswaController::class, 'edit'])->name('edit-data-siswa.edit');

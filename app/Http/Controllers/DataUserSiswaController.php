@@ -6,35 +6,109 @@ use Illuminate\Http\Request;
 use App\Models\DataKelas;
 use App\Models\Siswa;
 use App\Models\Absensi;
+use App\Models\Guru;
 use App\Models\User;
 use Carbon\Carbon;
 
 class DataUserSiswaController extends Controller
 {
-    public function dataSiswa()
-    {
-        $today = Carbon::today(); // tanggal hari ini
-        $nis = Auth::user()->email;
+        public function dataSiswa()
+        {
+            $today = Carbon::today();
+            $user = Auth::user();
 
-        $siswaLogin = Siswa::with('kelas')->where('nis', $nis)->firstOrFail();
+            // Default variabel agar tidak error di view
+            $siswaLogin = null;
+            $kelasWali = null;
+            $siswas = collect();
 
-        // Ambil semua siswa di kelas sama beserta absensi hari ini
-        $siswas = Siswa::with(['user', 'kelas', 'absensi' => function($query) use ($today) {
-            $query->whereDate('tanggal', $today);
-        }])
-        ->where('id_kelas', $siswaLogin->id_kelas)
-        ->get();
+            // =========================================================
+            // 1. JIKA SISWA LOGIN
+            // =========================================================
+            if ($user->role === 'siswa') {
 
-        // Prioritaskan yang izin, sakit, terlambat
-        $priorityOrder = ['alpha', 'izin', 'sakit', 'terlambat']; // urutan prioritas
-        $siswas = $siswas->sortBy(function($siswa) use ($priorityOrder) {
-            $status = $siswa->absensi->first()?->status ?? 'hadir';
-            $index = array_search(strtolower($status), $priorityOrder);
-            return $index === false ? count($priorityOrder) : $index;
-        });
+                $nis = $user->email;
 
-        return view('km.data-absen-kelas', compact('siswas', 'siswaLogin'));
-    }
+                // Ambil siswa yang sedang login + relasi kelas
+                $siswaLogin = Siswa::with('kelas')
+                    ->where('nis', $nis)
+                    ->firstOrFail();
+
+                // Ambil semua siswa di kelas yang sama
+                $siswas = Siswa::with([
+                    'user',
+                    'kelas',
+                    'absensi' => function ($q) use ($today) {
+                        $q->whereDate('tanggal', $today)
+                          ->select('id', 'nis', 'status', 'keterangan');
+                    }
+                ])
+                ->where('id_kelas', $siswaLogin->id_kelas) // cocok kode kelas
+                ->get();
+            }
+
+            // =========================================================
+            // 2. JIKA WALI KELAS LOGIN (walkes)
+            // =========================================================
+            elseif ($user->role === 'walkes') {
+
+                // Ambil guru + kelas yang dia pegang
+                $guruLogin = Guru::with('kelas')
+                    ->where('nip', $user->email)
+                    ->firstOrFail();
+
+                // Ambil kode kelas → KARENA siswas.id_kelas = kode_kelas (string)
+                $kelasKode = $guruLogin->kelas->pluck('kode_kelas');
+
+                // Ambil semua siswa berdasarkan kelas yang dia pegang
+                $siswas = Siswa::with([
+                    'user',
+                    'kelas',
+                    'absensi' => function ($q) use ($today) {
+                        $q->whereDate('tanggal', $today)
+                          ->select('id', 'nis', 'status', 'keterangan');
+                    }
+                ])
+                ->whereIn('id_kelas', $kelasKode)
+                ->get();
+
+                // Simpan nama kelas untuk ditampilkan di view
+                $kelasWali = $guruLogin->kelas->pluck('kelas')->implode(', ');
+            }
+
+            // =========================================================
+            // 3. SORTING PRIORITAS STATUS ABSENSI
+            // =========================================================
+            $priorityOrder = ['alpha', 'izin', 'sakit', 'terlambat'];
+
+            $siswas = $siswas->sortBy(function ($s) use ($priorityOrder) {
+                $status = $s->absensi->first()->status ?? 'hadir';
+                $index = array_search(strtolower($status), $priorityOrder);
+                return $index === false ? count($priorityOrder) : $index;
+            });
+
+            // Hitung total status hari ini
+                $totalAlpha = $siswas->where('absensi.0.status', 'Alpha')->count();
+                $totalIzin = $siswas->where('absensi.0.status', 'Izin')->count();
+                $totalSakit = $siswas->where('absensi.0.status', 'Sakit')->count();
+                $totalTerlambat = $siswas->where('absensi.0.status', 'Terlambat')->count();
+
+
+            // =========================================================
+            // RETURN KE VIEW
+            // =========================================================
+            return view('km.data-absen-kelas', [
+                'siswas'      => $siswas,
+                'siswaLogin'  => $siswaLogin,
+                'kelasWali'   => $kelasWali,
+                'user'        => $user,
+                'totalSakit'   =>$totalSakit,
+                'totalIzin'   =>$totalIzin,
+                'totalAlpha'   =>$totalAlpha,
+                'totalTerlambat'   =>$totalTerlambat,
+            ]);
+        }
+
 
     public function update(Request $request, $id){
         $absensi = Absensi::findOrFail($id);

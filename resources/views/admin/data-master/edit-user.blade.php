@@ -57,6 +57,7 @@
                 <option value="guru" {{ $user->role == 'guru' ? 'selected' : '' }}>Guru</option>
                 <option value="osis" {{ $user->role == 'osis' ? 'selected' : '' }}>MPK / Osis</option>
                 <option value="siswa" {{ $user->role == 'siswa' ? 'selected' : '' }}>Siswa</option>
+                <option value="walkes" {{ $user->role == 'walkes' ? 'selected' : '' }}>Wali Kelas</option>
               </select>
             </div>
           </div>
