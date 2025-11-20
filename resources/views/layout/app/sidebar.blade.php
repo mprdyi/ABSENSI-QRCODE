@@ -246,6 +246,13 @@
       <span>Absensi QR</span>
     </a>
   </li>
+  <!-- Nav Item - QR -->
+  <li class="nav-item">
+    <a class="nav-link" href="{{ route('downloadRekap.walkes') }}">
+      <i class="fa fa-book-open"></i>
+      <span>Laporan Kelas</span>
+    </a>
+  </li>
 
   <!-- Divider -->
   <hr class="sidebar-divider d-none d-md-block">

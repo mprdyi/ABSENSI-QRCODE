@@ -149,6 +149,10 @@ Route::middleware(['auth', 'role:admin,guru,osis,walkes'])->group(function () {
 Route::get('/data-absen-kelas', [DataUserSiswaController::class, 'dataSiswa'])->name('data-absen.kelas');
 Route::put('/absensi/{id}', [DataUserSiswaController::class, 'update'])->name('absensi-update-to-siswa.update');
 
+//Walkes
+Route::get('/rekap-kelas-download', [DataUserSiswaController::class, 'downloadRekapDataKelas'])->name('downloadRekap.walkes');
+
+
 
 
 });

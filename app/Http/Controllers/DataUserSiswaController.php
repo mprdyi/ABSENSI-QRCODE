@@ -8,7 +8,12 @@ use App\Models\Siswa;
 use App\Models\Absensi;
 use App\Models\Guru;
 use App\Models\User;
+use App\Models\IzinKelas;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
+
 
 class DataUserSiswaController extends Controller
 {
@@ -196,6 +201,123 @@ class DataUserSiswaController extends Controller
 
     return redirect()->back()->with('status', 'Absensi berhasil diajukan!');
 }
+
+public function downloadRekapDataKelas()
+{
+    $user = Auth::user();
+    $tahun = now()->year;
+
+    // =========================================================
+    // 1. Tentukan kelas
+    // =========================================================
+    if ($user->role === 'walkes') {
+        // Ambil guru + kelas yang dia pegang
+        $guruLogin = Guru::with('kelas')->where('nip', $user->email)->firstOrFail();
+
+        // Ambil kode kelas yang dia pegang
+        $kelasKode = $guruLogin->kelas->pluck('kode_kelas');
+
+        // Ambil semua siswa di kelas yang dia pegang
+        $kelas = DataKelas::with(['waliKelas', 'siswa'])
+            ->whereIn('kode_kelas', $kelasKode)
+            ->first(); // kalau mau per kelas, bisa loop per kode_kelas
+    } else {
+        return back()->with('error', 'Hanya wali kelas yang bisa mengunduh rekap.');
+    }
+
+    if (!$kelas) {
+        return back()->with('error', 'Kelas tidak ditemukan.');
+    }
+
+    $siswaList = $kelas->siswa;
+
+    // =========================================================
+    // 2. Buat rekap absensi per siswa
+    // =========================================================
+    $rekap = [];
+    foreach ($siswaList as $siswa) {
+        $rekap[$siswa->nis]['nama'] = $siswa->nama;
+
+        for ($bulan = 1; $bulan <= 12; $bulan++) {
+            $rekap[$siswa->nis]['bulan'][$bulan] = [
+                'A' => Absensi::whereYear('tanggal', $tahun)
+                    ->whereMonth('tanggal', $bulan)
+                    ->where('nis', $siswa->nis)
+                    ->where('status', 'Alpha')
+                    ->count(),
+                'I' => Absensi::whereYear('tanggal', $tahun)
+                    ->whereMonth('tanggal', $bulan)
+                    ->where('nis', $siswa->nis)
+                    ->where('status', 'Izin')
+                    ->count(),
+                'S' => Absensi::whereYear('tanggal', $tahun)
+                    ->whereMonth('tanggal', $bulan)
+                    ->where('nis', $siswa->nis)
+                    ->where('status', 'Sakit')
+                    ->count(),
+                'T' => Absensi::whereYear('tanggal', $tahun)
+                    ->whereMonth('tanggal', $bulan)
+                    ->where('nis', $siswa->nis)
+                    ->where('status', 'Terlambat')
+                    ->count(),
+            ];
+        }
+
+        $rekap[$siswa->nis]['total'] = [
+            'A' => array_sum(array_column($rekap[$siswa->nis]['bulan'], 'A')),
+            'I' => array_sum(array_column($rekap[$siswa->nis]['bulan'], 'I')),
+            'S' => array_sum(array_column($rekap[$siswa->nis]['bulan'], 'S')),
+            'T' => array_sum(array_column($rekap[$siswa->nis]['bulan'], 'T')),
+        ];
+    }
+
+    // =========================================================
+// 3. Rekap izin per bulan
+// =========================================================
+$izin_kelas = [];
+
+foreach ($siswaList as $siswa) {
+    $izin_per_bulan = [];
+
+    for ($bulan = 1; $bulan <= 12; $bulan++) {
+        $pribadi = IzinKelas::where('nis', $siswa->nis)
+            ->whereYear('created_at', $tahun)
+            ->whereMonth('created_at', $bulan)
+            ->where('keperluan', 'Pribadi')
+            ->count();
+
+        $sekolah = IzinKelas::where('nis', $siswa->nis)
+            ->whereYear('created_at', $tahun)
+            ->whereMonth('created_at', $bulan)
+            ->where('keperluan', 'Sekolah')
+            ->count();
+
+        $izin_per_bulan[$bulan] = [
+            'pribadi' => $pribadi,
+            'sekolah' => $sekolah,
+            'total' => $pribadi + $sekolah,
+        ];
+    }
+
+    $izin_kelas[] = [
+        'nis' => $siswa->nis,
+        'nama' => $siswa->nama,
+        'izin_bulan' => $izin_per_bulan,
+    ];
+}
+
+    // =========================================================
+    // 4. Generate PDF
+    // =========================================================
+    $pdf = Pdf::loadView('pdf.rekap_for_walkes', [
+        'kelas' => $kelas,
+        'rekap' => $rekap,
+        'izin_kelas' => $izin_kelas,
+    ])->setPaper([0, 0, 936, 612]);
+
+    return $pdf->stream('Rekap_Absensi_Siswa' . $kelas->kelas . '.pdf');
+}
+
 
 
 
