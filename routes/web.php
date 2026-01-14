@@ -34,10 +34,6 @@ use App\Services\FonnteService;
 |
 */
 
-Route::get('/test-wa', function () {
-    return \App\Services\FonnteService::send('6285861864228', 'Test kirim WA dari Laravel');
-});
-
 
 // Form ajukan absensi
 Route::get('/ajukan-absensi', [DataUserSiswaController::class, 'ajukanAbsensi'])->name('ajukan-absensi.show');

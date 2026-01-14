@@ -24,6 +24,10 @@
     .left {
       flex: 1;
       background: linear-gradient(135deg, #1E40AF 0%, #1D4ED8 60%, #3B82F6 100%);
+      background-image:url('image/sekolah.jpg');
+      background-size:cover;
+        background-repeat: no-repeat;
+        background-position: center;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -214,6 +218,16 @@
         font-size: 1rem;
         opacity: 1;
       }
+      .left {
+      flex: 1;
+      background: linear-gradient(135deg, #1E40AF 0%, #1D4ED8 60%, #3B82F6 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      padding: 50px;
+    }
     }
     .badge-soft {
     display: inline-block;
@@ -296,7 +310,8 @@
   <div class="left">
     <div class="glass-box" id="gb">
       <div class="logo">
-        <i class="fa-solid fa-graduation-cap"></i>
+        <img src="image/logo-sma.png" alt="" style="width:60px">
+        <!-- <i class="fa-solid fa-graduation-cap"></i> -->
       </div>
       <h1 id="judul">ABSENSI NEGLAN</h1>
       <p id="desc">

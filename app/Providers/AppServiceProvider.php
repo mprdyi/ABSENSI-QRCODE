@@ -1,43 +1,25 @@
 <?php
 
 namespace App\Providers;
-use Storage;
-use Masbug\Flysystem\GoogleDrive\GoogleDriveAdapter;
-use League\Flysystem\Filesystem;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
+use League\Flysystem\Filesystem;
+use Google\Service\Drive;
+use App\Services\GoogleDriveService;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
-    public function register(): void
-    {
-        //
-    }
-
-    /**
-     * Bootstrap any application services.
-     */
     public function boot()
-   {
-    Storage::extend('google', function ($app, $config) {
-        $client = new \Google_Client();
-        $client->setClientId($config['clientId']);
-        $client->setClientSecret($config['clientSecret']);
-        $client->refreshToken($config['refreshToken']);
+    {
+        Storage::extend('google', function ($app, $config) {
 
-        $service = new \Google_Service_Drive($client);
+            $service = GoogleDriveService::client(
+                $config['service_account_json']
+            );
 
-        $adapter = new GoogleDriveAdapter($service, $config['folderId'] ?? null);
-
-        return new \Illuminate\Filesystem\FilesystemAdapter(
-            new Filesystem($adapter),
-            $adapter,
-            $config
-        );
-    });
-
-}
-
+            return new Filesystem(
+                new \App\Services\GoogleDriveAdapter($service, $config['folderId'])
+            );
+        });
+    }
 }

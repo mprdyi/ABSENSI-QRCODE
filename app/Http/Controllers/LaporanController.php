@@ -411,38 +411,20 @@ class LaporanController extends Controller
         'rekapKelasXII' => $rekapKelasXII
     ])->setPaper([0, 0, 595.276, 935.433], 'portrait');
 
-  // === SIMPAN PDF KE FILE SEMENTARA ===
+        // === SIMPAN PDF KE FILE SEMENTARA ===
         $filename = 'Rekap_Absensi_' . now()->format('Y-m-d_H-i-s') . '.pdf';
         $path = storage_path('app/' . $filename);
 
         $pdf->save($path);
 
-// === UPLOAD KE GOOGLE DRIVE ===
-        $client = new \Google\Client();
-        $client->setClientId(env('GOOGLE_DRIVE_CLIENT_ID'));
-        $client->setClientSecret(env('GOOGLE_DRIVE_CLIENT_SECRET'));
-        $client->refreshToken(env('GOOGLE_DRIVE_REFRESH_TOKEN'));
+        // === UPLOAD KE GOOGLE DRIVE ===
+        // PAKAI ADAPTER MU SENDIRI (GoogleDriveAdapter)
+        Storage::disk('google')->write($filename, file_get_contents($path));
 
-        $driveService = new \Google\Service\Drive($client);
-
-        $fileMetadata = new \Google\Service\Drive\DriveFile([
-            'name' => $filename,
-            'parents' => [env('GOOGLE_DRIVE_FOLDER_ID')],
-        ]);
-
-        $content = file_get_contents($path);
-        $file = $driveService->files->create($fileMetadata, [
-            'data' => $content,
-            'mimeType' => 'application/pdf',
-            'uploadType' => 'multipart',
-        ]);
-
-// === DOWNLOAD KE USER dan HAPUS SETELAH DIKIRIM ===
+        // === DOWNLOAD KE USER dan HAPUS ===
         return response()->download($path)->deleteFileAfterSend(true);
+
     }
-
-
-
 
     public function arsip(){
 
