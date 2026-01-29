@@ -207,9 +207,25 @@
 
   <!-- Nav Item - Daftar Hadir -->
   <li class="nav-item">
+    <a class="nav-link" href="{{ url('/absensi-faceid') }}">
+      <i class="fas fa-camera"></i>
+      <span>Absensi</span>
+    </a>
+  </li>
+
+  <!-- Nav Item - Daftar Hadir -->
+  <li class="nav-item">
     <a class="nav-link" href="{{ route('data-absen.kelas') }}">
-      <i class="fa fa-clipboard-list"></i>
-      <span>Daftar Hadir</span>
+      <i class="fa fa-signature"></i>
+      <span>Pengajuan Izin</span>
+    </a>
+  </li>
+
+  <!-- Nav Item - Daftar Hadir -->
+  <li class="nav-item">
+   <a class="nav-link" href="{{ url('face/register', ['nis' => auth()->user()->siswa->nis]) }}">
+      <i class="fa fa-smile"></i>
+      <span>Registrasi Wajah</span>
     </a>
   </li>
 

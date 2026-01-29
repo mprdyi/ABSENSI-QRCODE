@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Siswa;
 use App\Models\Absensi;
 
@@ -68,6 +69,25 @@ class DashboardController extends Controller
             $dataHadir[] = $grafikMingguan->firstWhere('hari', $i)?->total ?? 0;
         }
 
+        // NOTIF CARD UNTUK SISWA
+            $statusAbsensi = null;
+            if (Auth::user()->role === 'siswa' && Auth::user()->siswa) {
+                $hariIni = Carbon::today();
+                $cekAbsen = Absensi::where('nis', Auth::user()->siswa->nis)->whereDate('tanggal', $hariIni)->first();
+                if ($cekAbsen) {
+                    $statusAbsensi = $cekAbsen->status;
+                }
+            }
+
+        //REKAP PUNYA SISWA MASING MASING
+        $rekapSaya = collect([]);
+
+        if (Auth::user()->role === 'siswa' && Auth::user()->siswa) {
+            $rekapSaya = Absensi::where('nis', Auth::user()->siswa->nis)
+                            ->selectRaw('status, count(*) as total')
+                            ->groupBy('status')
+                            ->pluck('total', 'status');
+        }
 
         // === KIRIM KE VIEW ===
         return view('dashboard', [
@@ -83,6 +103,8 @@ class DashboardController extends Controller
             'topTerlambat'        => $topTerlambat,
             'labels'              => $labels,
             'dataHadir'           => $dataHadir,
+            'statusAbsensi'       => $statusAbsensi,
+            'rekapSaya'          => $rekapSaya
         ]);
     }
 

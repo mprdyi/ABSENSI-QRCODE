@@ -23,12 +23,27 @@
         <div class="card-body">
           <h5 class="fw-bold mb-3">Absensi Siswa</h5>
           <div class="text-center mb-4">
-    @if($statusHadir)
-        <div class="alert alert-success rounded-4 p-4">
-            <h4 class="fw-bold">🎉 Kamu Sudah Hadir!</h4>
-            <p class="mb-0">Kamu tercatat hadir pada jam <b>{{ $statusHadir->jam_masuk }}</b></p>
-            <p class="small text-muted">{{ $statusHadir->keterangan }}</p>
-        </div>
+            @if($statusHadir)
+        @if($statusHadir->status === 'Alpha')
+            {{-- TAMPILAN JIKA KENA AUTO ALPHA --}}
+            <div class="alert alert-danger rounded-4 p-4 text-center">
+                <i class="fas fa-user-times fa-3x mb-3"></i>
+                <h4 class="fw-bold">Waktu Absensi Berakhir</h4>
+                <p class="mb-0">Kamu tercatat <b>Alpha</b> oleh sistem karena melewati batas waktu scan.</p>
+                <hr>
+                <a href="{{ url('/') }}" class="btn btn-outline-danger btn-sm">Kembali ke Dashboard</a>
+            </div>
+        @else
+            {{-- TAMPILAN JIKA SUDAH HADIR / TERLAMBAT --}}
+            <div class="alert alert-success rounded-4 p-4">
+                <h4 class="fw-bold">🎉 Kamu Sudah Absen!</h4>
+                <p class="mb-0">Status: <b>{{ $statusHadir->status }}</b></p>
+                <p>Tercatat pada jam: <b>{{ $statusHadir->jam_masuk ?? '--:--' }}</b></p>
+                <p class="small text-muted">{{ $statusHadir->keterangan }}</p>
+                <a href="{{ url('/') }}" class="btn btn-success btn-sm mt-2">Kembali ke Dashboard</a>
+            </div>
+        @endif
+
         @else
         <h6 id="challengeText" class="text-danger fw-bold mb-2" style="display:none;"></h6>
         <div class="video-wrapper mx-auto shadow rounded-3">

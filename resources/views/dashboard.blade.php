@@ -98,7 +98,6 @@
  <div id="content">
 
 <div class="container-fluid py-4" style="background-color:#f6f8fc; min-height:100vh;">
-@if (Auth::user()->role === 'admin' || Auth::user()->role === 'guru' || Auth::user()->role === 'osis'|| Auth::user()->role === 'walkes')
   <div class="mb-4">
     <h4 class="fw-bold">Hello, {{ Auth::user()->name }}</h4>
     <p class="text-muted">Selamat datang di aplikasi management absensi neglan cirebon</p>
@@ -147,8 +146,6 @@
     </div>
   </div> -->
 
-
-
   <div class="row g-4 mb-3">
     <!-- HADIR  -->
     <div class="col-12 col-md-6 col-lg-3">
@@ -156,14 +153,26 @@
         <div class="d-flex justify-content-between align-items-center">
           <div>
             <div class="card-title">HADIR</div>
-            <div class="card-value">{{$totalHadir + $totalTerlambat}} <small>↑</small></div>
+            <div class="card-value">
+
+                @if(Auth::user()->role == 'siswa')
+                   {{ ($rekapSaya['Hadir'] ?? 0) + ($rekapSaya['Terlambat'] ?? 0) }}
+                @else
+                    {{$totalHadir + $totalTerlambat}}
+                @endif
+
+            <small>↑</small></div>
           </div>
           <div class="icon-circle">
             <i class="fa fa-user-check"></i>
           </div>
         </div>
         <div class="card-footer">
-        {{ $totalHadir}} Ontime | {{ $totalTerlambat }} Terlambat
+        @if(Auth::user()->role === 'siswa')
+        {{ $rekapSaya['Hadir'] ?? 0 }} Ontime |  {{$rekapSaya['Terlambat'] ??0}} Terlambat
+        @else
+            {{ $totalHadir}} Ontime | {{ $totalTerlambat }} Terlambat
+        @endif
         </div>
       </div>
     </div>
@@ -174,14 +183,26 @@
         <div class="d-flex justify-content-between align-items-center">
           <div>
             <div class="card-title">IZIN</div>
-            <div class="card-value">{{ $totalIzin}} <small>↑</small></div>
+            <div class="card-value">
+
+                @if(Auth::user()->role == 'siswa')
+                   {{ ($rekapSaya['Izin'] ?? 0)}}
+                @else
+                    {{ $totalIzin}}
+                @endif
+
+                <small>↑</small></div>
           </div>
           <div class="icon-circle">
             <i class="fa fa-file-signature"></i>
           </div>
         </div>
         <div class="card-footer">
-        Izin hari ini
+       @if(Auth::user()->role === 'siswa')
+            Total Izin
+        @else
+            Izin hari ini
+        @endif
         </div>
       </div>
     </div>
@@ -192,15 +213,27 @@
         <div class="d-flex justify-content-between align-items-center">
           <div>
             <div class="card-title">SAKIT</div>
-            <div class="card-value">{{ $totalSakit}} <small>↑</small></div>
+            <div class="card-value">
+
+             @if(Auth::user()->role == 'siswa')
+                   {{ ($rekapSaya['Sakit'] ?? 0)}}
+                @else
+                   {{ $totalSakit}}
+                @endif
+
+            <small>↑</small></div>
           </div>
           <div class="icon-circle">
             <i class="fa fa-head-side-cough"></i>
           </div>
         </div>
         <div class="card-footer">
-        Sakit hari ini
-        </div>
+        @if(Auth::user()->role === 'siswa')
+            Total sakit
+        @else
+            Sakit hari ini
+        @endif
+    </div>
       </div>
     </div>
     <!-- Total Siswa -->
@@ -209,21 +242,34 @@
         <div class="d-flex justify-content-between align-items-center">
           <div>
             <div class="card-title">ALPA</div>
-            <div class="card-value">{{ $totalAlpha }} <small>↑</small></div>
+            <div class="card-value">
+
+            @if(Auth::user()->role == 'siswa')
+                   {{ ($rekapSaya['Alpha'] ?? 0)}}
+                @else
+                 {{ $totalAlpha }}
+                @endif
+
+
+            <small>↑</small></div>
           </div>
           <div class="icon-circle">
             <i class="fa fa-user-slash"></i>
           </div>
         </div>
         <div class="card-footer">
-       Alpa hari ini
+      @if(Auth::user()->role === 'siswa')
+            Total Alpa
+        @else
+            Alpa hari ini
+        @endif
         </div>
       </div>
     </div>
 
   </div>
 
-
+@unless(Auth::user()->role === 'siswa')
   <div class="row g-3">
     <div class="col-lg-8">
       <div class="card shadow-sm border-0 rounded-4">
@@ -335,44 +381,73 @@
         @endforeach
       </tbody>
     </table>
-
-
     </div>
   </div>
 </div>
 
-
-
 </div>
 </div>
-@endif
+@endunless
 
 @if(Auth::user()->role === 'siswa')
-<div class="container mt-5">
-    <div class="card rounded-4 shadow-lg"
-         style="background-color: #ffffff; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+     <div class="card rounded-4 shadow-lg border-0" style="background-color: #ffffff; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
         <div class="card-body p-5">
             <h2 class="fw-bold mb-3" style="background: linear-gradient(135deg, #667eea, #764ba2);
                                             -webkit-background-clip: text;
                                             -webkit-text-fill-color: transparent;">
-             Hello, {{ Auth::user()->name }}
+              Halo, {{ Str::title(explode(' ', Auth::user()->name)[0]) }}
             </h2>
-            <p class="fst-italic mb-4" style="color: #4b5563; font-size: 1.1rem;">
-                “Selamat datang di kelas kami! Semoga setiap kegiatan belajar mengajar
-                memberikan pengalaman yang menyenangkan, penuh ilmu, dan inspirasi.
-                Mari kita bersama-sama menjaga semangat, kedisiplinan, dan kerja sama
-                untuk mencapai prestasi terbaik.”
-            </p>
+
+            @if(is_null($statusAbsensi))
+                {{-- KONDISI 1: BELUM ADA DATA SAMA SEKALI --}}
+               <p class="mb-4" style="color: #4b5563; font-size: 1.1rem;">
+                    Anda **belum melakukan absensi** masuk gerbang sekolah hari ini.
+                    Silakan lakukan pemindaian wajah untuk mencatat kehadiran Anda.
+                </p>
+                <a href="{{url('/absensi-faceid') }}" class="btn btn-primary px-4 py-2 rounded-3 shadow-sm">
+                    <i class="fas fa-camera me-2"></i>
+                    <span class="pl-2">Absensi Sekarang</span>
+                </a>
+
+            @elseif($statusAbsensi === 'Alpha')
+                {{-- KONDISI 2: KENA AUTO ALPA --}}
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-danger rounded-circle p-2 me-3" style="width:40px; height:40px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-times text-white"></i>
+                    </div>
+                    <p class="mb-0 fw-bold text-danger pl-2" style="font-size: 1.2rem;">
+                        Waktu Absensi Berakhir
+                    </p>
+                </div>
+                <p class="text-muted">
+                    Sistem mencatat Anda **Alpha** untuk hari ini karena tidak melakukan pemindaian wajah hingga batas waktu yang ditentukan.
+                </p>
+
+            @else
+                {{-- KONDISI 3: SUDAH ABSEN (HADIR / TERLAMBAT) --}}
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-success rounded-circle p-2 me-3" style="width:40px; height:40px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-check text-white"></i>
+                    </div>
+                   <p class="mb-0 fw-bold text-success pl-2" style="font-size: 1.2rem;">
+                        Anda sudah absensi masuk gerbang!
+                    </p>
+                </div>
+                <p class="text-muted">
+                    Terima kasih sudah disiplin hari ini. Selamat belajar dan semoga harimu menyenangkan!
+                </p>
+            @endif
+
+           <hr class="my-4">
             <p class="mb-0 fw-semibold" style="color: #1f2937;">
-                — {{ Auth::user()->name }}
+                — Sistem Absensi Digital
             </p>
-            <small class="text-muted">Koordinator Kelas 2025/2026</small>
+            <small class="text-muted">Tahun Pelajaran 2025/2026</small>
         </div>
     </div>
-</div>
-
-
 @endif
+
+
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
