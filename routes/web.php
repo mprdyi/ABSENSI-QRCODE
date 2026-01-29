@@ -18,6 +18,7 @@ use App\Http\Controllers\ProfilUserController;
 use App\Http\Controllers\Auth\CustomForgotPasswordController;
 use App\Http\Controllers\Auth\CustomRessetPasswordController;
 use App\Http\Controllers\DataUserSiswaController;
+use App\Http\Controllers\FaceController;
 use App\Services\FonnteService;
 
 
@@ -148,6 +149,13 @@ Route::put('/absensi/{id}', [DataUserSiswaController::class, 'update'])->name('a
 //Walkes
 Route::get('/rekap-kelas-download', [DataUserSiswaController::class, 'downloadRekapDataKelas'])->name('downloadRekap.walkes');
 
+//FACE ID REGISTER
+Route::get('/face/register/{nis}', [FaceController::class, 'registerPage']);
+Route::post('/face/save', [FaceController::class, 'saveFace']);
+
+//FACE ID ABSENSI
+Route::get('/absensi-faceid', [FaceController::class, 'absensiPage']);
+Route::post('/absensi-faceid/store', [FaceController::class, 'storeAbsensi']);
 
 
 

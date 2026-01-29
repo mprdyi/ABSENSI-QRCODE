@@ -69,4 +69,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    // Tambahkan ini di dalam class User
+    public function siswa()
+    {
+        // Kita sambungkan kolom 'email' di tabel users dengan kolom 'nis' di tabel siswa
+        return $this->hasOne(Siswa::class, 'nis', 'email');
+    }
 }

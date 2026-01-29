@@ -17,6 +17,7 @@ tabCSV.addEventListener('click', () => {
     formManual.classList.add('d-none');
 });
 
+
 const fileInput = document.getElementById('file');
 const fileName = document.getElementById('file-name');
 const dropZone = document.querySelector('.custom-file-upload');
@@ -37,3 +38,4 @@ dropZone.addEventListener('drop', (e) => {
     fileInput.files = e.dataTransfer.files;
     fileName.textContent = e.dataTransfer.files[0]?.name || 'Pilih file atau seret ke sini';
 });
+

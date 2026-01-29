@@ -108,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const newToggleBtn = toggleBtn.cloneNode(true);
   toggleBtn.parentNode.replaceChild(newToggleBtn, toggleBtn);
 
-  // ---- Tambahkan event toggle baru kita ----
+  // ---- Tambahkan event toggle  ----
   newToggleBtn.addEventListener("click", function (e) {
     e.preventDefault();
     sidebar.classList.toggle("active");

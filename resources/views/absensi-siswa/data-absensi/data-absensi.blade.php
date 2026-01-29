@@ -1,37 +1,44 @@
 @extends('layout.app')
 @section('title','Absensi Siswa')
 @section('content')
+<style>
+.video-wrapper {
+  max-width: 320px;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
 
+.video-wrapper video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+</style>
 <div class="container-fluid">
   <div class="row mt-4">
     <div class="col-12">
       <div class="card shadow-sm border-0 rounded-4">
         <div class="card-body">
           <h5 class="fw-bold mb-3">Absensi Siswa</h5>
-
-          <!-- Tab Switch -->
-          <div class="d-flex border-bottom mb-3">
-            <button class="tab-btn active" id="tabManual">Input Manual</button>
-            <button class="tab-btn" id="tabQR">QR Code</button>
-          </div>
-
-          <!-- Form Input Manual -->
-          <form id="formManual">
-            @csrf
-            <div class="form-group mb-3" style="position:relative">
-              <input type="text" class="form-control modern-input" name="nis" placeholder="Masukan NIS...">
+          <div class="text-center mb-4">
+          <h6 id="challengeText" class="text-danger fw-bold mb-2" style="display:none;"></h6>
+          <div class="video-wrapper mx-auto">
+            <video id="video" autoplay muted playsinline class="rounded-3shadow w-100 mb-5"></video>
             </div>
-            <div class="button-submit" style="position:absolute; right:15px; z-index:1; transform: translateY(-64px);">
-              <button type="submit" class="btn btn-primary rounded-3 px-4 py-2">Simpan</button>
-            </div>
-          </form>
+            <p id="face-result" class="mt-5 fw-bold text-success" style="display:none;margin-top:15px"></p>
+            <p class="mt-2 text-muted small">
+            <button id="btnScanFace" class="btn btn-secondary px-4 py-2" disabled>
+                 Kirim Absensi
+            </button>
+            </p>
 
-          <!-- Form QR CODE SCANNER -->
-          <div id="formQR" class="d-none mt-3 text-center">
-            <div id="qr-reader" style="width:100%; max-width:350px; margin:auto; border-radius:10px; overflow:hidden;"></div>
-            <p id="qr-result" class="mt-3 fw-bold text-success" style="display:none;"></p>
-            <p class="mt-2 text-muted small">Arahkan QR ke kamera</p>
-          </div>
+
+            </div>
+
+
+
 
           <!-- Table -->
           <div class="table-responsive mt-5">
@@ -62,172 +69,128 @@
     </div>
   </div>
 </div>
-
-@endsection
-
-{{-- === SCRIPT === --}}
-<script src="{{ asset('js/scanner.js') }}"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{{ asset('js/face_id.js') }}"></script>
 <script>
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async () => {
 
+const video = document.getElementById('video');
+const btnScan = document.getElementById('btnScanFace');
+const faceResult = document.getElementById('face-result');
+const challengeText = document.getElementById("challengeText");
 
-    // === Inisialisasi Audio sekali aja  ===
-    const successBeep = new Audio("{{ asset('sounds/beep.mp3') }}");
-    const errorBeep = new Audio("{{ asset('sounds/censor-beep.mp3') }}");
+// DATA DARI DATABASE (dikirim dari controller)
+const rawDescriptor = JSON.parse('{!! $face_descriptor !!}');
+const labeledDescriptor = new Float32Array(rawDescriptor);
 
-    let html5QrCode = null;
-    let isScanning = false;
-    let scannedNIS = {}; // track NIS yang sudah di-scan hari ini
-    const tabManual = document.getElementById('tabManual');
-    const tabQR = document.getElementById('tabQR');
-    const formManual = document.getElementById('formManual');
-    const formQR = document.getElementById('formQR');
-    const qrResult = document.getElementById('qr-result');
+let modelsLoaded = false;
+let cameraStarted = false;
+let faceMatched = false; // Status apakah wajah cocok
+let schoolMode = false;
+let baseline = null;
+let detectInterval = null;
 
-    // --- QR SCANNER ---
-    function startQRScanner() {
-        if (isScanning) return;
-        if (typeof Html5Qrcode === 'undefined') { alert("Library HTML5 QR Code belum termuat!"); return; }
-
-        html5QrCode = new Html5Qrcode("qr-reader");
-        isScanning = true;
-
-        html5QrCode.start(
-    { facingMode: "user" },
-    { fps: 10, qrbox: 250 },
-    qrCodeMessage => {
-        //  mencegah scan double dalam 3 detik
-        if(scannedNIS[qrCodeMessage]) return;
-        scannedNIS[qrCodeMessage] = true;
-        setTimeout(() => { scannedNIS[qrCodeMessage] = false; }, 3000);
-
-        $.ajax({
-            url: "{{ route('absensi.store') }}",
-            type: "POST",
-            data: {_token: "{{ csrf_token() }}", nis: qrCodeMessage},
-            success: function(res){
-                qrResult.style.display = "block";
-
-                if(res.success){
-                    successBeep.play(); // suara sukses
-                    qrResult.textContent = "✅ Absensi berhasil: " + qrCodeMessage;
-                } else if(res.status === 409 || res.message.includes("sudah absen")){
-                    errorBeep.play(); //
-                    qrResult.textContent = "⚠ Siswa sudah absen hari ini!";
-                } else {
-                    errorBeep.play();
-                    qrResult.textContent = "⚠ " + res.message;
-                }
-
-                refreshTable();
-            },
-            error: function(xhr){
-                if(xhr.status === 409){
-                    qrResult.style.display = "block";
-                    errorBeep.play();
-                    qrResult.textContent = "⚠ Siswa sudah absen hari ini!";
-                } else {
-                    qrResult.style.display = "block";
-                    qrResult.textContent = "❌ NIS Tidak Terdaftar, Gagal menyimpan data.";
-                }
-            }
-        });
-    },
-    errorMessage => console.log("QR scan error:", errorMessage)
-).catch(err => {
-    console.error("Tidak bisa mengakses kamera:", err);
-    alert("Gagal mengakses kamera! Pastikan sudah klik Allow pada browser.");
-});
-
-    }
-
-    function stopQRScanner() {
-        if (html5QrCode && isScanning) {
-            html5QrCode.stop().then(() => {
-                html5QrCode.clear();
-                isScanning = false;
-                qrResult.style.display = "none";
-            }).catch(err => console.warn("Gagal menghentikan kamera:", err));
-        }
-    }
-
-    // --- TAB HANDLER ---
-    tabManual.addEventListener('click', function() {
-        tabManual.classList.add('active');
-        tabQR.classList.remove('active');
-        formManual.classList.remove('d-none');
-        formQR.classList.add('d-none');
-        stopQRScanner();
-    });
-
-    tabQR.addEventListener('click', function() {
-        tabQR.classList.add('active');
-        tabManual.classList.remove('active');
-        formQR.classList.remove('d-none');
-        formManual.classList.add('d-none');
-        startQRScanner();
-    });
-
-    // --- FORM MANUAL AJAX ---
-formManual.addEventListener('submit', function(e){
-    e.preventDefault();
-    $.ajax({
-        url: "{{ route('absensi.store') }}",
-        type: "POST",
-        data: $(this).serialize(),
-        beforeSend: function(){
-            $('.btn-primary').attr('disabled', true).text('Menyimpan...');
-        },
-        success: function(response){
-            successBeep.play();
-            showAlert(response.success ? 'success' : 'warning', response.message);
-            formManual.reset();
-            refreshTable();
-        },
-        error: function(xhr){
-            errorBeep.play();
-            if(xhr.status === 409) showAlert('warning', '⚠ Siswa sudah absen hari ini!');
-            else showAlert('danger', '❌ NIS Tidak Terdaftar,, Gagal menyimpan data.');
-        },
-        complete: function(){
-            $('.btn-primary').attr('disabled', false).text('Simpan');
-        }
-    });
-});
-
-// --- Fungsi untuk menampilkan alert Bootstrap ---
-function showAlert(type, message) {
-    const alertBox = `
-        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
-            ${message}
-        </div>
-    `;
-    $('#alertContainer').html(alertBox);
-
-    // Auto-hide dalam 4 detik
-    setTimeout(() => {
-        $('.alert').alert('close');
-    }, 4000);
+// --- LOAD MODELS ---
+async function loadModels() {
+    console.log("Loading Models...");
+    await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
+    await faceapi.nets.faceLandmark68TinyNet.loadFromUri('/models');
+    await faceapi.nets.faceRecognitionNet.loadFromUri('/models'); // Penting untuk mencocokkan wajah
+    modelsLoaded = true;
 }
 
+// --- START CAMERA ---
+async function startCamera() {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 320, height: 240 } });
+        video.srcObject = stream;
+        cameraStarted = true;
+    } catch (err) { alert("Kamera Error"); }
+}
 
-    // --- AJAX REFRESH TABLE ---
-    function refreshTable() {
-        $.ajax({
-            url: "{{ route('data-absensi-siswa.Qr') }}",
-            type: "GET",
-            dataType: "json",
-            success: function(res){ $('#absensi-body').html(res.html); },
-            error: function(){ console.warn('Gagal memuat data absensi.'); }
+// --- REALTIME MATCHING ---
+function startRealtimeDetect() {
+    detectInterval = setInterval(async () => {
+        if (!modelsLoaded || !cameraStarted || video.videoWidth === 0) return;
+
+        const result = await faceapi
+            .detectSingleFace(video, new faceapi.TinyFaceDetectorOptions({ inputSize: 128 }))
+            .withFaceLandmarks(true)
+            .withFaceDescriptor();
+
+        if (result) {
+            // BANDINGKAN WAJAH KAMERA DENGAN DATABASE
+            const distance = faceapi.euclideanDistance(result.descriptor, labeledDescriptor);
+
+            if (distance < 0.5) { // 0.5 adalah ambang batas (semakin kecil semakin mirip)
+                faceMatched = true;
+                faceResult.innerText = "Wajah Cocok: {{ $siswa->nama }}";
+                faceResult.className = "fw-bold text-success";
+                btnScan.disabled = false;
+            } else {
+                faceMatched = false;
+                faceResult.innerText = "Wajah Tidak Dikenali!";
+                faceResult.className = "fw-bold text-danger";
+                btnScan.disabled = true;
+            }
+
+            // JIKA SEDANG MODE TANTANGAN (LIVENESS)
+            if (schoolMode && result.landmarks) {
+                if (verifyMotion(result.landmarks)) {
+                    processAbsensi(); // Wajah cocok + Gerakan ok = Absen!
+                }
+            }
+        }
+    }, 300);
+}
+
+// --- PROSES KIRIM DATA ---
+async function processAbsensi() {
+    schoolMode = false;
+    clearInterval(detectInterval); // Stop scan
+
+    challengeText.innerText = "⏳ Sedang memproses absensi...";
+
+    try {
+        const res = await fetch('/absensi/store', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ nis: '{{ $siswa->nis }}' })
         });
+
+        const data = await res.json();
+        if (data.success) {
+            alert(data.message);
+            location.reload(); // Refresh untuk update tabel
+        }
+    } catch (err) {
+        alert("Gagal mengirim data.");
+        location.reload();
     }
+}
 
-    // Load pertama kali
-    refreshTable();
-    // refresh setiap 5 detik
-    setInterval(refreshTable, 5000);
+// --- LOGIKA LIVENESS (GERAKAN) ---
+// (Fungsi verifyMotion, pickChallenge, dist, captureBaseline tetap pakai yang kamu punya sebelumnya)
+// ... copy paste fungsi verifyMotion dkk kamu disini ...
 
+btnScan.addEventListener("click", () => {
+    if (!faceMatched) return;
 
+    // Mulai tantangan gerakan (Liveness Detection)
+    schoolMode = true;
+    currentChallenge = challenges[Math.floor(Math.random() * challenges.length)];
+    challengeText.style.display = "block";
+    challengeText.innerText = `Verifikasi Keamanan: ${currentChallenge.text}`;
+});
+
+// INIT
+await loadModels();
+await startCamera();
+startRealtimeDetect();
 });
 </script>
+
+
+@endsection

@@ -36,6 +36,16 @@ class ProfilController extends Controller
             'notif_wa'    => $validated['notif_wa'],
         ])->save();
 
+        //  --- SUNTIK SESSION BARU DI SINI ---
+        // Biar aturan baru langsung berlaku tanpa logout-login
+        session([
+            'nama_sekolah' => $sekolah->nama_sekolah,
+            'jam_masuk' => $sekolah->jam_masuk,
+            'kepsek' => $sekolah->kepsek,
+            'auto_alpa' => $sekolah->auto_alpa,
+            'notif_wa' => $sekolah->notif_wa,
+        ]);
+
         return redirect()->back()->with('success', 'Profil sekolah berhasil diperbarui!');
     }
 }

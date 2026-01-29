@@ -13,6 +13,7 @@ class siswa extends Model
         'nis',
         'id_kelas',
         'nama',
+        'face_descriptor',
         'jk',
     ];
 
