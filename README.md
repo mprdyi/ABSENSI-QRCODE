@@ -12,7 +12,7 @@ SmartAttendance Pro dirancang sebagai Sistem Absensi Gerbang (Gate Attendance Sy
 Sistem ini memastikan kehadiran tercatat sebelum siswa masuk lingkungan sekolah, sehingga data absensi lebih valid dan real-time.
 ✅ Scan QR Code ≤ 2 Detik  
 ✅ Auto-Alpa Otomatis  
-✅ Notifikasi WhatsApp Real-Time  
+✅ Notifikasi WhatsApp Terjadwal, Bisa dinamis waktu 
 ✅ Dashboard Statistik Interaktif  
 ✅ Laporan PDF Siap Cetak  
 ✅ Multi-Role Access System  
