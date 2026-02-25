@@ -1,66 +1,149 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🚀 SmartAttendance Pro
+### Sistem Absensi Digital Berbasis QR Code & WhatsApp Automation
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+SmartAttendance Pro adalah sistem absensi sekolah berbasis web yang dirancang untuk meningkatkan kedisiplinan, transparansi, dan efisiensi pengelolaan kehadiran siswa secara real-time.
 
-## About Laravel
+Dikembangkan menggunakan teknologi modern seperti **Laravel Framework**, **QR Code HTML5 Scanner**, dan **WhatsApp Gateway (Fonnte API)** untuk menghadirkan sistem absensi yang cepat, akurat, dan otomatis.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+# 🎯 Kenapa SmartAttendance Pro?
+SmartAttendance Pro dirancang sebagai Sistem Absensi Gerbang (Gate Attendance System), di mana setiap siswa wajib melakukan pemindaian QR Code saat memasuki area sekolah.
+Sistem ini memastikan kehadiran tercatat sebelum siswa masuk lingkungan sekolah, sehingga data absensi lebih valid dan real-time.
+✅ Scan QR Code ≤ 2 Detik  
+✅ Auto-Alpa Otomatis  
+✅ Notifikasi WhatsApp Real-Time  
+✅ Dashboard Statistik Interaktif  
+✅ Laporan PDF Siap Cetak  
+✅ Multi-Role Access System  
+✅ Backup Otomatis ke Google Drive  
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+# 🔥 Fitur Utama
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 📌 Sistem Absensi Otomatis
+- Scan QR Code melalui kamera perangkat
+- Penentuan status otomatis: Hadir / Terlambat / Alpa / Izin / Sakit
+- Auto-Alpa pada jam tertentu
+- Absensi manual (role tertentu)
+- Edit absensi (hari berjalan)
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 📲 Notifikasi WhatsApp Otomatis
+- Mengirim pesan otomatis kepada Wali Kelas
+- List siswa terlambat langsung terkirim
+- Notifikasi izin & sakit secara real-time
+- Terintegrasi dengan WhatsApp Gateway (Fonnte)
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 🧾 Manajemen Izin Digital
+- Form izin masuk / keluar kelas
+- Approval sistem (Wali Kelas / Koordinator)
+- Unduh surat izin dalam format PDF
+- Arsip izin tersimpan aman di database
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+## 📊 Dashboard & Visualisasi Data
+- Statistik kehadiran real-time
+- Grafik kehadiran mingguan
+- Persentase kategori kehadiran
+- Top 10 siswa paling sering terlambat
+- Rekap harian, bulanan, semester
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 📁 Pengelolaan Data Lengkap
+- CRUD Data Siswa
+- CRUD Data Guru
+- CRUD Data Kelas
+- CRUD User & Role Management
+- Upload massal via CSV
+- Sistem pencarian cepat
+- Arsip absensi terstruktur
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# 👥 Sistem Multi-Role (Role-Based Access Control)
 
-## Security Vulnerabilities
+| Role | Hak Akses Utama |
+|------|----------------|
+| Admin (Guru BK) | Full Control System |
+| Guru Piket | Absensi & Rekap Harian |
+| OSIS / MPK | Scan Gerbang & Monitoring |
+| Wali Kelas | Monitoring & Approval Izin |
+| Koordinator Kelas | Validasi Izin & Monitoring Kelas |
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Setiap role memiliki kontrol akses yang terproteksi untuk menjaga keamanan data.
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# 🛠️ Teknologi yang Digunakan
+
+| Komponen | Teknologi |
+|----------|------------|
+| Backend | Laravel 10 |
+| Frontend | Blade + Boostrap |
+| QR Scanner | HTML5 QR Code |
+| Database | MySQL |
+| Notifikasi | WhatsApp Gateway (Fonnte API) |
+| Export Laporan | PDF Generator |
+| Backup | Google Drive API |
+
+---
+
+# ⚡ Performance & Reliability
+
+- Proses scan QR ≤ 2 detik
+- Mendukung banyak pengguna bersamaan
+- Stabil saat peak hour (jam masuk sekolah)
+- Backup otomatis ke Google Drive
+- Sistem keamanan berbasis login & role
+
+---
+
+# 🔐 Security System
+
+- Autentikasi username & password
+- Role-based access control
+- Proteksi data izin & absensi
+- Validasi input & keamanan server-side
+
+---
+
+# 🧪 Pengujian Sistem
+
+Metode pengujian menggunakan **Blackbox Testing** untuk memastikan seluruh fitur berjalan sesuai kebutuhan tanpa menilai kode internal.
+
+Pengujian dilakukan berdasarkan masing-masing role:
+- Admin
+- Guru Piket
+- OSIS
+- Wali Kelas
+- Koordinator Kelas
+
+Semua fitur diuji dengan skenario berhasil dan gagal untuk menjamin stabilitas sistem.
+
+---
+
+# 🎓 Cocok Untuk
+
+- SMP / SMA / SMK
+- Sekolah Swasta & Negeri
+- Boarding School
+- Lembaga Pendidikan Modern
+
+---
+
+# 💼 Dikembangkan Oleh
+
+Mas Addy  
+Full-Stack Web Developer  
+Specialist in Education Information Systems  
+
+---
+
+> SmartAttendance Pro — Transformasi Digital Absensi Sekolah Anda.
